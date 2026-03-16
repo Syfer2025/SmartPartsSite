@@ -86,38 +86,9 @@ function AppContent() {
     : undefined;
   useBannerPreload(firstBannerUrl);
 
-  // Add preconnect for performance
-  useEffect(() => {
-    // Preconnect to wsrv.nl (CRITICAL - all product images go through this CDN)
-    const wsrvPreconnect = document.createElement('link');
-    wsrvPreconnect.rel = 'preconnect';
-    wsrvPreconnect.href = 'https://wsrv.nl';
-    document.head.appendChild(wsrvPreconnect);
-
-    const wsrvDnsPrefetch = document.createElement('link');
-    wsrvDnsPrefetch.rel = 'dns-prefetch';
-    wsrvDnsPrefetch.href = 'https://wsrv.nl';
-    document.head.appendChild(wsrvDnsPrefetch);
-
-    // Preconnect to Supabase Storage (CRITICAL for LCP)
-    const supabasePreconnect = document.createElement('link');
-    supabasePreconnect.rel = 'preconnect';
-    supabasePreconnect.href = 'https://khvkawwzikfcnirkwnih.supabase.co';
-    supabasePreconnect.crossOrigin = 'anonymous';
-    document.head.appendChild(supabasePreconnect);
-
-    const supabaseDnsPrefetch = document.createElement('link');
-    supabaseDnsPrefetch.rel = 'dns-prefetch';
-    supabaseDnsPrefetch.href = 'https://khvkawwzikfcnirkwnih.supabase.co';
-    document.head.appendChild(supabaseDnsPrefetch);
-
-    return () => {
-      document.head.removeChild(wsrvPreconnect);
-      document.head.removeChild(wsrvDnsPrefetch);
-      document.head.removeChild(supabasePreconnect);
-      document.head.removeChild(supabaseDnsPrefetch);
-    };
-  }, []);
+  // REMOVED: Preconnect via JS useEffect was useless — browser ignores preconnects
+  // created after HTML parsing. Moved to vite.config.ts preconnectPlugin() which
+  // injects them as static <link> tags in the HTML <head>.
 
   // Check URL for /admin route
   useEffect(() => {

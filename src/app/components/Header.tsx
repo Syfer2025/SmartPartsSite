@@ -2,7 +2,7 @@ import { Search, ChevronDown, Phone, Menu, X, Package, Snowflake, Wind, Disc, Se
 import { useState, useEffect } from 'react';
 import logo from 'figma:asset/93a318fedff287cf8ae9966775cd849f3e3199e4.png';
 import { useData } from '../context/DataContext';
-import { optimizeWithPreset, createImageFallback } from '@/app/utils/imageOptimizer';
+import { optimizeWithPreset, createImageFallback, optimizeSupabaseImage } from '@/app/utils/imageOptimizer';
 
 interface HeaderProps {
   onNavigate: (page: string, slug?: string, productId?: string) => void;
@@ -31,6 +31,10 @@ const categoryIcons: { [key: string]: any } = {
   'mola-cuica': Settings,
   'gerador-energia': Zap,
 };
+
+// Optimize logo: original is 684x162 PNG (22.5 KiB), displayed at max 48px height
+// wsrv.nl serves it as WebP at correct size (~2 KiB)
+const optimizedLogo = optimizeSupabaseImage(logo, 240, 90);
 
 export function Header({ onNavigate }: HeaderProps) {
   const [showCategories, setShowCategories] = useState(false);
@@ -168,7 +172,7 @@ export function Header({ onNavigate }: HeaderProps) {
             className="flex items-center gap-2 hover:opacity-80 transition header-logo-hover"
           >
             <img 
-              src={logo} 
+              src={optimizedLogo} 
               alt="Smart Parts Import" 
               className="h-8 w-auto object-contain" 
               fetchpriority="high"
@@ -274,7 +278,7 @@ export function Header({ onNavigate }: HeaderProps) {
             className="flex items-center gap-3 hover:opacity-80 transition flex-shrink-0 header-logo-hover"
           >
             <img 
-              src={logo} 
+              src={optimizedLogo} 
               alt="Smart Parts Import" 
               className="h-12 w-auto object-contain" 
               fetchpriority="high"

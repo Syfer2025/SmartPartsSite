@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { projectId, publicAnonKey } from '../../../utils/supabase/info';
 
 interface Category {
@@ -51,6 +51,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [bannersLoading, setBannersLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Track if we have cached data to avoid showing errors when cache is available
+  const hasCachedData = useRef(false);
+
   const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-d06f92b7`;
 
   // Load from cache immediately on mount
@@ -66,6 +69,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
         if (Array.isArray(parsedCategories) && Array.isArray(parsedProducts)) {
           setCategories(parsedCategories);
           setProducts(parsedProducts);
+          hasCachedData.current = true;
+          // If cache exists, don't block rendering with loading state
+          setLoading(false);
         }
       } catch (e) {
         // Cache parse error - ignore and fetch fresh data
@@ -74,36 +80,47 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const fetchData = async (retryCount = 0, signal?: AbortSignal): Promise<void> => {
+    // Increase timeout for cold starts (15s first try, 12s retries)
+    const timeoutMs = retryCount === 0 ? 15000 : 12000;
     const controller = new AbortController();
     const timeout = setTimeout(() => {
       controller.abort();
-    }, 8000);
+    }, timeoutMs);
     
     try {
       // Only show loading if we don't have cached data
-      if (categories.length === 0 && products.length === 0) {
+      if (!hasCachedData.current) {
         setLoading(true);
       }
       setError(null);
 
-      // Use external signal if provided (for cleanup on unmount)
-      const fetchSignal = signal || controller.signal;
+      // Combine external signal (unmount) with internal timeout signal
+      // If external signal aborts, we should stop. If internal timeout fires, we should also stop.
+      const handleExternalAbort = () => controller.abort();
+      if (signal) {
+        if (signal.aborted) {
+          clearTimeout(timeout);
+          return;
+        }
+        signal.addEventListener('abort', handleExternalAbort, { once: true });
+      }
 
       const [categoriesRes, productsRes] = await Promise.all([
         fetch(`${API_URL}/categories`, {
           headers: { 'Authorization': `Bearer ${publicAnonKey}` },
-          signal: fetchSignal
+          signal: controller.signal
         }),
         fetch(`${API_URL}/products`, {
           headers: { 'Authorization': `Bearer ${publicAnonKey}` },
-          signal: fetchSignal
+          signal: controller.signal
         })
       ]);
 
       clearTimeout(timeout);
+      if (signal) signal.removeEventListener('abort', handleExternalAbort);
 
       if (!categoriesRes.ok || !productsRes.ok) {
-        throw new Error('Failed to fetch data');
+        throw new Error(`API error: categories=${categoriesRes.status}, products=${productsRes.status}`);
       }
 
       const [categoriesData, productsData] = await Promise.all([
@@ -118,24 +135,25 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setCategories(fetchedCategories);
       setProducts(fetchedProducts);
       setError(null);
+      hasCachedData.current = true;
       
       // Cache the data for instant load next time
       // Only cache metadata, not large images to avoid quota issues
       try {
-        const categoriesToCache = fetchedCategories.map(cat => ({
+        const categoriesToCache = fetchedCategories.map((cat: Category) => ({
           id: cat.id,
           name: cat.name,
           slug: cat.slug,
-          icon: cat.icon.startsWith('data:image') && cat.icon.length > 1000 ? '📦' : cat.icon, // Replace large base64 with emoji
+          icon: cat.icon.startsWith('data:image') && cat.icon.length > 1000 ? '📦' : cat.icon,
           description: cat.description
         }));
         
-        const productsToCache = fetchedProducts.map(prod => ({
+        const productsToCache = fetchedProducts.map((prod: Product) => ({
           id: prod.id,
           name: prod.name,
           category: prod.category,
           categorySlug: prod.categorySlug,
-          image: prod.image.startsWith('data:image') ? '' : prod.image, // Don't cache base64 images
+          image: prod.image.startsWith('data:image') ? '' : prod.image,
           description: prod.description,
           sku: prod.sku
         }));
@@ -143,50 +161,50 @@ export function DataProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('categories_cache', JSON.stringify(categoriesToCache));
         localStorage.setItem('products_cache', JSON.stringify(productsToCache));
       } catch (e) {
-        // If quota exceeded, clear old cache and try again with minimal data
         if (e instanceof Error && e.name === 'QuotaExceededError') {
-          console.warn('[DataContext] ⚠️ LocalStorage quota exceeded, clearing cache...');
           try {
             localStorage.removeItem('categories_cache');
             localStorage.removeItem('products_cache');
           } catch (clearError) {
             // Failed to clear cache
           }
-        } else {
-          console.error('[DataContext] Cache save error:', e);
         }
       }
     } catch (err) {
       clearTimeout(timeout);
       
-      // Ignore AbortError on unmount or intentional abort
+      // Ignore AbortError from component unmount
       if (err instanceof Error && err.name === 'AbortError') {
-        console.log('[DataContext] ⚠️ Request aborted (timeout or component unmount)');
-        
-        // Don't retry or set error if externally aborted (component unmount)
-        if (signal) {
+        // If externally aborted (unmount), don't retry or set error
+        if (signal?.aborted) {
           return;
         }
         
-        // Only retry if it's a timeout, not a manual abort
-        if (retryCount < 3) {
-          await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
-          return fetchData(retryCount + 1);
+        // Internal timeout - retry with backoff
+        if (retryCount < 2) {
+          const delay = 2000 * (retryCount + 1);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          return fetchData(retryCount + 1, signal);
         }
         
-        setError('Request timeout - please refresh the page');
+        // After retries, only show error if no cached data
+        if (!hasCachedData.current) {
+          setError('Tempo limite excedido. Verifique sua conexão e tente novamente.');
+        }
         return;
       }
       
-      console.error('[DataContext] ❌ Error:', err);
-      
-      // Retry logic - tentar até 3 vezes
-      if (retryCount < 3) {
-        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
-        return fetchData(retryCount + 1);
+      // Network or other error - retry with backoff
+      if (retryCount < 2) {
+        const delay = 2000 * (retryCount + 1);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return fetchData(retryCount + 1, signal);
       }
       
-      setError(err instanceof Error ? err.message : 'Failed to load data');
+      // After all retries failed, only show error if no cached data available
+      if (!hasCachedData.current) {
+        setError(err instanceof Error ? err.message : 'Falha ao carregar dados. Tente novamente.');
+      }
     } finally {
       setLoading(false);
     }
@@ -215,6 +233,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
             const parsed = JSON.parse(cachedBanners);
             if (Array.isArray(parsed) && parsed.length > 0) {
               setBanners(parsed);
+              setBannersLoading(false);
             }
           } catch (e) { /* ignore */ }
         }
@@ -236,6 +255,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         } catch (e) { /* quota exceeded */ }
       } catch (err) {
         if (err instanceof Error && err.name === 'AbortError') return;
+        // Silently fail for banners - they're non-critical
       } finally {
         setBannersLoading(false);
       }

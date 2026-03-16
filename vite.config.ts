@@ -42,9 +42,43 @@ function figmaAssetPlugin(): Plugin {
   };
 }
 
+// Plugin to inject preconnect hints into HTML at build time
+// These MUST be in static HTML, not JS — JS-created preconnects are too late
+function preconnectPlugin(): Plugin {
+  return {
+    name: 'inject-preconnect',
+    apply: 'build',
+    transformIndexHtml() {
+      return [
+        {
+          tag: 'link',
+          attrs: { rel: 'preconnect', href: 'https://khvkawwzikfcnirkwnih.supabase.co', crossorigin: 'anonymous' },
+          injectTo: 'head-prepend',
+        },
+        {
+          tag: 'link',
+          attrs: { rel: 'dns-prefetch', href: 'https://khvkawwzikfcnirkwnih.supabase.co' },
+          injectTo: 'head-prepend',
+        },
+        {
+          tag: 'link',
+          attrs: { rel: 'preconnect', href: 'https://wsrv.nl' },
+          injectTo: 'head-prepend',
+        },
+        {
+          tag: 'link',
+          attrs: { rel: 'dns-prefetch', href: 'https://wsrv.nl' },
+          injectTo: 'head-prepend',
+        },
+      ];
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     figmaAssetPlugin(),
+    preconnectPlugin(),
     react(),
     tailwindcss(),
   ],
