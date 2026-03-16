@@ -1,0 +1,105 @@
+importadorasmart@carretao.gk2.net.br [~]# ^C
+importadorasmart@carretao.gk2.net.br [~]# ^C
+importadorasmart@carretao.gk2.net.br [~]# git clone https://Syfer2025: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@github.com/Syfer2025/Siteparasmartpartsimport.git repositories/Siteparasmartpartsimport
+Cloning into 'repositories/Siteparasmartpartsimport'...
+remote: Enumerating objects: 147, done.
+remote: Counting objects: 100% (147/147), done.
+remote: Compressing objects: 100% (138/138), done.
+remote: Total 147 (delta 8), reused 2 (delta 0), pack-reused 0 (from 0)
+Receiving objects: 100% (147/147), 280.52 KiB | 10.39 MiB/s, done.
+Resolving deltas: 100% (8/8), done.
+importadorasmart@carretao.gk2.net.br [~]# ls repositories/Siteparasmartpartsimport
+API_INTEGRATION.md  ATUALIZACAO_EMAILS.md      DEBUG_GUIDE.md            guidelines  package.json        README.md  supabase  vite.config.ts
+ATTRIBUTIONS.md     DEBUG_EXPECTED_RESULTS.md  DEBUG_TROUBLESHOOTING.md  index.html  postcss.config.mjs  src        utils
+importadorasmart@carretao.gk2.net.br [~]# cp repositories/Siteparasmartpartsimport/build-and-push.sh /home/importadorasmart/build-and-push.sh
+cp: cannot stat 'repositories/Siteparasmartpartsimport/build-and-push.sh': No such file or directory
+importadorasmart@carretao.gk2.net.br [~]# chmod +x /home/importadorasmart/build-and-push.sh
+chmod: cannot access '/home/importadorasmart/build-and-push.sh': No such file or directory
+importadorasmart@carretao.gk2.net.br [~]# /opt/cpanel/ea-nodejs22/bin/node --version
+v22.22.0
+importadorasmart@carretao.gk2.net.br [~]# cat > /home/importadorasmart/build-and-push.sh << 'EOF'
+> #!/bin/bash
+> export PATH="/opt/cpanel/ea-nodejs22/bin:$PATH"
+> REPO_DIR="/home/importadorasmart/repositories/Siteparasmartpartsimport"
+> PUBLIC_HTML="/home/importadorasmart/public_html"
+>
+> echo "=== SMART PARTS IMPORT - Build & Deploy ==="
+> echo "$(date)"
+>
+> # 1. Pull latest
+> cd "$REPO_DIR" || exit 1
+> echo ">> Git pull..."
+> git pull origin main
+>
+> # 2. Install dependencies
+> echo ">> Installing dependencies..."
+> npm install --production=false
+>
+> # 3. Build
+> echo ">> Building..."
+> npm run build
+>
+> # 4. Deploy to public_html
+> if [ -d "$REPO_DIR/dist" ]; then
+>     echo ">> Deploying to public_html..."
+>     rsync -av --delete --exclude='.htaccess' --exclude='.well-known' "$REPO_DIR/dist/" "$PUBLIC_HTML/"
+>     echo ">> Deploy concluído com sucesso!"
+> else
+>     echo "!! ERRO: pasta dist/ não encontrada. Build falhou."
+>     exit 1
+> fi
+>
+> echo "=== Finalizado $(date) ==="
+> EOF
+importadorasmart@carretao.gk2.net.br [~]# chmod +x /home/importadorasmart/build-and-push.sh
+importadorasmart@carretao.gk2.net.br [~]# /home/importadorasmart/build-and-push.sh
+=== SMART PARTS IMPORT - Build & Deploy ===
+Fri Mar 13 16:26:37 -03 2026
+>> Git pull...
+From https://github.com/Syfer2025/Siteparasmartpartsimport
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+>> Installing dependencies...
+npm warn config production Use `--omit=dev` instead.
+
+added 334 packages, and audited 335 packages in 1m
+
+35 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 moderate, 1 critical)
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.9.4 -> 11.11.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.11.1
+npm notice To update run: npm install -g npm@11.11.1
+npm notice
+>> Building...
+
+> @figma/my-make-file@0.0.1 build
+> vite build
+
+vite v6.3.5 building for production...
+✓ 21 modules transformed.
+✗ Build failed in 1.22s
+error during build:
+[vite]: Rollup failed to resolve import "figma:asset/93a318fedff287cf8ae9966775cd849f3e3199e4.png" from "/home/importadorasmart/repositories/Siteparasmartpartsimport/src/app/components/Header.tsx".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+    at viteLog (file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46345:15)
+    at file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46403:18
+    at onwarn (file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/@vitejs/plugin-react/dist/index.js:90:7)
+    at file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46401:7
+    at onRollupLog (file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46393:5)
+    at onLog (file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/vite/dist/node/chunks/dep-DBxKXgDP.js:46043:7)
+    at file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/rollup/dist/es/shared/node-entry.js:20981:32
+    at Object.logger [as onLog] (file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/rollup/dist/es/shared/node-entry.js:22968:9)
+    at ModuleLoader.handleInvalidResolvedId (file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/rollup/dist/es/shared/node-entry.js:21712:26)
+    at file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/rollup/dist/es/shared/node-entry.js:21670:26
+!! ERRO: pasta dist/ não encontrada. Build falhou.
+importadorasmart@carretao.gk2.net.br [~]#

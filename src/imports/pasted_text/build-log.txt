@@ -1,0 +1,163 @@
+   at file:///home/importadorasmart/repositories/Siteparasmartpartsimport/node_modules/rollup/dist/es/shared/node-entry.js:21670:26
+!! ERRO: pasta dist/ não encontrada. Build falhou.
+importadorasmart@carretao.gk2.net.br [~]# cd /home/importadorasmart/repositories/Siteparasmartpartsimport
+importadorasmart@carretao.gk2.net.br [Siteparasmartpartsimport]# mkdir -p public/assets
+importadorasmart@carretao.gk2.net.br [Siteparasmartpartsimport]# /home/importadorasmart/build-and-push.sh
+=== SMART PARTS IMPORT - Build & Deploy ===
+Fri Mar 13 16:33:04 -03 2026
+>> Git pull...
+remote: Enumerating objects: 11, done.
+remote: Counting objects: 100% (11/11), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 8 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (8/8), 4.05 KiB | 345.00 KiB/s, done.
+From https://github.com/Syfer2025/Siteparasmartpartsimport
+ * branch            main       -> FETCH_HEAD
+   2df4b52..ffb7531  main       -> origin/main
+Updating 2df4b52..ffb7531
+Fast-forward
+ build-and-push.sh                        |  34 +++++++++++++++++++++++++++++++
+ src/imports/pasted_text/build-script.txt | 105 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ vite.config.ts                           |  31 ++++++++++++++++++++++++++--
+ 3 files changed, 168 insertions(+), 2 deletions(-)
+ create mode 100644 build-and-push.sh
+ create mode 100644 src/imports/pasted_text/build-script.txt
+>> Installing dependencies...
+npm warn config production Use `--omit=dev` instead.
+
+added 3 packages, and audited 338 packages in 3s
+
+36 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 moderate, 1 critical)
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+>> Building...
+
+> @figma/my-make-file@0.0.1 build
+> vite build
+
+vite v6.3.5 building for production...
+✓ 2338 modules transformed.
+dist/index.html                             0.44 kB │ gzip:   0.29 kB
+dist/assets/slick-BlzDm7g2.svg              2.15 kB │ gzip:   0.91 kB
+dist/assets/ajax-loader-BcnMEykj.gif        4.18 kB
+dist/assets/index-C8EwXtax.css            185.56 kB │ gzip:  28.65 kB
+dist/assets/check-Bb9QE42p.js               0.29 kB │ gzip:   0.25 kB
+dist/assets/circle-check-big-Bc1IDbgG.js    0.36 kB │ gzip:   0.28 kB
+dist/assets/lock-Di_ellrE.js                0.37 kB │ gzip:   0.29 kB
+dist/assets/copy-DI0Kvigt.js                0.40 kB │ gzip:   0.31 kB
+dist/assets/useInView-CGCRjES0.js           0.41 kB │ gzip:   0.30 kB
+dist/assets/database-WmruoCYK.js            0.42 kB │ gzip:   0.31 kB
+dist/assets/circle-alert-DRUzYpz7.js        0.42 kB │ gzip:   0.30 kB
+dist/assets/eye-DsLHlDh7.js                 0.42 kB │ gzip:   0.31 kB
+dist/assets/upload-BsuAZjML.js              0.43 kB │ gzip:   0.32 kB
+dist/assets/download-C0ScONe3.js            0.44 kB │ gzip:   0.33 kB
+dist/assets/triangle-alert-Pt6qbtNU.js      0.44 kB │ gzip:   0.32 kB
+dist/assets/shield-FR1IfmH-.js              0.44 kB │ gzip:   0.33 kB
+dist/assets/useIsMobile-BhwLnhLv.js         0.45 kB │ gzip:   0.30 kB
+dist/assets/clock-BLs-tbIZ.js               0.73 kB │ gzip:   0.38 kB
+dist/assets/server-BbMcLd7h.js              3.03 kB │ gzip:   0.92 kB
+dist/assets/AdminGuard-DCCy5If2.js          3.40 kB │ gzip:   1.42 kB
+dist/assets/CompleteSetup-BD291LR7.js       5.52 kB │ gzip:   2.16 kB
+dist/assets/AdminSignup-vKNolrSQ.js         6.09 kB │ gzip:   2.04 kB
+dist/assets/AdminReset-DQdVMMOu.js          6.48 kB │ gzip:   2.23 kB
+dist/assets/SeedDatabase-CXHN5Pvo.js        7.31 kB │ gzip:   3.16 kB
+dist/assets/AboutUs-BrJ8-LIQ.js             9.42 kB │ gzip:   3.33 kB
+dist/assets/Footer-NtPlRd3N.js             11.34 kB │ gzip:   4.04 kB
+dist/assets/Debug-DfXXk4Nw.js              19.86 kB │ gzip:   5.77 kB
+dist/assets/purify.es-BgtpMKW3.js          22.77 kB │ gzip:   8.79 kB
+dist/assets/ProductDetail-fu0uXRbz.js      31.34 kB │ gzip:   8.21 kB
+dist/assets/ApiDocs-DFT7xUtN.js            50.16 kB │ gzip:  11.18 kB
+dist/assets/FileSaver.min-DgRozUKf.js     104.10 kB │ gzip:  33.31 kB
+dist/assets/proxy-saCdh2zI.js             122.83 kB │ gzip:  40.24 kB
+dist/assets/index.es-D8dQLfVK.js          159.82 kB │ gzip:  53.65 kB
+dist/assets/client-Lld1iPL_.js            176.72 kB │ gzip:  46.69 kB
+dist/assets/html2canvas.esm-QH1iLAAe.js   202.38 kB │ gzip:  48.04 kB
+dist/assets/index-BVVLq3QU.js             261.68 kB │ gzip:  78.11 kB
+dist/assets/Admin-DVIAvVQ0.js             539.65 kB │ gzip: 162.10 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 14.38s
+>> Deploying to public_html...
+sending incremental file list
+deleting cgi-bin/
+deleting .ftpquota
+deleting assets/lock-BWeijquR.js
+deleting assets/index-p9I0qBsW.css
+deleting assets/index-aV_4xvMr.js
+deleting assets/index-QJFxs3fL.js
+deleting assets/index-Dsmjwdpt.css
+deleting assets/index-D9rj31AK.js
+deleting assets/index-D7kg4oJW.css
+deleting assets/index-D7kOaCMv.js
+deleting assets/index-Cai-0WLa.css
+deleting assets/index-CIr0FX6g.js
+deleting assets/index-C-M7EQhx.css
+deleting assets/index-BybvCoSp.js
+deleting assets/index-BtIuO4GS.js
+deleting assets/index-5TPtXgKM.css
+deleting assets/image-PYCjtH5f.js
+deleting assets/database-DptN60w9.js
+deleting assets/circle-check-big-DEMMUIq6.js
+deleting assets/circle-alert-Ck4eF2QC.js
+deleting assets/book-Cdgib3Tf.js
+deleting assets/Debug-BYmvLBOx.js
+deleting assets/CompleteSetup-Dlw4UdXB.js
+deleting assets/ApiDocs-Ct20_9y0.js
+deleting assets/AdminSignup-CmahR26Y.js
+deleting assets/AdminReset-qY9zROyd.js
+deleting assets/Admin-DWEggcKi.js
+deleting assets/93a318fedff287cf8ae9966775cd849f3e3199e4-BVk39wEU.png
+./
+index.html
+assets/
+assets/AboutUs-BrJ8-LIQ.js
+assets/Admin-DVIAvVQ0.js
+assets/AdminGuard-DCCy5If2.js
+assets/AdminReset-DQdVMMOu.js
+assets/AdminSignup-vKNolrSQ.js
+assets/ApiDocs-DFT7xUtN.js
+assets/CompleteSetup-BD291LR7.js
+assets/Debug-DfXXk4Nw.js
+assets/FileSaver.min-DgRozUKf.js
+assets/Footer-NtPlRd3N.js
+assets/ProductDetail-fu0uXRbz.js
+assets/SeedDatabase-CXHN5Pvo.js
+assets/ajax-loader-BcnMEykj.gif
+assets/check-Bb9QE42p.js
+assets/circle-alert-DRUzYpz7.js
+assets/circle-check-big-Bc1IDbgG.js
+assets/client-Lld1iPL_.js
+assets/clock-BLs-tbIZ.js
+assets/copy-DI0Kvigt.js
+assets/database-WmruoCYK.js
+assets/download-C0ScONe3.js
+assets/eye-DsLHlDh7.js
+assets/html2canvas.esm-QH1iLAAe.js
+assets/index-BVVLq3QU.js
+assets/index-C8EwXtax.css
+assets/index.es-D8dQLfVK.js
+assets/lock-Di_ellrE.js
+assets/proxy-saCdh2zI.js
+assets/purify.es-BgtpMKW3.js
+assets/server-BbMcLd7h.js
+assets/shield-FR1IfmH-.js
+assets/slick-BlzDm7g2.svg
+assets/triangle-alert-Pt6qbtNU.js
+assets/upload-BsuAZjML.js
+assets/useInView-CGCRjES0.js
+assets/useIsMobile-BhwLnhLv.js
+
+sent 1,945,503 bytes  received 1,565 bytes  3,894,136.00 bytes/sec
+total size is 1,942,238  speedup is 1.00
+>> Deploy concluído com sucesso!
+=== Finalizado Fri Mar 13 16:33:24 -03 2026 ===
+importadorasmart@carretao.gk2.net.br [Siteparasmartpartsimport]#

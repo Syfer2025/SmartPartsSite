@@ -1,0 +1,777 @@
+/* Parallax effect helper */
+.parallax {
+  transform: translateZ(0);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ============================================================
+ * Footer CSS-only animations (replaces motion/react in Footer)
+ * ============================================================ */
+
+/* Background blob floating animation */
+@keyframes footer-blob-1 {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.05;
+  }
+  50% {
+    transform: scale(1.3) rotate(180deg);
+    opacity: 0.1;
+  }
+}
+
+@keyframes footer-blob-2 {
+  0%, 100% {
+    transform: scale(1.3) rotate(360deg);
+    opacity: 0.05;
+  }
+  50% {
+    transform: scale(1) rotate(180deg);
+    opacity: 0.1;
+  }
+}
+
+.footer-blob-1 {
+  animation: footer-blob-1 20s linear infinite;
+  will-change: transform, opacity;
+}
+
+.footer-blob-2 {
+  animation: footer-blob-2 20s linear infinite;
+  will-change: transform, opacity;
+}
+
+/* IntersectionObserver-driven reveal classes */
+.footer-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.footer-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.footer-reveal-delay-1 {
+  transition-delay: 0.2s;
+}
+
+.footer-reveal-delay-2 {
+  transition-delay: 0.3s;
+}
+
+.footer-reveal-delay-3 {
+  transition-delay: 0.4s;
+}
+
+/* Footer logo hover (replaces whileHover scale) */
+.footer-logo-hover {
+  transition: transform 0.3s ease;
+}
+
+.footer-logo-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Social link hover (replaces whileHover scale/y/rotate) */
+.footer-social-link {
+  transition: transform 0.25s ease, background-color 0.3s ease;
+}
+
+.footer-social-link:hover {
+  transform: scale(1.2) translateY(-5px) rotate(5deg);
+}
+
+.footer-social-link:active {
+  transform: scale(0.9);
+}
+
+/* Branch badge pop-in (replaces spring scale animation) */
+.footer-badge {
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.4s ease-out, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.footer-badge.in-view {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Branch divider line expand */
+.footer-divider {
+  width: 0;
+  transition: width 0.8s ease-out;
+  transition-delay: 0.1s;
+}
+
+.footer-divider.in-view {
+  width: 4rem;
+}
+
+/* Contact item slide in (replaces whileInView x animation) */
+.footer-contact-item {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.footer-contact-item.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.footer-contact-item:hover {
+  transform: translateX(5px) scale(1.02);
+}
+
+/* Staggered delays for contact items */
+.footer-stagger-0 { transition-delay: 0.4s; }
+.footer-stagger-1 { transition-delay: 0.5s; }
+.footer-stagger-2 { transition-delay: 0.6s; }
+
+/* Branch card reveal with stagger per card index */
+.footer-branch-0 { transition-delay: 0s; }
+.footer-branch-1 { transition-delay: 0.2s; }
+
+/* ============================================================
+ * CategoryPage CSS-only animations (replaces motion/react)
+ * ============================================================ */
+
+/* Category hero blob */
+@keyframes category-blob {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.1;
+  }
+  33% {
+    transform: scale(1.2) rotate(90deg);
+    opacity: 0.2;
+  }
+  66% {
+    transform: scale(1) rotate(180deg);
+    opacity: 0.1;
+  }
+}
+
+.category-blob {
+  animation: category-blob 15s linear infinite;
+  will-change: transform, opacity;
+}
+
+/* Category page entrance animations */
+.cat-fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.cat-fade-in-delay-1 { animation-delay: 0.2s; }
+.cat-fade-in-delay-2 { animation-delay: 0.3s; }
+.cat-fade-in-delay-3 { animation-delay: 0.5s; }
+.cat-fade-in-delay-4 { animation-delay: 0.7s; }
+.cat-fade-in-delay-5 { animation-delay: 0.8s; }
+
+/* Category divider line expand */
+@keyframes expandWidth {
+  from { width: 0; }
+  to { width: 8rem; }
+}
+
+.cat-divider-expand {
+  animation: expandWidth 1s ease-out 0.7s forwards;
+  width: 0;
+}
+
+/* Product card hover lift */
+.product-card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Product image zoom on hover */
+.product-img-zoom {
+  transition: transform 0.4s ease;
+}
+
+.product-img-zoom:hover {
+  transform: scale(1.1);
+}
+
+/* Product CTA button hover */
+.product-cta-hover {
+  transition: transform 0.15s ease;
+}
+
+.product-cta-hover:hover {
+  transform: scale(1.02);
+}
+
+.product-cta-hover:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================
+ * AboutUs CSS-only animations (replaces motion/react)
+ * ============================================================ */
+
+/* About blob (same pattern as footer/category) */
+@keyframes about-blob {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.2;
+  }
+}
+
+.about-blob {
+  animation: about-blob 10s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* About badge pop-in */
+.about-badge-pop {
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.4s ease-out, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.about-badge-pop.in-view {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* About card with stagger */
+.about-card {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.about-card.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-card-delay-0 { transition-delay: 0s; }
+.about-card-delay-1 { transition-delay: 0.2s; }
+.about-card-delay-2 { transition-delay: 0.4s; }
+
+/* About card hover */
+.about-card-hover {
+  transition: transform 0.3s ease;
+}
+
+.about-card-hover:hover {
+  transform: translateY(-10px);
+}
+
+/* About icon hover */
+.about-icon-hover {
+  transition: transform 0.3s ease;
+}
+
+.about-icon-hover:hover {
+  transform: scale(1.1);
+}
+
+/* About value item reveal */
+.about-value-item {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.about-value-item.in-view {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* FAQ item reveal with stagger */
+.faq-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.faq-item.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* FAQ accordion content */
+.faq-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.3s ease, opacity 0.3s ease;
+}
+
+.faq-content.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.faq-content > div {
+  overflow: hidden;
+}
+
+/* About CTA button hover */
+.about-cta-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.about-cta-hover:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 60px rgba(220, 38, 38, 0.4);
+}
+
+.about-cta-hover:active {
+  transform: scale(0.95);
+}
+
+/* ============================================================
+ * WhatsApp Button CSS-only animations (replaces motion/react)
+ * ============================================================ */
+
+/* WhatsApp button hover */
+.whatsapp-btn-hover {
+  transition: transform 0.2s ease;
+}
+
+.whatsapp-btn-hover:hover {
+  transform: scale(1.1) translateY(-5px);
+}
+
+.whatsapp-btn-hover:active {
+  transform: scale(0.9);
+}
+
+/* WhatsApp notification dot entrance */
+@keyframes notifPop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.whatsapp-notif {
+  animation: notifPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s both;
+}
+
+/* WhatsApp dropdown entrance/exit */
+.whatsapp-dropdown {
+  transform-origin: bottom right;
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.whatsapp-dropdown-enter {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.whatsapp-dropdown-exit {
+  opacity: 0;
+  transform: scale(0.8) translateY(20px);
+  pointer-events: none;
+}
+
+/* WhatsApp branch button hover */
+.whatsapp-branch-hover {
+  transition: transform 0.15s ease;
+}
+
+.whatsapp-branch-hover:hover {
+  transform: scale(1.02) translateX(5px);
+}
+
+.whatsapp-branch-hover:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================
+ * Header CSS-only animations (replaces motion/react in Header)
+ * ============================================================ */
+
+/* Header slide-down entrance */
+@keyframes headerSlideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.header-entrance {
+  animation: headerSlideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  will-change: transform;
+}
+
+/* Top bar shimmer sweep */
+.header-shimmer {
+  animation: shimmerSweep 3s linear infinite;
+  will-change: transform;
+}
+
+/* Phone icon wiggle */
+@keyframes phoneWiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(10deg); }
+  75% { transform: rotate(-10deg); }
+}
+
+.phone-wiggle {
+  animation: phoneWiggle 2s ease-in-out infinite;
+}
+
+.phone-wiggle-delay {
+  animation: phoneWiggle 2s ease-in-out 0.5s infinite;
+}
+
+/* Generic hover scale for buttons */
+.header-btn-hover {
+  transition: transform 0.15s ease;
+}
+
+.header-btn-hover:hover {
+  transform: scale(1.05) translateY(-2px);
+}
+
+.header-btn-hover:active {
+  transform: scale(0.95);
+}
+
+/* Subtle hover for logo */
+.header-logo-hover {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.header-logo-hover:hover {
+  transform: scale(1.02);
+}
+
+.header-logo-hover:active {
+  transform: scale(0.98);
+}
+
+/* Search clear button pop-in */
+@keyframes searchClearPop {
+  from { transform: translateY(-50%) scale(0); }
+  to { transform: translateY(-50%) scale(1); }
+}
+
+.search-clear-pop {
+  animation: searchClearPop 0.2s ease-out forwards;
+}
+
+.search-clear-pop:hover {
+  transform: translateY(-50%) scale(1.2) rotate(90deg);
+  transition: transform 0.2s ease;
+}
+
+.search-clear-pop:active {
+  transform: translateY(-50%) scale(0.8);
+}
+
+/* Search dropdown show/hide */
+.search-dropdown {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.search-dropdown.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Search result item stagger entrance */
+.search-result-item {
+  opacity: 0;
+  transform: translateX(-15px);
+  animation: fadeInLeft 0.3s ease-out forwards;
+}
+
+@keyframes fadeInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.search-result-item:hover {
+  transform: translateX(5px);
+  background-color: rgb(254 242 242);
+}
+
+/* ChevronDown rotation */
+.chevron-rotate {
+  transition: transform 0.2s ease;
+}
+
+.chevron-rotate.open {
+  transform: rotate(180deg);
+}
+
+/* Mega menu dropdown */
+.mega-menu {
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mega-menu.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Category card in mega menu */
+.mega-menu-card {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.2s ease-out forwards;
+}
+
+.mega-menu-card:hover {
+  transform: scale(1.03) translateY(-4px);
+  transition: transform 0.2s ease;
+}
+
+.mega-menu-card:active {
+  transform: scale(0.98);
+}
+
+/* Mega menu CTA fade in */
+.mega-menu-cta {
+  opacity: 0;
+  animation: fadeIn 0.4s ease-out 0.4s forwards;
+}
+
+/* Nav button hover */
+.nav-btn-hover {
+  transition: transform 0.15s ease;
+}
+
+.nav-btn-hover:hover {
+  transform: scale(1.1);
+}
+
+.nav-btn-hover:active {
+  transform: scale(0.9);
+}
+
+/* Categories button hover */
+.cat-btn-hover {
+  transition: transform 0.15s ease;
+}
+
+.cat-btn-hover:hover {
+  transform: scale(1.03);
+}
+
+.cat-btn-hover:active {
+  transform: scale(0.98);
+}
+
+/* Package icon spin */
+.icon-spin {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Mobile sidebar & backdrop */
+.sidebar-backdrop {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-panel {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  will-change: transform;
+}
+
+.sidebar-panel.open {
+  transform: translateX(0);
+}
+
+/* Header search bar entrance */
+.search-bar-entrance {
+  opacity: 0;
+  transform: translateY(-10px);
+  animation: fadeInUp 0.4s ease-out 0.3s forwards;
+}
+
+/* ============================================================
+ * CartButton CSS-only animations (replaces motion/react)
+ * ============================================================ */
+
+/* Cart button hover */
+.cart-btn-hover {
+  transition: transform 0.2s ease;
+}
+
+.cart-btn-hover:hover {
+  transform: scale(1.1) translateY(-5px);
+}
+
+.cart-btn-hover:active {
+  transform: scale(0.9);
+}
+
+/* Cart badge pop */
+@keyframes cartBadgePop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.cart-badge-pop {
+  animation: cartBadgePop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Cart sidebar (slides from right) */
+.cart-sidebar-backdrop {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.cart-sidebar-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cart-sidebar-panel {
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.cart-sidebar-panel.open {
+  transform: translateX(0);
+}
+
+/* Cart close button hover */
+.cart-close-hover {
+  transition: transform 0.2s ease;
+}
+
+.cart-close-hover:hover {
+  transform: rotate(90deg) scale(1.1);
+}
+
+.cart-close-hover:active {
+  transform: scale(0.9);
+}
+
+/* Cart item entrance */
+.cart-item-enter {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+/* Cart quantity button hover */
+.cart-qty-hover {
+  transition: transform 0.1s ease;
+}
+
+.cart-qty-hover:hover {
+  transform: scale(1.1);
+}
+
+.cart-qty-hover:active {
+  transform: scale(0.9);
+}
+
+/* Cart remove button hover */
+.cart-remove-hover {
+  transition: transform 0.15s ease;
+}
+
+.cart-remove-hover:hover {
+  transform: scale(1.1) rotate(10deg);
+}
+
+.cart-remove-hover:active {
+  transform: scale(0.9);
+}
+
+/* Cart CTA button */
+.cart-cta-hover {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cart-cta-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 40px rgba(220, 38, 38, 0.3);
+}
+
+.cart-cta-hover:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================
+ * OrderForm CSS-only animations (replaces motion/react)
+ * ============================================================ */
+
+/* Order form backdrop */
+.order-form-backdrop {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Order form modal */
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.order-form-modal {
+  animation: modalSlideUp 0.3s ease-out forwards;
+}
+
+/* Order form button hover */
+.order-form-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.order-form-btn:hover {
+  transform: scale(1.02);
+}
+
+.order-form-btn:active {
+  transform: scale(0.98);
+}
+
+.order-form-submit:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}

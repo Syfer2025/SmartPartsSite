@@ -1,0 +1,96 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+@import './animations.css';
+@import 'slick-carousel/slick/slick.css';
+@import 'slick-carousel/slick/slick-theme.css';
+
+/* Custom Carousel Styles */
+.carousel-container {
+  position: relative;
+  padding: 0 60px;
+}
+
+.carousel-container .slick-dots {
+  bottom: -50px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.carousel-container .slick-dots li {
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+.carousel-container .slick-dots li button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+}
+
+.carousel-container .slick-dots li button:before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.carousel-container .slick-dots li.slick-active button:before {
+  width: 24px;
+  border-radius: 4px;
+  opacity: 1;
+  background: linear-gradient(to right, #dc2626, #ef4444);
+}
+
+.carousel-container .slick-slide {
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.carousel-container .slick-list {
+  margin: 0 -12px;
+  padding: 30px 0 60px 0 !important;
+}
+
+.carousel-container .slick-track {
+  display: flex !important;
+  align-items: stretch;
+}
+
+.carousel-container .slick-slide > div {
+  height: 100%;
+  display: flex;
+}
+
+.carousel-container .slick-slide > div > div {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .carousel-container {
+    padding: 0 10px;
+  }
+  
+  .carousel-container .slick-slide {
+    padding: 0 8px;
+  }
+  
+  .carousel-container .slick-list {
+    margin: 0 -8px;
+    overflow: hidden !important;
+  }
+  
+  .carousel-container .slick-track {
+    display: flex !important;
+  }
+  
+  .carousel-container .slick-dots {
+    bottom: -40px;
+  }
+}
