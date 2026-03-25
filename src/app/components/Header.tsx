@@ -397,10 +397,10 @@ export function Header({ onNavigate }: HeaderProps) {
           {/* Navigation */}
           <nav className="flex items-center gap-2 md:gap-4 flex-shrink-0 order-2 lg:order-3">
             <button
-              onClick={() => onNavigate('home')}
-              className="hover:text-red-500 transition-all font-semibold hidden md:block nav-btn-hover"
+              onClick={() => onNavigate('catalogs')}
+              className="flex items-center gap-2 hover:text-red-500 transition-all font-semibold hidden md:block nav-btn-hover"
             >
-              Início
+              Acessar Catálogo
             </button>
 
             <div
@@ -549,19 +549,19 @@ export function Header({ onNavigate }: HeaderProps) {
 
         {/* Conteúdo Scrollável */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {/* Botão Início */}
+          {/* Botão Acessar Catálogo */}
           <button
             onClick={() => {
-              onNavigate('home');
+              onNavigate('catalogs');
               setMobileMenuOpen(false);
             }}
             className="w-full bg-gray-800 hover:bg-gray-700 p-3 rounded-lg flex items-center gap-3 font-bold transition text-left"
             tabIndex={mobileMenuOpen ? 0 : -1}
           >
             <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-xs">🏠</span>
+              <span className="text-xs">📄</span>
             </div>
-            <span className="text-sm">Início</span>
+            <span className="text-sm">Acessar Catálogo</span>
           </button>
 
           {/* Divisor */}

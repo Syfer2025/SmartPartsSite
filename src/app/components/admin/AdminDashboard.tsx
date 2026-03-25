@@ -27,6 +27,7 @@ import CustomerManager from './CustomerManager';
 import BackupManager from './BackupManager';
 import ConnectionStatus from './ConnectionStatus';
 import UploadAssets from './UploadAssets';
+import CatalogManager from './CatalogManager';
 import { projectId } from '../../../../utils/supabase/info';
 
 interface AdminDashboardProps {
@@ -56,7 +57,7 @@ interface Category {
 }
 
 export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'banners' | 'analytics' | 'settings' | 'orders' | 'customers' | 'backup' | 'status' | 'upload-assets'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'banners' | 'analytics' | 'settings' | 'orders' | 'customers' | 'backup' | 'status' | 'upload-assets' | 'catalogs'>('dashboard');
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalCategories: 0,
@@ -149,6 +150,7 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
     { id: 'analytics' as const, label: 'Análise', icon: BarChart3 },
     { id: 'backup' as const, label: 'Backup', icon: Archive },
     { id: 'status' as const, label: 'Status', icon: Activity },
+    { id: 'catalogs' as const, label: 'Catálogos', icon: Book },
     { id: 'upload-assets' as const, label: 'Assets', icon: Upload },
     { id: 'settings' as const, label: 'Configurações', icon: SettingsIcon },
   ];
@@ -387,6 +389,7 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
           {activeTab === 'customers' && <CustomerManager accessToken={accessToken} />}
           {activeTab === 'backup' && <BackupManager accessToken={accessToken} />}
           {activeTab === 'status' && <ConnectionStatus accessToken={accessToken} />}
+          {activeTab === 'catalogs' && <CatalogManager accessToken={accessToken} onUpdate={loadStats} />}
           {activeTab === 'upload-assets' && <UploadAssets />}
         </motion.div>
       </div>

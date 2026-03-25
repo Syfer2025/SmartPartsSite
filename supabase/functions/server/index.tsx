@@ -200,6 +200,17 @@ async function handler(req: Request): Promise<Response> {
       );
     }
 
+    // PDF Catalogs - PUBLIC
+    if (path === '/make-server-d06f92b7/pdf-catalogs' && method === 'GET') {
+      const catalogs = await kv.getByPrefix('pdf-catalog:');
+      const sorted = (catalogs || []).sort((a: any, b: any) => (a.position || 0) - (b.position || 0));
+
+      return new Response(
+        JSON.stringify({ catalogs: sorted }),
+        { headers: { ...corsHeaders, ...shortCacheHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Catalog Pages - PUBLIC
     if (path === '/make-server-d06f92b7/catalog-pages' && method === 'GET') {
       console.log('[CATALOG-PAGES] ✅ PUBLIC endpoint hit!');
@@ -532,7 +543,7 @@ async function handler(req: Request): Promise<Response> {
           
           // Delete using mdel (multiple delete)
           const keysToDelete = adminIds.map(id => `admin:${id}`);
-          await kv.mdel(...keysToDelete);
+          await kv.mdel(keysToDelete);
           console.log('[COMPLETE SETUP] Tentou deletar keys:', keysToDelete);
         }
 
@@ -1034,6 +1045,66 @@ async function handler(req: Request): Promise<Response> {
         
         return new Response(
           JSON.stringify({ customers: sorted }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // ============================================
+      // PDF CATALOGS MANAGEMENT
+      // ============================================
+
+      // GET /admin/pdf-catalogs - Lista todos os catálogos PDF
+      if (path === '/make-server-d06f92b7/admin/pdf-catalogs' && method === 'GET') {
+        const catalogs = await kv.getByPrefix('pdf-catalog:');
+        const sorted = (catalogs || []).sort((a: any, b: any) => (a.position || 0) - (b.position || 0));
+
+        return new Response(
+          JSON.stringify({ catalogs: sorted }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // POST /admin/pdf-catalogs - Adiciona novo catálogo PDF
+      if (path === '/make-server-d06f92b7/admin/pdf-catalogs' && method === 'POST') {
+        const data = await req.json();
+        const { name, pdfUrl, description } = data;
+
+        if (!name || !pdfUrl) {
+          return new Response(
+            JSON.stringify({ error: 'Missing name or pdfUrl' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+
+        const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+        const existingCatalogs = await kv.getByPrefix('pdf-catalog:');
+        const position = existingCatalogs ? existingCatalogs.length : 0;
+
+        const catalog = {
+          id,
+          name,
+          pdfUrl,
+          description: description || '',
+          position,
+          createdAt: new Date().toISOString()
+        };
+
+        await kv.set(`pdf-catalog:${id}`, catalog);
+
+        return new Response(
+          JSON.stringify({ success: true, catalog }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // DELETE /admin/pdf-catalogs/:id - Remove catálogo PDF
+      if (path.startsWith('/make-server-d06f92b7/admin/pdf-catalogs/') && method === 'DELETE') {
+        const id = path.split('/').pop();
+        await kv.del(`pdf-catalog:${id}`);
+
+        return new Response(
+          JSON.stringify({ success: true }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }

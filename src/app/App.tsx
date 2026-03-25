@@ -18,6 +18,7 @@ const CompleteSetup = lazy(() => import('./components/admin/CompleteSetup'));
 const AdminGuard = lazy(() => import('./components/admin/AdminGuard'));
 const Debug = lazy(() => import('./components/Debug'));
 const ApiDocs = lazy(() => import('./components/ApiDocs'));
+const CatalogViewer = lazy(() => import('./components/CatalogViewer'));
 const SeedDatabase = lazy(() => import('./components/admin/SeedDatabase'));
 const UploadAssets = lazy(() => import('./components/admin/UploadAssets'));
 
@@ -28,7 +29,7 @@ import { useAnalytics } from './hooks/useAnalytics';
 import { useBannerPreload } from './hooks/useBannerPreload';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-type Page = 'home' | 'category' | 'product' | 'admin' | 'admin-setup' | 'admin-reset' | 'complete-setup' | 'debug' | 'docs' | 'seed' | 'upload-assets';
+type Page = 'home' | 'category' | 'product' | 'admin' | 'admin-setup' | 'admin-reset' | 'complete-setup' | 'debug' | 'docs' | 'seed' | 'upload-assets' | 'catalogs';
 
 // Loading fallback component
 const PageLoader = () => (
@@ -104,6 +105,7 @@ function AppContent() {
       if (p === '/docs' || p === '/docs/') return { page: 'docs' as Page };
       if (p === '/seed' || p === '/seed/') return { page: 'seed' as Page };
       if (p === '/upload-assets' || p === '/upload-assets/') return { page: 'upload-assets' as Page };
+      if (p === '/catalogos' || p === '/catalogos/') return { page: 'catalogs' as Page };
       if (p.startsWith('/categoria/')) {
         const slug = p.replace('/categoria/', '').replace(/\/$/, '');
         return { page: 'category' as Page, slug };
@@ -171,6 +173,8 @@ function AppContent() {
       window.history.pushState(state, '', '/seed');
     } else if (currentPage === 'upload-assets') {
       window.history.pushState(state, '', '/upload-assets');
+    } else if (currentPage === 'catalogs') {
+      window.history.pushState(state, '', '/catalogos');
     }
   }, [currentPage]);
 
@@ -212,6 +216,8 @@ function AppContent() {
       targetUrl = `/categoria/${slug}`;
     } else if (page === 'product' && productId) {
       targetUrl = `/produto/${productId}`;
+    } else if (page === 'catalogs') {
+      targetUrl = `/catalogos`;
     }
     
     if (window.location.pathname !== targetUrl) {
@@ -366,6 +372,14 @@ function AppContent() {
                   <AdminGuard onNavigate={handleNavigate}>
                     <UploadAssets />
                   </AdminGuard>
+                </Suspense>
+              </div>
+            )}
+
+            {currentPage === 'catalogs' && (
+              <div>
+                <Suspense fallback={<PageLoader />}>
+                  <CatalogViewer onNavigate={handleNavigate} />
                 </Suspense>
               </div>
             )}

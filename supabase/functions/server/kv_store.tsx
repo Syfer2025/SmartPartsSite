@@ -77,11 +77,29 @@ export const mdel = async (keys: string[]): Promise<void> => {
 };
 
 // Search for key-value pairs by prefix.
+// Paginated to avoid Supabase's default 1000-row limit silently truncating results.
 export const getByPrefix = async (prefix: string): Promise<any[]> => {
-  const supabase = client()
-  const { data, error } = await supabase.from("kv_store_d06f92b7").select("key, value").like("key", prefix + "%");
-  if (error) {
-    throw new Error(error.message);
+  const supabase = client();
+  const all: any[] = [];
+  const PAGE_SIZE = 1000;
+  let from = 0;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from("kv_store_d06f92b7")
+      .select("key, value")
+      .like("key", prefix + "%")
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (!data || data.length === 0) break;
+    all.push(...data);
+    if (data.length < PAGE_SIZE) break;
+    from += PAGE_SIZE;
   }
-  return data?.map((d) => d.value) ?? [];
+
+  return all.map((d) => d.value);
 };

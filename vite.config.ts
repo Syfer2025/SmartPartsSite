@@ -19,8 +19,7 @@ function figmaAssetPlugin(): Plugin {
 
   return {
     name: 'figma-asset-resolver',
-    // Só ativa no build — no dev do Figma Make, o sistema nativo resolve
-    apply: 'build',
+    // Ativa em build e dev (fora do Figma Make, o sistema nativo não existe)
     resolveId(source) {
       if (source.startsWith('figma:asset/')) {
         const filename = source.replace('figma:asset/', '');

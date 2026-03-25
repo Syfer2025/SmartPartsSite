@@ -3,8 +3,8 @@ import { supabase } from '@/../utils/supabase/client';
 import { Upload, CheckCircle, XCircle, Loader2, Image } from 'lucide-react';
 
 // Import all figma:asset images
-import logoImg from 'figma:asset/93a318fedff287cf8ae9966775cd849f3e3199e4.png';
-import faviconImg from 'figma:asset/64691187aafea5b1405da18747b628927fc164ef.png';
+import logoImg from 'figma:asset/64691187aafea5b1405da18747b628927fc164ef.png';
+import faviconImg from 'figma:asset/93a318fedff287cf8ae9966775cd849f3e3199e4.png';
 
 interface AssetItem {
   name: string;
