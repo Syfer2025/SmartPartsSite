@@ -3,8 +3,6 @@ import { toast } from 'sonner';
 import { FileText, Upload, Trash2, Loader2, Plus, GripVertical, X, Eye, ImageIcon } from 'lucide-react';
 import { projectId } from '../../../../utils/supabase/info';
 
-const STORAGE_KEY = 'pdf_catalogs_data';
-
 interface PdfCatalog {
   id: string;
   name: string;
@@ -13,23 +11,12 @@ interface PdfCatalog {
   description?: string;
   position: number;
   createdAt: string;
-  storagePath: string;
+  storagePath?: string;
 }
 
 interface CatalogManagerProps {
   accessToken: string;
   onUpdate?: () => void;
-}
-
-function loadCatalogs(): PdfCatalog[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
-}
-
-function saveCatalogs(catalogs: PdfCatalog[]) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogs));
 }
 
 export default function CatalogManager({ accessToken, onUpdate }: CatalogManagerProps) {
@@ -47,9 +34,25 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
   const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-d06f92b7`;
 
   useEffect(() => {
-    setCatalogs(loadCatalogs());
-    setLoading(false);
+    fetchCatalogs();
   }, []);
+
+  const fetchCatalogs = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/admin/pdf-catalogs`, {
+        headers: { 'Authorization': `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error('Falha ao carregar catálogos');
+      const data = await res.json();
+      setCatalogs(data.catalogs || []);
+    } catch (err) {
+      console.error('Erro ao carregar catálogos:', err);
+      toast.error('Erro ao carregar catálogos do servidor');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -132,23 +135,27 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
         coverUrl = await uploadFile(selectedCover);
       }
 
-      const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      // Salvar no Supabase via API
+      const saveRes = await fetch(`${API_URL}/admin/pdf-catalogs`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          description: formData.description.trim(),
+          pdfUrl,
+          coverUrl,
+        }),
+      });
 
-      const catalog: PdfCatalog = {
-        id,
-        name: formData.name.trim(),
-        description: formData.description.trim(),
-        pdfUrl,
-        coverUrl,
-        storagePath: '',
-        position: catalogs.length,
-        createdAt: new Date().toISOString(),
-      };
+      if (!saveRes.ok) {
+        const errData = await saveRes.json().catch(() => ({}));
+        throw new Error(errData.error || 'Falha ao salvar catálogo');
+      }
 
-      const updated = [...catalogs, catalog];
-      saveCatalogs(updated);
-      setCatalogs(updated);
-
+      await fetchCatalogs();
       toast.success('Catálogo adicionado com sucesso!');
       resetForm();
       if (onUpdate) onUpdate();
@@ -163,9 +170,14 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
     if (!confirm(`Tem certeza que deseja excluir o catálogo "${name}"?`)) return;
 
     try {
-      const updated = catalogs.filter(c => c.id !== id);
-      saveCatalogs(updated);
-      setCatalogs(updated);
+      const res = await fetch(`${API_URL}/admin/pdf-catalogs/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${accessToken}` },
+      });
+
+      if (!res.ok) throw new Error('Falha ao excluir catálogo');
+
+      await fetchCatalogs();
       toast.success('Catálogo excluído!');
       if (onUpdate) onUpdate();
     } catch (err: any) {

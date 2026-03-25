@@ -1067,7 +1067,7 @@ async function handler(req: Request): Promise<Response> {
       // POST /admin/pdf-catalogs - Adiciona novo catálogo PDF
       if (path === '/make-server-d06f92b7/admin/pdf-catalogs' && method === 'POST') {
         const data = await req.json();
-        const { name, pdfUrl, description } = data;
+        const { name, pdfUrl, coverUrl, description } = data;
 
         if (!name || !pdfUrl) {
           return new Response(
@@ -1085,6 +1085,7 @@ async function handler(req: Request): Promise<Response> {
           id,
           name,
           pdfUrl,
+          coverUrl: coverUrl || '',
           description: description || '',
           position,
           createdAt: new Date().toISOString()

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FileText, Download, ArrowLeft, Loader2, BookOpen, Eye } from 'lucide-react';
-
-const STORAGE_KEY = 'pdf_catalogs_data';
+import { projectId } from '../../../utils/supabase/info';
 
 interface PdfCatalog {
   id: string;
@@ -22,15 +21,22 @@ export default function CatalogViewer({ onNavigate }: CatalogViewerProps) {
   const [loading, setLoading] = useState(true);
   const [selectedCatalog, setSelectedCatalog] = useState<PdfCatalog | null>(null);
 
+  const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-d06f92b7`;
+
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        setCatalogs(Array.isArray(parsed) ? parsed : []);
+    const fetchCatalogs = async () => {
+      try {
+        const res = await fetch(`${API_URL}/pdf-catalogs`);
+        if (!res.ok) throw new Error('Falha ao carregar');
+        const data = await res.json();
+        setCatalogs(data.catalogs || []);
+      } catch {
+        console.error('Erro ao carregar catálogos do servidor');
+      } finally {
+        setLoading(false);
       }
-    } catch { /* empty */ }
-    setLoading(false);
+    };
+    fetchCatalogs();
   }, []);
 
   /* ── PDF Viewer (full-screen) ── */
