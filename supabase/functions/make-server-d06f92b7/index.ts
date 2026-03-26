@@ -1,5 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import * as kv from "./kv_store.tsx";
+import * as kv from "./kv_store.ts";
 
 const supabase = createClient(
   Deno.env.get('SUPABASE_URL')!,
@@ -116,20 +116,8 @@ async function handler(req: Request): Promise<Response> {
         return dateA - dateB;
       });
       
-      // PERFORMANCE: Strip large base64 icons from public response
-      // This reduces payload from ~5.8MB to ~5KB
-      const lightResult = result.map((cat: any) => ({
-        id: cat.id,
-        name: cat.name,
-        slug: cat.slug,
-        icon: cat.icon && cat.icon.startsWith('data:image') && cat.icon.length > 500 
-          ? '' // Strip base64 icons - frontend will use fallback emoji/lucide icons
-          : cat.icon,
-        description: cat.description,
-      }));
-      
       return new Response(
-        JSON.stringify({ categories: lightResult }),
+        JSON.stringify({ categories: result }),
         { headers: { ...corsHeaders, ...shortCacheHeaders, 'Content-Type': 'application/json' } }
       );
     }

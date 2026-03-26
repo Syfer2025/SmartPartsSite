@@ -88,10 +88,6 @@ export default defineConfig({
   },
   server: {
     historyApiFallback: true,
-    // Fix HMR WebSocket connection issues in containerized environments
-    hmr: {
-      clientPort: 443,
-    },
-    host: true, // Listen on all addresses
+    host: true,
   },
 })

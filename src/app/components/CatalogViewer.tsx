@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FileText, Download, ArrowLeft, Loader2, BookOpen, Eye } from 'lucide-react';
-import { projectId } from '../../../utils/supabase/info';
+import { projectId, publicAnonKey } from '../../../utils/supabase/info';
 
 interface PdfCatalog {
   id: string;
@@ -26,7 +26,9 @@ export default function CatalogViewer({ onNavigate }: CatalogViewerProps) {
   useEffect(() => {
     const fetchCatalogs = async () => {
       try {
-        const res = await fetch(`${API_URL}/pdf-catalogs`);
+        const res = await fetch(`${API_URL}/pdf-catalogs`, {
+          headers: { 'Authorization': `Bearer ${publicAnonKey}` },
+        });
         if (!res.ok) throw new Error('Falha ao carregar');
         const data = await res.json();
         setCatalogs(data.catalogs || []);
