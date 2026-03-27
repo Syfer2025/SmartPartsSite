@@ -1103,40 +1103,6 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   }
                 </p>
 
-                {/* Share Buttons: WhatsApp + Copiar */}
-                <div className="flex gap-2 mt-2">
-                  <motion.button
-                    whileHover={{ scale: 1.02, boxShadow: '0 10px 25px rgba(34, 197, 94, 0.2)' }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handleShareWhatsApp}
-                    disabled={isSharing || isDownloading}
-                    className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:from-emerald-400 disabled:to-teal-400 text-white py-2.5 rounded-lg transition font-bold text-sm flex items-center justify-center gap-2 shadow-md"
-                  >
-                    {isSharing ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Preparando...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Share2 className="w-4 h-4" />
-                        <span>{isMobile ? 'Compartilhar' : 'Enviar via WhatsApp'}</span>
-                      </>
-                    )}
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleCopyShareLink}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 py-2.5 px-3.5 rounded-lg transition font-bold text-sm flex items-center justify-center gap-1.5 shadow-sm"
-                    title="Copiar texto com links das fotos"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </motion.button>
-                </div>
-                <p className="text-[10px] text-gray-400 text-center mt-1">
-                  {isMobile ? 'Escolha o contato para enviar as fotos' : 'Você escolhe para quem enviar'}
-                </p>
               </motion.div>
             </div>
 
