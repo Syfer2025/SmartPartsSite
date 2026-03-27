@@ -677,258 +677,127 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Left Column - Images + Specs (Desktop) */}
-          <div className="relative">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Left Column - Images */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden"
+          >
+            {/* Main Image */}
+            <div
+              className="relative aspect-square flex items-center justify-center bg-white p-8 overflow-hidden cursor-zoom-in"
+              onMouseMove={handleMouseMove}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             >
-              {/* Main Image */}
-              <div className="bg-white rounded-2xl overflow-hidden mb-3 relative border border-gray-200">
-                <div 
-                  className="relative h-[500px] flex items-center justify-center bg-white p-8 rounded-2xl overflow-hidden cursor-zoom-in"
-                  onMouseMove={handleMouseMove}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <AnimatePresence mode="wait">
-                    {images[currentImageIndex]?.includes('.mp4') ? (
-                      <motion.video
-                        key={currentImageIndex}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.4 }}
-                        src={images[currentImageIndex]}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        controls
-                        className="max-w-full max-h-full w-auto h-auto object-contain"
-                      />
-                    ) : (
-                      <motion.img
-                        key={currentImageIndex}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ 
-                          opacity: 1, 
-                          scale: isZoomed ? 2.5 : 1 
-                        }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ 
-                          duration: 0.4,
-                          scale: { duration: 0.3, ease: "easeInOut" }
-                        }}
-                        src={images[currentImageIndex]}
-                        alt={product.name}
-                        className="max-w-full max-h-full w-auto h-auto object-contain transition-transform"
-                        style={{
-                          transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
-                          cursor: isZoomed ? 'zoom-out' : 'zoom-in'
-                        }}
-                      />
-                    )}
-                  </AnimatePresence>
-                  
-                  {/* Badge de Zoom Ativo */}
-                  <AnimatePresence>
-                    {isZoomed && !images[currentImageIndex]?.includes('.mp4') && (
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="absolute top-4 right-4 bg-black/90 text-white px-3 py-2 rounded-xl text-xs font-black backdrop-blur-sm flex items-center gap-2 shadow-lg z-20"
-                      >
-                        <div className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></div>
-                        <span>ZOOM 2.5x ATIVO</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+              <AnimatePresence mode="wait">
+                {images[currentImageIndex]?.includes('.mp4') ? (
+                  <motion.video
+                    key={currentImageIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    src={images[currentImageIndex]}
+                    autoPlay loop muted playsInline controls
+                    className="max-w-full max-h-full w-auto h-auto object-contain"
+                  />
+                ) : (
+                  <motion.img
+                    key={currentImageIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, scale: isZoomed ? 2.5 : 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3, scale: { duration: 0.3 } }}
+                    src={images[currentImageIndex]}
+                    alt={product.name}
+                    className="max-w-full max-h-full w-auto h-auto object-contain"
+                    style={{
+                      transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                      cursor: isZoomed ? 'zoom-out' : 'zoom-in'
+                    }}
+                  />
+                )}
+              </AnimatePresence>
 
-                  {/* Image Counter Badge */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="absolute bottom-6 right-6 bg-gradient-to-r from-black to-gray-900 text-white px-4 py-2 rounded-xl text-sm font-black backdrop-blur-sm shadow-xl border border-white/20"
+              {/* Setas dentro da foto */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition z-10"
                   >
-                    {currentImageIndex + 1} / {images.length}
-                  </motion.div>
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition z-10"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
 
-                  {/* Download Single Image Button */}
-                  {!images[currentImageIndex]?.includes('.mp4') && (
-                    <motion.button
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      whileHover={{ scale: 1.15 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={handleDownloadSingleImage}
-                      className="absolute top-4 left-4 bg-black/80 hover:bg-blue-600 text-white p-2.5 rounded-xl backdrop-blur-sm shadow-lg z-20 transition-colors group"
-                      title={`Baixar foto ${currentImageIndex + 1}`}
+              {/* Counter */}
+              {images.length > 1 && (
+                <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-lg text-xs font-bold z-10">
+                  {currentImageIndex + 1} / {images.length}
+                </div>
+              )}
+
+              {/* Download */}
+              {!images[currentImageIndex]?.includes('.mp4') && (
+                <button
+                  onClick={handleDownloadSingleImage}
+                  className="absolute top-4 left-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-lg z-10 transition"
+                  title="Baixar esta foto"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Thumbnails — linha única dentro do card */}
+            {images.length > 1 && (
+              <div className="border-t border-gray-100 p-3">
+                <div className="flex gap-2 overflow-x-auto">
+                  {images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition ${
+                        currentImageIndex === index
+                          ? 'border-red-600'
+                          : 'border-gray-200 hover:border-gray-400'
+                      }`}
                     >
-                      <Download className="w-4 h-4" />
-                      <span className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-black/90 text-white text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        Baixar esta foto
-                      </span>
-                    </motion.button>
-                  )}
+                      <div className="w-full h-full flex items-center justify-center bg-white p-0.5">
+                        {image.includes('.mp4') ? (
+                          <div className="relative w-full h-full">
+                            <video src={image} className="w-full h-full object-contain" muted />
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                              <div className="w-5 h-5 bg-white/90 rounded-full flex items-center justify-center">
+                                <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[7px] border-l-gray-800 border-b-[4px] border-b-transparent ml-0.5"></div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <img
+                            src={image}
+                            alt={`${product.name} - ${index + 1}`}
+                            className="w-full h-full object-contain"
+                            onError={createImageFallback(image)}
+                          />
+                        )}
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
-
-              {/* Setas de Navegação da Imagem Principal - ABAIXO DA IMAGEM */}
-              {images.length > 1 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.3 }}
-                  className="flex items-center justify-center gap-4 mb-3"
-                >
-                  <motion.button
-                    whileHover={{ scale: 1.1, x: -3 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={prevImage}
-                    className="flex items-center justify-center bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-full transition shadow-lg p-3"
-                  >
-                    <ChevronLeft className="w-6 h-6" />
-                  </motion.button>
-
-                  <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
-
-                  <motion.button
-                    whileHover={{ scale: 1.1, x: 3 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={nextImage}
-                    className="flex items-center justify-center bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-full transition shadow-lg p-3"
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </motion.button>
-                </motion.div>
-              )}
-
-              {/* Modern Thumbnail Gallery */}
-              {images.length > 1 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                  className="relative px-2 py-2"
-                >
-                  {/* Thumbnails Container */}
-                  <div className="flex items-center justify-center gap-3 max-w-full overflow-hidden">
-                    <div className="flex-1 min-w-0 px-2 py-2">
-                      <div className="flex gap-3 px-1 justify-center">
-                        {visibleThumbnails.map((image, index) => {
-                          const actualIndex = thumbnailStartIndex + index;
-                          const isActive = currentImageIndex === actualIndex;
-                          
-                          return (
-                            <motion.button
-                              key={actualIndex}
-                              initial={{ opacity: 1, scale: 1 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ duration: 0.2 }}
-                              whileHover={{ scale: 1.08, y: -4 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => setCurrentImageIndex(actualIndex)}
-                              className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden transition-all relative group ${isActive ? 'ring-2 ring-red-600' : 'ring-2 ring-gray-200 hover:ring-gray-300'}`}
-                            >
-                              {/* Background for active */}
-                              {isActive && (
-                                <motion.div
-                                  layoutId="activeThumbnail"
-                                  className="absolute inset-0 bg-white -z-10"
-                                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                />
-                              )}
-                              
-                              {/* Image with centered contain */}
-                              <div className="w-full h-full flex items-center justify-center bg-white p-1">
-                                {image.includes('.mp4') ? (
-                                  <div className="relative w-full h-full">
-                                    <video
-                                      src={image}
-                                      className="max-w-full max-h-full object-contain w-full h-full"
-                                      muted
-                                    />
-                                    {/* Play icon overlay for video thumbnails */}
-                                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                                      <div className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center">
-                                        <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-gray-800 border-b-[6px] border-b-transparent ml-1"></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <img
-                                    src={image}
-                                    alt={`${product.name} - ${actualIndex + 1}`}
-                                    className="max-w-full max-h-full object-contain"
-                                    onError={createImageFallback(image)}
-                                  />
-                                )}
-                              </div>
-
-                              {/* Overlay on hover */}
-                              <div className={`absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? 'hidden' : ''}`} />
-                            </motion.button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Dots Indicator com Setas do Carrossel - UMA BOLINHA POR IMAGEM */}
-                  {images.length > 1 && (
-                    <div className="flex items-center justify-center gap-4 mt-4 flex-wrap px-4">
-                      {/* Seta Esquerda do Carrossel */}
-                      <motion.button
-                        whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={scrollThumbnailsLeft}
-                        className="flex items-center justify-center bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-full transition shadow-lg p-2"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </motion.button>
-
-                      {/* Bolinhas */}
-                      <div className="flex gap-2">
-                        {images.map((_, imageIndex) => {
-                          const isCurrentImage = currentImageIndex === imageIndex;
-                          return (
-                            <motion.button
-                              key={imageIndex}
-                              onClick={() => setCurrentImageIndex(imageIndex)}
-                              whileHover={{ scale: 1.2 }}
-                              whileTap={{ scale: 0.9 }}
-                              animate={{
-                                scale: isCurrentImage ? 1.2 : 1,
-                                backgroundColor: isCurrentImage ? '#dc2626' : '#d1d5db'
-                              }}
-                              transition={{ duration: 0.3 }}
-                              className="w-2.5 h-2.5 rounded-full cursor-pointer"
-                              aria-label={`Ver imagem ${imageIndex + 1}`}
-                            />
-                          );
-                        })}
-                      </div>
-
-                      {/* Seta Direita do Carrossel */}
-                      <motion.button
-                        whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={scrollThumbnailsRight}
-                        className="flex items-center justify-center bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-full transition shadow-lg p-2"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </motion.button>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-            </motion.div>
-
-          </div>
+            )}
+          </motion.div>
 
           {/* Right Column - Product Info */}
           <motion.div
