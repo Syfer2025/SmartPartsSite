@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { Products } from './components/Products';
@@ -21,6 +21,7 @@ const ApiDocs = lazy(() => import('./components/ApiDocs'));
 const CatalogViewer = lazy(() => import('./components/CatalogViewer'));
 const SeedDatabase = lazy(() => import('./components/admin/SeedDatabase'));
 const UploadAssets = lazy(() => import('./components/admin/UploadAssets'));
+const SearchResults = lazy(() => import('./components/SearchResults'));
 
 import { SEO } from './components/SEO';
 import { Toaster } from 'sonner';
@@ -29,7 +30,7 @@ import { useAnalytics } from './hooks/useAnalytics';
 import { useBannerPreload } from './hooks/useBannerPreload';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-type Page = 'home' | 'category' | 'product' | 'admin' | 'admin-setup' | 'admin-reset' | 'complete-setup' | 'debug' | 'docs' | 'seed' | 'upload-assets' | 'catalogs';
+type Page = 'home' | 'category' | 'product' | 'search' | 'admin' | 'admin-setup' | 'admin-reset' | 'complete-setup' | 'debug' | 'docs' | 'seed' | 'upload-assets' | 'catalogs';
 
 // Loading fallback component
 const PageLoader = () => (
@@ -76,6 +77,17 @@ function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [currentSlug, setCurrentSlug] = useState<string>('');
   const [currentProductId, setCurrentProductId] = useState<string>('');
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const headerRef = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      // O header é fixed, então medir o primeiro filho (o <header> real)
+      const target = node.firstElementChild as HTMLElement || node;
+      const update = () => setHeaderHeight(target.offsetHeight);
+      update();
+      const observer = new ResizeObserver(update);
+      observer.observe(target);
+    }
+  }, []);
 
   // Initialize analytics - must be called at top level (Rules of Hooks)
   const analytics = useAnalytics();
@@ -106,6 +118,10 @@ function AppContent() {
       if (p === '/seed' || p === '/seed/') return { page: 'seed' as Page };
       if (p === '/upload-assets' || p === '/upload-assets/') return { page: 'upload-assets' as Page };
       if (p === '/catalogos' || p === '/catalogos/') return { page: 'catalogs' as Page };
+      if (p === '/busca' || p.startsWith('/busca')) {
+        const params = new URLSearchParams(window.location.search);
+        return { page: 'search' as Page, slug: params.get('q') || '' };
+      }
       if (p.startsWith('/categoria/')) {
         const slug = p.replace('/categoria/', '').replace(/\/$/, '');
         return { page: 'category' as Page, slug };
@@ -216,6 +232,8 @@ function AppContent() {
       targetUrl = `/categoria/${slug}`;
     } else if (page === 'product' && productId) {
       targetUrl = `/produto/${productId}`;
+    } else if (page === 'search' && slug) {
+      targetUrl = `/busca?q=${encodeURIComponent(slug)}`;
     } else if (page === 'catalogs') {
       targetUrl = `/catalogos`;
     }
@@ -255,6 +273,12 @@ function AppContent() {
           description="Veja as especificações técnicas completas deste produto premium para caminhões e carretas."
         />
       )}
+      {currentPage === 'search' && (
+        <SEO
+          title={`Busca: ${currentSlug} - SMART PARTS IMPORT`}
+          description={`Resultados de busca para "${currentSlug}" em peças para caminhões e carretas.`}
+        />
+      )}
       {currentPage === 'docs' && (
         <SEO
           title="Documentação da API - SMART PARTS IMPORT"
@@ -270,7 +294,13 @@ function AppContent() {
       
       <div className="flex flex-col flex-1">
         {!isAdminPage && (
-          <Header onNavigate={handleNavigate} />
+          <>
+            <div ref={headerRef}>
+              <Header onNavigate={handleNavigate} />
+            </div>
+            {/* Spacer para compensar o header fixed */}
+            <div style={{ height: headerHeight }} />
+          </>
         )}
 
         <main>
@@ -300,6 +330,14 @@ function AppContent() {
               <div>
                 <Suspense fallback={<PageLoader />}>
                   <ProductDetail productId={currentProductId} onNavigate={handleNavigate} />
+                </Suspense>
+              </div>
+            )}
+
+            {currentPage === 'search' && (
+              <div>
+                <Suspense fallback={<PageLoader />}>
+                  <SearchResults query={currentSlug} onNavigate={handleNavigate} />
                 </Suspense>
               </div>
             )}

@@ -10,7 +10,10 @@ import {
   Save,
   X,
   Image as ImageIcon,
-  XCircle
+  XCircle,
+  Filter,
+  CheckCircle2,
+  ShieldCheck
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
@@ -24,6 +27,7 @@ interface Product {
   description: string;
   image: string;
   images?: string[]; // Multiple images support
+  verified?: boolean; // Flag de verificação (somente admin)
   specifications: Array<{ id: string; key: string; value: string }>;
   createdAt: string;
   updatedAt: string;
@@ -46,6 +50,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -62,6 +67,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     description: '',
     image: '',
     images: [] as string[],
+    verified: false,
     specifications: [] as Array<{ id: string; key: string; value: string }>
   });
 
@@ -380,6 +386,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       description: product.description || '',
       image: product.image,
       images: product.images || [],
+      verified: product.verified || false,
       specifications
     });
     setShowForm(true);
@@ -418,17 +425,23 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       description: '',
       image: '',
       images: [],
+      verified: false,
       specifications: []
     });
     setEditingProduct(null);
     setShowForm(false);
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.sku?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = !searchQuery ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.sku?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesCategory = !categoryFilter || product.categorySlug === categoryFilter;
+
+    return matchesSearch && matchesCategory;
+  });
 
   // Ordenar produtos filtrados por SKU numérico (crescente)
   const sortedFilteredProducts = [...filteredProducts].sort((a, b) => {
@@ -455,7 +468,12 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
           </div>
           <div>
             <h2 className="text-2xl font-bold text-white">Produtos</h2>
-            <p className="text-gray-400 text-sm">{products.length} produtos cadastrados</p>
+            <p className="text-gray-400 text-sm">
+              {categoryFilter || searchQuery
+                ? `${sortedFilteredProducts.length} de ${products.length} produtos`
+                : `${products.length} produtos cadastrados`
+              }
+            </p>
           </div>
         </div>
 
@@ -470,6 +488,23 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
               placeholder="Buscar produtos..."
               className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
             />
+          </div>
+
+          {/* Category Filter */}
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-52 appearance-none cursor-pointer [&>option]:bg-gray-800 [&>option]:text-white"
+            >
+              <option value="">Todas as categorias</option>
+              {categories.map(cat => (
+                <option key={cat.slug} value={cat.slug}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           {!showForm && (
@@ -564,6 +599,30 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                     className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Ex: GEL-12V-45L"
                   />
+                </div>
+
+                {/* Verified Flag */}
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, verified: !formData.verified })}
+                    className={`flex items-center gap-3 w-full px-4 py-2.5 rounded-lg border transition-all ${
+                      formData.verified
+                        ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'
+                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                    }`}
+                  >
+                    <ShieldCheck className={`w-5 h-5 ${formData.verified ? 'text-emerald-400' : 'text-gray-500'}`} />
+                    <span className="font-medium text-sm">VERIFICADO</span>
+                    <div className={`ml-auto w-10 h-5 rounded-full transition-all relative ${
+                      formData.verified ? 'bg-emerald-500' : 'bg-gray-600'
+                    }`}>
+                      <div
+                        className="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all"
+                        style={{ left: formData.verified ? '22px' : '2px' }}
+                      />
+                    </div>
+                  </button>
                 </div>
               </div>
 
@@ -839,7 +898,15 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
 
                 {/* Info */}
                 <div className="flex-1">
-                  <h4 className="font-semibold text-white mb-1">{product.name}</h4>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-semibold text-white">{product.name}</h4>
+                    {product.verified && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                        <CheckCircle2 className="w-3 h-3" />
+                        Verificado
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-gray-400">{product.category}</p>
                   {product.sku && (
                     <p className="text-xs text-gray-500 mt-1">SKU: {product.sku}</p>

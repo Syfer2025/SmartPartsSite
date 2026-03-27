@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import logo from 'figma:asset/93a318fedff287cf8ae9966775cd849f3e3199e4.png';
 import { useData } from '../context/DataContext';
 import { optimizeWithPreset, createImageFallback, optimizeSupabaseImage } from '@/app/utils/imageOptimizer';
+import { quickSearch } from '../utils/searchEngine';
 
 interface HeaderProps {
   onNavigate: (page: string, slug?: string, productId?: string) => void;
@@ -64,61 +65,25 @@ export function Header({ onNavigate }: HeaderProps) {
     { label: 'Várzea Grande', number: '(65) 99329-1135', whatsapp: '+5565993291135' },
   ];
 
-  // Improved search function with better matching algorithm
+  // Motor de busca avançado — fuzzy, plurais PT-BR, sinônimos, SKU
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.trim().length > 0) {
-      const searchTerm = query.toLowerCase().trim();
-      
-      // Search through products with improved relevance scoring
-      const results = allProducts
-        .map((product) => {
-          let score = 0;
-          const name = product.name?.toLowerCase() || '';
-          const description = product.description?.toLowerCase() || '';
-          const category = product.category?.toLowerCase() || '';
-          const sku = product.sku?.toLowerCase() || '';
-          
-          // SKU exact match (HIGHEST PRIORITY)
-          if (sku === searchTerm) score += 200;
-          // SKU starts with search term
-          else if (sku.startsWith(searchTerm)) score += 150;
-          // SKU includes search term
-          else if (sku.includes(searchTerm)) score += 100;
-          
-          // Exact match in name (high priority)
-          if (name === searchTerm) score += 100;
-          // Name starts with search term
-          else if (name.startsWith(searchTerm)) score += 50;
-          // Name includes search term
-          else if (name.includes(searchTerm)) score += 30;
-          
-          // Match in description
-          if (description.includes(searchTerm)) score += 10;
-          
-          // Match in category
-          if (category.includes(searchTerm)) score += 5;
-          
-          // Fuzzy match for similar words (basic implementation)
-          const words = searchTerm.split(' ');
-          words.forEach(word => {
-            if (word.length > 2) {
-              if (name.includes(word)) score += 3;
-              if (description.includes(word)) score += 1;
-              if (sku.includes(word)) score += 5;
-            }
-          });
-          
-          return { product, score };
-        })
-        .filter(({ score }) => score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 8) // Limit to top 8 results
-        .map(({ product }) => product);
-      
-      setSearchResults(results);
+      const results = quickSearch(allProducts, query);
+      setSearchResults(results.map(r => r.product));
     } else {
       setSearchResults([]);
+    }
+  };
+
+  // Ao apertar Enter, navegar para a página de resultados completa
+  const handleSearchSubmit = (e: React.KeyboardEvent | React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim().length > 0) {
+      onNavigate('search', searchQuery.trim());
+      setShowSearch(false);
+      setSearchResults([]);
+      setMobileMenuOpen(false);
     }
   };
 
@@ -132,7 +97,7 @@ export function Header({ onNavigate }: HeaderProps) {
 
   return (
     <header
-      className="bg-gradient-to-r from-black via-gray-900 to-black text-white shadow-2xl sticky top-0 z-50 border-b border-white/20 header-entrance"
+      className="bg-gradient-to-r from-black via-gray-900 to-black text-white shadow-2xl fixed top-0 left-0 right-0 z-50 border-b border-white/20 header-entrance"
     >
       {/* Top Bar with Phones */}
       <div className="bg-gradient-to-r from-red-600/90 via-red-700/90 to-red-600/90 relative overflow-hidden backdrop-blur-sm">
@@ -193,18 +158,19 @@ export function Header({ onNavigate }: HeaderProps) {
 
         {/* Mobile Search Bar */}
         <div className="lg:hidden mb-4">
-          <div className="relative">
+          <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               onFocus={() => setShowSearch(true)}
-              placeholder="Buscar por nome ou SKU..."
+              placeholder="Buscar por nome, SKU, categoria..."
               className="w-full bg-white/10 backdrop-blur-md border-2 border-white/20 focus:border-red-600 text-white px-4 py-2.5 pl-10 rounded-lg transition outline-none placeholder-gray-300 text-sm"
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
             {searchQuery && (
               <button
+                type="button"
                 onClick={() => {
                   setSearchQuery('');
                   setSearchResults([]);
@@ -215,11 +181,11 @@ export function Header({ onNavigate }: HeaderProps) {
                 <X className="w-4 h-4" />
               </button>
             )}
-          </div>
+          </form>
 
           {/* Mobile Search Results — CSS transition */}
           <div
-            className={`absolute left-4 right-4 mt-2 bg-white text-black rounded-xl shadow-2xl overflow-hidden max-h-80 overflow-y-auto z-50 border-2 border-gray-200 search-dropdown ${
+            className={`absolute left-4 right-4 mt-2 bg-white text-black rounded-xl shadow-2xl overflow-hidden max-h-[60vh] overflow-y-auto z-50 border-2 border-gray-200 search-dropdown ${
               isSearchVisible ? 'visible' : ''
             }`}
           >
@@ -287,18 +253,19 @@ export function Header({ onNavigate }: HeaderProps) {
 
           {/* Search Bar */}
           <div className="w-full lg:flex-1 lg:max-w-2xl relative order-3 lg:order-2">
-            <div className="relative search-bar-entrance">
+            <form onSubmit={handleSearchSubmit} className="relative search-bar-entrance">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 onFocus={() => setShowSearch(true)}
-                placeholder="Buscar produtos por nome ou SKU..."
+                placeholder="Buscar produtos por nome, SKU, categoria..."
                 className="w-full bg-gray-900 border-2 border-gray-800 focus:border-red-600 text-white px-5 py-3 pl-12 rounded-xl transition outline-none placeholder-gray-500"
               />
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
               {searchQuery && (
                 <button
+                  type="button"
                   onClick={() => {
                     setSearchQuery('');
                     setSearchResults([]);
@@ -309,11 +276,11 @@ export function Header({ onNavigate }: HeaderProps) {
                   <X className="w-5 h-5" />
                 </button>
               )}
-            </div>
+            </form>
 
             {/* Desktop Search Results — CSS transition */}
             <div
-              className={`absolute top-full left-0 right-0 mt-2 bg-white text-black rounded-xl shadow-2xl overflow-hidden max-h-96 overflow-y-auto z-50 border-2 border-gray-200 search-dropdown ${
+              className={`absolute top-full left-0 right-0 mt-2 bg-white text-black rounded-xl shadow-2xl overflow-hidden max-h-[70vh] overflow-y-auto z-50 border-2 border-gray-200 search-dropdown ${
                 isSearchVisible ? 'visible' : ''
               }`}
             >
@@ -361,22 +328,23 @@ export function Header({ onNavigate }: HeaderProps) {
                       <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-red-600 rotate-[-90deg] transition" />
                     </button>
                   ))}
-                  {/* CTA no final da busca */}
+                  {/* CTA — Ver todos os resultados */}
                   {searchResults.length > 0 && (
-                    <div
-                      className="bg-gradient-to-r from-gray-100 to-gray-50 px-6 py-4 border-t border-gray-200 mega-menu-cta"
+                    <button
+                      onClick={() => {
+                        onNavigate('search', searchQuery.trim());
+                        setShowSearch(false);
+                        setSearchResults([]);
+                      }}
+                      className="w-full bg-gradient-to-r from-gray-100 to-gray-50 hover:from-red-50 hover:to-red-100 px-6 py-4 border-t border-gray-200 transition text-left"
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-semibold text-gray-700">
-                            Encontre mais produtos navegando pelas categorias
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Explore nossa linha completa de produtos
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                      <p className="text-sm font-semibold text-gray-700">
+                        Pressione <kbd className="bg-gray-200 px-1.5 py-0.5 rounded text-xs font-mono">Enter</kbd> ou clique para ver todos os resultados
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Busca avançada com correspondência inteligente
+                      </p>
+                    </button>
                   )}
                 </>
               ) : isSearchVisible ? (
@@ -506,11 +474,14 @@ export function Header({ onNavigate }: HeaderProps) {
         </div>
       </div>
 
-      {/* Click outside to close search */}
-      {showSearch && (
+      {/* Click outside to close search — z-[45] fica entre o conteúdo e o header */}
+      {isSearchVisible && (
         <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowSearch(false)}
+          className="fixed inset-0 z-[45]"
+          onClick={() => {
+            setShowSearch(false);
+            setSearchResults([]);
+          }}
         />
       )}
 

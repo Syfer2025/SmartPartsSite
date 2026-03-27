@@ -41,37 +41,45 @@ export default function CatalogViewer({ onNavigate }: CatalogViewerProps) {
     fetchCatalogs();
   }, []);
 
-  /* ── PDF Viewer (full-screen) ── */
+  /* ── PDF Viewer ── */
   if (selectedCatalog) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-        <div className="bg-black text-white py-4 px-4 shadow-lg">
+      <div className="bg-gray-100 min-h-[50vh]">
+        {/* Toolbar */}
+        <div className="bg-white border-b border-gray-200 py-3 px-4">
           <div className="container mx-auto flex items-center justify-between">
-            <button
-              onClick={() => setSelectedCatalog(null)}
-              className="flex items-center gap-2 hover:text-red-400 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span className="font-semibold">Voltar aos Catálogos</span>
-            </button>
-            <h1 className="text-lg font-bold truncate max-w-[50%]">{selectedCatalog.name}</h1>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSelectedCatalog(null)}
+                className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition text-sm"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Voltar
+              </button>
+              <span className="text-gray-300">|</span>
+              <h1 className="text-sm font-bold text-gray-900 truncate max-w-[50%]">{selectedCatalog.name}</h1>
+            </div>
             <a
               href={selectedCatalog.pdfUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
             >
               <Download className="w-4 h-4" />
               Baixar PDF
             </a>
           </div>
         </div>
-        <div className="w-full" style={{ height: 'calc(100vh - 72px)' }}>
-          <iframe
-            src={`${selectedCatalog.pdfUrl}#toolbar=1&navpanes=1&scrollbar=1`}
-            className="w-full h-full border-0"
-            title={selectedCatalog.name}
-          />
+
+        {/* PDF com margens laterais */}
+        <div className="container mx-auto px-4 md:px-12 lg:px-24 pt-2 pb-6">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden" style={{ height: '75vh' }}>
+            <iframe
+              src={`${selectedCatalog.pdfUrl}#toolbar=1&navpanes=1&scrollbar=1`}
+              className="w-full h-full border-0"
+              title={selectedCatalog.name}
+            />
+          </div>
         </div>
       </div>
     );
@@ -79,19 +87,26 @@ export default function CatalogViewer({ onNavigate }: CatalogViewerProps) {
 
   /* ── Catalog Listing ── */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Hero */}
-      <div className="bg-gradient-to-br from-black via-gray-900 to-black text-white py-20 px-4">
-        <div className="container mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-red-600/20 border border-red-600/30 px-4 py-2 rounded-full mb-6">
-            <BookOpen className="w-4 h-4 text-red-400" />
-            <span className="text-sm text-red-300 font-medium">Catálogos Digitais</span>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-3 mb-2">
+            <button
+              onClick={() => onNavigate('home')}
+              className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition text-sm"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Voltar
+            </button>
+            <span className="text-gray-300">|</span>
+            <span className="text-xs text-gray-400">Catálogos</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black mb-4">
-            Nossos <span className="text-red-500">Catálogos</span>
+          <h1 className="text-2xl font-black text-gray-900">
+            Nossos Catálogos
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Explore nossos catálogos completos de produtos. Visualize online ou faça o download em PDF.
+          <p className="text-gray-500 text-sm mt-1">
+            Explore nossos catálogos completos de produtos
           </p>
         </div>
       </div>

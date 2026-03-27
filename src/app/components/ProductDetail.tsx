@@ -659,28 +659,19 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-black via-gray-900 to-black text-white py-8 relative overflow-hidden">
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{ repeat: Infinity, duration: 10 }}
-          className="absolute top-0 right-0 w-64 h-64 bg-red-600 rounded-full blur-3xl"
-        ></motion.div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            whileHover={{ x: -5, scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onNavigate('category', product.categorySlug)}
-            className="flex items-center gap-2 text-red-500 hover:text-red-400 transition"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-semibold">Voltar para {product.category}</span>
-          </motion.button>
+      <div className="bg-white border-b border-gray-200 py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => onNavigate('category', product.categorySlug)}
+              className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition text-sm"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Voltar
+            </button>
+            <span className="text-gray-300">|</span>
+            <span className="text-xs text-gray-400">{product.category}</span>
+          </div>
         </div>
       </div>
 
