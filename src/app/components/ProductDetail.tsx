@@ -1150,12 +1150,30 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           transition={{ delay: 1.2 }}
           className="bg-white rounded-2xl shadow-2xl p-8 mt-8"
         >
-          <h2 className="text-2xl font-black mb-6 flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <Check className="w-6 h-6 text-red-600" />
-            </div>
-            Especificações Técnicas
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-black flex items-center gap-3">
+              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                <Check className="w-6 h-6 text-red-600" />
+              </div>
+              Especificações Técnicas
+            </h2>
+            {product.specifications && (Array.isArray(product.specifications) ? product.specifications.length > 0 : Object.keys(product.specifications).length > 0) && (
+              <button
+                onClick={() => {
+                  const specs = Array.isArray(product.specifications)
+                    ? product.specifications
+                    : Object.entries(product.specifications).map(([key, value]) => ({ key, value: value as string }));
+                  const text = `${product.name}\n\n` + specs.map(s => `${s.key}: ${s.value}`).join('\n');
+                  navigator.clipboard.writeText(text);
+                  toast.success('Ficha técnica copiada!');
+                }}
+                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                <Copy className="w-4 h-4" />
+                Copiar
+              </button>
+            )}
+          </div>
           <div className="space-y-4">
             {product.specifications && (Array.isArray(product.specifications) ? product.specifications.length > 0 : Object.keys(product.specifications).length > 0) ? (
               <div className="overflow-hidden rounded-xl border border-gray-200">
