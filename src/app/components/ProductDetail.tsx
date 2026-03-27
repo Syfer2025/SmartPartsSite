@@ -677,7 +677,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:items-stretch">
           {/* Left Column - Images */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -805,7 +805,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="bg-white rounded-xl shadow-xl p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-xl p-6">
               {/* SKU Badge + Verified */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
