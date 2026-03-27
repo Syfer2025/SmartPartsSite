@@ -949,11 +949,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   SKU: {product.sku}
                 </div>
                 {product.verified && (
-                  <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-1.5 rounded-lg text-xs font-bold">
-                    <div className="w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
-                      <Check className="w-2.5 h-2.5 text-white" />
-                    </div>
-                    Verificado
+                  <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center" title="Verificado">
+                    <Check className="w-3 h-3 text-white" />
                   </div>
                 )}
               </motion.div>
