@@ -24,6 +24,7 @@ interface Product {
   image: string;
   images?: string[]; // Imagens adicionais (até 10)
   sku: string;
+  verified?: boolean;
   specifications: string;
   features: string[];
   applications: string;
@@ -927,59 +928,6 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
               )}
             </motion.div>
 
-            {/* Specifications - Desktop: Below Images */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 }}
-              className="bg-white rounded-2xl shadow-2xl p-8 mt-6 hidden lg:block"
-            >
-              <h2 className="text-2xl font-black mb-6 flex items-center gap-3">
-                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                  <Check className="w-6 h-6 text-red-600" />
-                </div>
-                Especificações Técnicas
-              </h2>
-              <div className="space-y-4">
-                {product.specifications && (Array.isArray(product.specifications) ? product.specifications.length > 0 : Object.keys(product.specifications).length > 0) ? (
-                  <div className="overflow-hidden rounded-xl border border-gray-200">
-                    <table className="w-full">
-                      <tbody>
-                        {Array.isArray(product.specifications) ? (
-                          // Novo formato: array de {id, key, value}
-                          product.specifications.map((spec, index) => (
-                            <tr key={spec.id || index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                              <td className="px-4 py-3 font-semibold text-gray-900 border-r border-gray-200 w-1/3">
-                                {spec.key}
-                              </td>
-                              <td className="px-4 py-3 text-gray-700">
-                                {spec.value}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          // Formato antigo: objeto {key: value}
-                          Object.entries(product.specifications).map(([key, value], index) => (
-                            <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                              <td className="px-4 py-3 font-semibold text-gray-900 border-r border-gray-200 w-1/3">
-                                {key}
-                              </td>
-                              <td className="px-4 py-3 text-gray-700">
-                                {value as string}
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-gray-500 text-center py-4">
-                    Entre em contato para mais informações técnicas
-                  </p>
-                )}
-              </div>
-            </motion.div>
           </div>
 
           {/* Right Column - Product Info */}
@@ -989,7 +937,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="bg-white rounded-xl shadow-xl p-6 mb-6">
-              {/* SKU Badge */}
+              {/* SKU Badge + Verified */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1000,6 +948,14 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   <Package className="w-3.5 h-3.5" />
                   SKU: {product.sku}
                 </div>
+                {product.verified && (
+                  <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 px-2.5 py-1.5 rounded-lg text-xs font-bold">
+                    <div className="w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                      <Check className="w-2.5 h-2.5 text-white" />
+                    </div>
+                    Verificado
+                  </div>
+                )}
               </motion.div>
 
               {/* Product Name */}
@@ -1187,61 +1143,60 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
               </motion.div>
             </div>
 
-            {/* Specifications - Mobile: After Product Info */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 }}
-              className="bg-white rounded-2xl shadow-2xl p-8 lg:hidden"
-            >
-              <h2 className="text-2xl font-black mb-6 flex items-center gap-3">
-                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                  <Check className="w-6 h-6 text-red-600" />
-                </div>
-                Especificações Técnicas
-              </h2>
-              <div className="space-y-4">
-                {product.specifications && (Array.isArray(product.specifications) ? product.specifications.length > 0 : Object.keys(product.specifications).length > 0) ? (
-                  <div className="overflow-hidden rounded-xl border border-gray-200">
-                    <table className="w-full">
-                      <tbody>
-                        {Array.isArray(product.specifications) ? (
-                          // Novo formato: array de {id, key, value}
-                          product.specifications.map((spec, index) => (
-                            <tr key={spec.id || index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                              <td className="px-4 py-3 font-semibold text-gray-900 border-r border-gray-200 w-1/3">
-                                {spec.key}
-                              </td>
-                              <td className="px-4 py-3 text-gray-700">
-                                {spec.value}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          // Formato antigo: objeto {key: value}
-                          Object.entries(product.specifications).map(([key, value], index) => (
-                            <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                              <td className="px-4 py-3 font-semibold text-gray-900 border-r border-gray-200 w-1/3">
-                                {key}
-                              </td>
-                              <td className="px-4 py-3 text-gray-700">
-                                {value as string}
-                              </td>
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-gray-500 text-center py-4">
-                    Entre em contato para mais informações técnicas
-                  </p>
-                )}
-              </div>
-            </motion.div>
           </motion.div>
         </div>
+
+        {/* Specifications - Full width abaixo do grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          className="bg-white rounded-2xl shadow-2xl p-8 mt-8"
+        >
+          <h2 className="text-2xl font-black mb-6 flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+              <Check className="w-6 h-6 text-red-600" />
+            </div>
+            Especificações Técnicas
+          </h2>
+          <div className="space-y-4">
+            {product.specifications && (Array.isArray(product.specifications) ? product.specifications.length > 0 : Object.keys(product.specifications).length > 0) ? (
+              <div className="overflow-hidden rounded-xl border border-gray-200">
+                <table className="w-full">
+                  <tbody>
+                    {Array.isArray(product.specifications) ? (
+                      product.specifications.map((spec, index) => (
+                        <tr key={spec.id || index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                          <td className="px-4 py-3 font-semibold text-gray-900 border-r border-gray-200 w-1/3">
+                            {spec.key}
+                          </td>
+                          <td className="px-4 py-3 text-gray-700">
+                            {spec.value}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      Object.entries(product.specifications).map(([key, value], index) => (
+                        <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                          <td className="px-4 py-3 font-semibold text-gray-900 border-r border-gray-200 w-1/3">
+                            {key}
+                          </td>
+                          <td className="px-4 py-3 text-gray-700">
+                            {value as string}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-gray-500 text-center py-4">
+                Entre em contato para mais informações técnicas
+              </p>
+            )}
+          </div>
+        </motion.div>
       </div>
     </div>
   );
