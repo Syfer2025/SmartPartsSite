@@ -90,13 +90,13 @@ export default defineConfig({
     historyApiFallback: true,
     host: true,
   },
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
   build: {
-    // Remove console.* e debugger em produção
-    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
-          // Admin separado do bundle público
           admin: [
             './src/app/components/admin/Admin',
             './src/app/components/admin/AdminDashboard',
@@ -109,15 +109,11 @@ export default defineConfig({
             './src/app/components/admin/Analytics',
             './src/app/components/admin/Settings',
           ],
-          // Bibliotecas pesadas isoladas
           pdf: ['jspdf', 'jspdf-autotable'],
           zip: ['jszip', 'file-saver'],
           charts: ['recharts'],
         },
       },
-    },
-    esbuildOptions: {
-      drop: ['console', 'debugger'],
     },
   },
 })
