@@ -17,7 +17,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "📦 Instalando dependências..."
-npm install
+npm install --legacy-peer-deps
 if [ $? -ne 0 ]; then
   echo "❌ npm install falhou!"
   exit 1
