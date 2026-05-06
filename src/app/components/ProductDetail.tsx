@@ -22,8 +22,6 @@ import { projectId, publicAnonKey } from '../../../utils/supabase/info';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useData } from '../context/DataContext';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 import { createImageFallback } from '@/app/utils/imageOptimizer';
 
 interface ProductDetailProps {
@@ -278,6 +276,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       const ext = urlPath.match(/\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i)?.[1] || 'jpg';
       const fileName = `${product.sku}-foto-${String(currentImageIndex + 1).padStart(2, '0')}.${ext}`;
 
+      const { saveAs } = await import('file-saver');
       saveAs(blob, fileName);
       toast.success('Foto baixada!', { id: toastId, description: fileName });
     } catch {
@@ -395,6 +394,10 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     setDownloadProgress(0);
 
     try {
+      const [{ default: JSZip }, { saveAs }] = await Promise.all([
+        import('jszip'),
+        import('file-saver'),
+      ]);
       const zip = new JSZip();
 
       const sanitizedName = product.name.replace(/[<>:"/\\|?*]/g, '-').trim();
@@ -485,6 +488,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     let completed = 0;
 
     try {
+      const { saveAs } = await import('file-saver');
       for (let batchStart = 0; batchStart < photoUrls.length; batchStart += BATCH_SIZE) {
         const batch = photoUrls.slice(batchStart, batchStart + BATCH_SIZE);
 

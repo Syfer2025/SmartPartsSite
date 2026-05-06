@@ -96,22 +96,18 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          admin: [
-            './src/app/components/admin/Admin',
-            './src/app/components/admin/AdminDashboard',
-            './src/app/components/admin/ProductManager',
-            './src/app/components/admin/CategoryManager',
-            './src/app/components/admin/OrderManager',
-            './src/app/components/admin/BannerManager',
-            './src/app/components/admin/CatalogManager',
-            './src/app/components/admin/CustomerManager',
-            './src/app/components/admin/Analytics',
-            './src/app/components/admin/Settings',
-          ],
-          pdf: ['jspdf', 'jspdf-autotable'],
-          zip: ['jszip', 'file-saver'],
-          charts: ['recharts'],
+        manualChunks(id) {
+          // Admin: tudo dentro de /admin/ vai pra um chunk próprio
+          if (id.includes('/components/admin/')) return 'admin';
+          // Vendor libs pesadas em chunks isolados
+          if (id.includes('node_modules')) {
+            if (id.includes('jspdf')) return 'pdf';
+            if (id.includes('jszip') || id.includes('file-saver')) return 'zip';
+            if (id.includes('recharts')) return 'charts';
+            if (id.includes('motion') || id.includes('framer-motion')) return 'motion';
+            if (id.includes('react-pageflip') || id.includes('page-flip')) return 'pageflip';
+            if (id.includes('react-slick') || id.includes('slick-carousel')) return 'slick';
+          }
         },
       },
     },

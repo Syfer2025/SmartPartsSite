@@ -117,7 +117,8 @@ function SearchWrapper({ onNavigate }: { onNavigate: any }) {
 }
 
 function AppContent() {
-  const [headerHeight, setHeaderHeight] = useState(0);
+  // Inicial = 104 (altura aprox. do header) para evitar CLS antes do JS medir
+  const [headerHeight, setHeaderHeight] = useState(104);
   const location = useLocation();
   const navigate = useNavigate();
   const analytics = useAnalytics();
