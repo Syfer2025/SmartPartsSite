@@ -44,7 +44,8 @@ export function Footer({ onNavigate }: FooterProps) {
       city: 'Várzea Grande',
       state: 'MT',
       cep: '78152-135',
-      mapUrl: 'https://maps.google.com/maps?q=7VW3%2B75%20Santa%20Cecilia,%20V%C3%A1rzea%20Grande%20-%20MT&output=embed',
+      mapUrl:
+        'https://maps.google.com/maps?q=7VW3%2B75%20Santa%20Cecilia,%20V%C3%A1rzea%20Grande%20-%20MT&output=embed',
     },
   ];
 
@@ -55,8 +56,18 @@ export function Footer({ onNavigate }: FooterProps) {
   };
 
   const socialLinks = [
-    { Icon: Facebook, color: 'hover:bg-blue-600', name: 'Facebook', link: 'https://www.facebook.com/smart.parts.56007' },
-    { Icon: Instagram, color: 'hover:bg-pink-600', name: 'Instagram', link: 'https://www.instagram.com/smart.partsimport/' },
+    {
+      Icon: Facebook,
+      color: 'hover:bg-blue-600',
+      name: 'Facebook',
+      link: 'https://www.facebook.com/smart.parts.56007',
+    },
+    {
+      Icon: Instagram,
+      color: 'hover:bg-pink-600',
+      name: 'Instagram',
+      link: 'https://www.instagram.com/smart.partsimport/',
+    },
   ];
 
   return (
@@ -87,8 +98,8 @@ export function Footer({ onNavigate }: FooterProps) {
           <p
             className={`text-gray-400 max-w-2xl mx-auto ${!isMobile ? `footer-reveal footer-reveal-delay-1 ${companyInView ? 'in-view' : ''}` : ''}`}
           >
-            Especialistas em peças importadas premium para caminhões e carretas.
-            Qualidade internacional com atendimento regional.
+            Especialistas em peças importadas premium para caminhões e carretas. Qualidade
+            internacional com atendimento regional.
           </p>
 
           {/* Social Media */}
@@ -153,8 +164,16 @@ export function Footer({ onNavigate }: FooterProps) {
               {/* Contact Info */}
               <div className="space-y-4 mb-6">
                 {[
-                  { Icon: Phone, text: location.phone, action: () => handleWhatsAppClick(location.whatsapp) },
-                  { Icon: Mail, text: location.email, action: () => window.location.href = `mailto:${location.email}` },
+                  {
+                    Icon: Phone,
+                    text: location.phone,
+                    action: () => handleWhatsAppClick(location.whatsapp),
+                  },
+                  {
+                    Icon: Mail,
+                    text: location.email,
+                    action: () => (window.location.href = `mailto:${location.email}`),
+                  },
                   { Icon: MapPin, text: location.address, action: null },
                 ].map((item, index) => (
                   <div
@@ -171,7 +190,9 @@ export function Footer({ onNavigate }: FooterProps) {
                     <div className="bg-red-600 p-3 rounded-lg group-hover:scale-110 transition-transform">
                       <item.Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-gray-300 group-hover:text-white transition text-[11px] break-words">{item.text}</span>
+                    <span className="text-gray-300 group-hover:text-white transition text-[11px] break-words">
+                      {item.text}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -205,12 +226,12 @@ export function Footer({ onNavigate }: FooterProps) {
               className="absolute -left-1 -top-1 w-5 h-5 opacity-0 hover:opacity-0 cursor-default z-10"
               aria-label="Admin"
             />
-            © {new Date().getFullYear()} <span className="text-red-500 font-semibold">Smart Parts Import</span>. Todos os direitos reservados.
+            © {new Date().getFullYear()}{' '}
+            <span className="text-red-500 font-semibold">Smart Parts Import</span>. Todos os
+            direitos reservados.
           </p>
-          <p className="text-gray-600 text-xs mt-2">
-            Vendas exclusivas B2B para revendedores
-          </p>
-          
+          <p className="text-gray-600 text-xs mt-2">Vendas exclusivas B2B para revendedores</p>
+
           {/* Desenvolvido por nicebrand */}
           <div className="flex items-center justify-center mt-3">
             <a

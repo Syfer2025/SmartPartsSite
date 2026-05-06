@@ -25,14 +25,16 @@ export const categories: Category[] = [
     name: 'Catracas de Freio',
     slug: 'catracas-freio',
     description: 'Catracas de freio resistentes e duráveis',
-    image: 'https://images.unsplash.com/photo-1722086720227-bbd9c7869459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMGJyYWtlJTIwcGFydHN8ZW58MXx8fHwxNzY1NjI3NTQzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image:
+      'https://images.unsplash.com/photo-1722086720227-bbd9c7869459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMGJyYWtlJTIwcGFydHN8ZW58MXx8fHwxNzY1NjI3NTQzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   },
   {
     id: 4,
     name: 'Patim de Freio',
     slug: 'patim-freio',
     description: 'Patins de freio de alta performance',
-    image: 'https://images.unsplash.com/photo-1722086720227-bbd9c7869459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMGJyYWtlJTIwcGFydHN8ZW58MXx8fHwxNzY1NjI3NTQzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image:
+      'https://images.unsplash.com/photo-1722086720227-bbd9c7869459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMGJyYWtlJTIwcGFydHN8ZW58MXx8fHwxNzY1NjI3NTQzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   },
   {
     id: 5,
@@ -46,7 +48,8 @@ export const categories: Category[] = [
     name: 'Eixos',
     slug: 'eixos',
     description: 'Eixos reforçados para carga pesada',
-    image: 'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image:
+      'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   },
   {
     id: 7,
@@ -67,35 +70,40 @@ export const categories: Category[] = [
     name: 'Rolamentos',
     slug: 'rolamentos',
     description: 'Rolamentos de precisão e durabilidade',
-    image: 'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image:
+      'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   },
   {
     id: 10,
     name: 'Cinta com Catraca',
     slug: 'cinta-catraca',
     description: 'Cintas de amarração com catraca de segurança',
-    image: 'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image:
+      'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   },
   {
     id: 11,
     name: 'Pé de Carreta',
     slug: 'pe-carreta',
     description: 'Pés de apoio reforçados para carretas',
-    image: 'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image:
+      'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   },
   {
     id: 12,
     name: 'Mola de Cuica',
     slug: 'mola-cuica',
     description: 'Molas de suspensão de alta qualidade',
-    image: 'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image:
+      'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   },
   {
     id: 13,
     name: 'Gerador de Energia',
     slug: 'gerador-energia',
     description: 'Geradores de energia portáteis para caminhões e carretas',
-    image: 'https://images.unsplash.com/photo-1650623193271-c951c7bb26ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3dlciUyMGdlbmVyYXRvciUyMGVuZXJneXxlbnwxfHx8fDE3NjU2MzkyMTF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image:
+      'https://images.unsplash.com/photo-1650623193271-c951c7bb26ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3dlciUyMGdlbmVyYXRvciUyMGVuZXJneXxlbnwxfHx8fDE3NjU2MzkyMTF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
   },
 ];
 
@@ -107,12 +115,9 @@ export const products: Product[] = [
     category: 'Geladeiras Portáteis',
     categorySlug: 'geladeiras-portateis',
     sku: 'GP-45L-001',
-    description: 'Geladeira portátil com capacidade de 45 litros, ideal para longas viagens. Sistema de refrigeração eficiente que funciona em 12V/24V.',
-    images: [
-      geladeiraImage,
-      geladeiraImage,
-      geladeiraImage,
-    ],
+    description:
+      'Geladeira portátil com capacidade de 45 litros, ideal para longas viagens. Sistema de refrigeração eficiente que funciona em 12V/24V.',
+    images: [geladeiraImage, geladeiraImage, geladeiraImage],
     specs: [
       { label: 'Capacidade', value: '45 Litros' },
       { label: 'Voltagem', value: '12V/24V DC' },
@@ -129,12 +134,9 @@ export const products: Product[] = [
     category: 'Geladeiras Portáteis',
     categorySlug: 'geladeiras-portateis',
     sku: 'GP-60L-002',
-    description: 'Modelo premium com 60 litros de capacidade, display digital e controle preciso de temperatura.',
-    images: [
-      geladeiraImage,
-      geladeiraImage,
-      geladeiraImage,
-    ],
+    description:
+      'Modelo premium com 60 litros de capacidade, display digital e controle preciso de temperatura.',
+    images: [geladeiraImage, geladeiraImage, geladeiraImage],
     specs: [
       { label: 'Capacidade', value: '60 Litros' },
       { label: 'Voltagem', value: '12V/24V DC' },
@@ -152,12 +154,9 @@ export const products: Product[] = [
     category: 'Ar Condicionado',
     categorySlug: 'ar-condicionado',
     sku: 'AC-9000-001',
-    description: 'Ar condicionado de teto potente com 9000 BTUs, baixo consumo de energia e operação silenciosa.',
-    images: [
-      arCondicionadoImage,
-      arCondicionadoImage,
-      arCondicionadoImage,
-    ],
+    description:
+      'Ar condicionado de teto potente com 9000 BTUs, baixo consumo de energia e operação silenciosa.',
+    images: [arCondicionadoImage, arCondicionadoImage, arCondicionadoImage],
     specs: [
       { label: 'Potência', value: '9000 BTUs' },
       { label: 'Voltagem', value: '24V DC' },
@@ -175,11 +174,7 @@ export const products: Product[] = [
     categorySlug: 'ar-condicionado',
     sku: 'AC-12000-002',
     description: 'Modelo top de linha com 12000 BTUs, controle remoto e função sleep mode.',
-    images: [
-      arCondicionadoImage,
-      arCondicionadoImage,
-      arCondicionadoImage,
-    ],
+    images: [arCondicionadoImage, arCondicionadoImage, arCondicionadoImage],
     specs: [
       { label: 'Potência', value: '12000 BTUs' },
       { label: 'Voltagem', value: '24V DC' },
@@ -197,7 +192,8 @@ export const products: Product[] = [
     category: 'Catracas de Freio',
     categorySlug: 'catracas-freio',
     sku: 'CF-SCAM-001',
-    description: 'Catraca de freio automática S-Cam de alta resistência, compatível com a maioria dos modelos de caminhões.',
+    description:
+      'Catraca de freio automática S-Cam de alta resistência, compatível com a maioria dos modelos de caminhões.',
     images: [
       'https://images.unsplash.com/photo-1722086720227-bbd9c7869459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMGJyYWtlJTIwcGFydHN8ZW58MXx8fHwxNzY1NjI3NTQzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1722086720227-bbd9c7869459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMGJyYWtlJTIwcGFydHN8ZW58MXx8fHwxNzY1NjI3NTQzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
@@ -242,7 +238,8 @@ export const products: Product[] = [
     category: 'Patim de Freio',
     categorySlug: 'patim-freio',
     sku: 'PF-HD-001',
-    description: 'Patim de freio premium para aplicações pesadas, alta durabilidade e excelente coeficiente de atrito.',
+    description:
+      'Patim de freio premium para aplicações pesadas, alta durabilidade e excelente coeficiente de atrito.',
     images: [
       'https://images.unsplash.com/photo-1722086720227-bbd9c7869459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMGJyYWtlJTIwcGFydHN8ZW58MXx8fHwxNzY1NjI3NTQzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1722086720227-bbd9c7869459?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMGJyYWtlJTIwcGFydHN8ZW58MXx8fHwxNzY1NjI3NTQzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
@@ -265,12 +262,9 @@ export const products: Product[] = [
     category: 'Cuicas',
     categorySlug: 'cuicas',
     sku: 'CU-REF-001',
-    description: 'Cuica de suspensão reforçada para carretas, alta capacidade de carga e resistência superior.',
-    images: [
-      cuicaImage,
-      cuicaImage,
-      cuicaImage,
-    ],
+    description:
+      'Cuica de suspensão reforçada para carretas, alta capacidade de carga e resistência superior.',
+    images: [cuicaImage, cuicaImage, cuicaImage],
     specs: [
       { label: 'Tipo', value: 'Pneumática Reforçada' },
       { label: 'Capacidade', value: '8.000 kg' },
@@ -288,7 +282,8 @@ export const products: Product[] = [
     category: 'Eixos',
     categorySlug: 'eixos',
     sku: 'EX-3EI-001',
-    description: 'Eixo completo para 3º eixo de carreta, fabricado em aço de alta resistência com todos os componentes.',
+    description:
+      'Eixo completo para 3º eixo de carreta, fabricado em aço de alta resistência com todos os componentes.',
     images: [
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
@@ -311,12 +306,9 @@ export const products: Product[] = [
     category: 'Rodas de Ferro',
     categorySlug: 'rodas-ferro',
     sku: 'RF-2285-001',
-    description: 'Roda de ferro robusta aro 22.5 x 8.25 para caminhões e carretas, tratamento anticorrosão.',
-    images: [
-      rodaFerroImage,
-      rodaFerroImage,
-      rodaFerroImage,
-    ],
+    description:
+      'Roda de ferro robusta aro 22.5 x 8.25 para caminhões e carretas, tratamento anticorrosão.',
+    images: [rodaFerroImage, rodaFerroImage, rodaFerroImage],
     specs: [
       { label: 'Aro', value: '22.5 x 8.25' },
       { label: 'Material', value: 'Aço Carbono' },
@@ -334,12 +326,9 @@ export const products: Product[] = [
     category: 'Rodas de Alumínio',
     categorySlug: 'rodas-aluminio',
     sku: 'RA-2290-001',
-    description: 'Roda de alumínio polida de alto brilho, leve e resistente, reduz peso e melhora estética do veículo.',
-    images: [
-      rodaAluminioImage,
-      rodaAluminioImage,
-      rodaAluminioImage,
-    ],
+    description:
+      'Roda de alumínio polida de alto brilho, leve e resistente, reduz peso e melhora estética do veículo.',
+    images: [rodaAluminioImage, rodaAluminioImage, rodaAluminioImage],
     specs: [
       { label: 'Aro', value: '22.5 x 9.00' },
       { label: 'Material', value: 'Alumínio Liga 6061' },
@@ -357,7 +346,8 @@ export const products: Product[] = [
     category: 'Rolamentos',
     categorySlug: 'rolamentos',
     sku: 'RL-CON-001',
-    description: 'Rolamento cônico de precisão para roda dianteira de caminhão, alta durabilidade e resistência.',
+    description:
+      'Rolamento cônico de precisão para roda dianteira de caminhão, alta durabilidade e resistência.',
     images: [
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
@@ -380,7 +370,8 @@ export const products: Product[] = [
     category: 'Cinta com Catraca',
     categorySlug: 'cinta-catraca',
     sku: 'CC-9M5T-001',
-    description: 'Cinta de amarração com catraca de 9 metros, capacidade 5 toneladas, alta resistência e segurança.',
+    description:
+      'Cinta de amarração com catraca de 9 metros, capacidade 5 toneladas, alta resistência e segurança.',
     images: [
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
@@ -403,7 +394,8 @@ export const products: Product[] = [
     category: 'Pé de Carreta',
     categorySlug: 'pe-carreta',
     sku: 'PC-25T-001',
-    description: 'Pé de apoio reforçado para carretas, capacidade 25 toneladas, sistema de elevação manual com dupla velocidade.',
+    description:
+      'Pé de apoio reforçado para carretas, capacidade 25 toneladas, sistema de elevação manual com dupla velocidade.',
     images: [
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
@@ -426,7 +418,8 @@ export const products: Product[] = [
     category: 'Mola de Cuica',
     categorySlug: 'mola-cuica',
     sku: 'MC-TR-001',
-    description: 'Mola de suspensão para cuica traseira, alta resistência e durabilidade, tratamento térmico especial.',
+    description:
+      'Mola de suspensão para cuica traseira, alta resistência e durabilidade, tratamento térmico especial.',
     images: [
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1570463806618-258bad4cef03?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cnVjayUyMHBhcnRzJTIwd2FyZWhvdXNlfGVufDF8fHx8MTc2NTYyNzU0M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
@@ -449,7 +442,8 @@ export const products: Product[] = [
     category: 'Gerador de Energia',
     categorySlug: 'gerador-energia',
     sku: 'GE-5000D-001',
-    description: 'Gerador diesel profissional de 5000W, ideal para caminhões e aplicações industriais. Alta autonomia e baixo consumo.',
+    description:
+      'Gerador diesel profissional de 5000W, ideal para caminhões e aplicações industriais. Alta autonomia e baixo consumo.',
     images: [
       'https://images.unsplash.com/photo-1650623193271-c951c7bb26ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3dlciUyMGdlbmVyYXRvciUyMGVuZXJneXxlbnwxfHx8fDE3NjU2MzkyMTF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1650623193271-c951c7bb26ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3dlciUyMGdlbmVyYXRvciUyMGVuZXJneXxlbnwxfHx8fDE3NjU2MzkyMTF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
@@ -471,7 +465,8 @@ export const products: Product[] = [
     category: 'Gerador de Energia',
     categorySlug: 'gerador-energia',
     sku: 'GE-3500G-002',
-    description: 'Gerador a gasolina compacto e silencioso de 3500W, perfeito para uso em veículos pesados.',
+    description:
+      'Gerador a gasolina compacto e silencioso de 3500W, perfeito para uso em veículos pesados.',
     images: [
       'https://images.unsplash.com/photo-1650623193271-c951c7bb26ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3dlciUyMGdlbmVyYXRvciUyMGVuZXJneXxlbnwxfHx8fDE3NjU2MzkyMTF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       'https://images.unsplash.com/photo-1650623193271-c951c7bb26ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3dlciUyMGdlbmVyYXRvciUyMGVuZXJneXxlbnwxfHx8fDE3NjU2MzkyMTF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',

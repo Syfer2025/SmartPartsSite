@@ -1,4 +1,20 @@
-import { ArrowLeft, ChevronLeft, ChevronRight, MessageCircle, Check, Shield, Truck, Package, Loader2, Download, Share2, FileArchive, Files, Copy } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  MessageCircle,
+  Check,
+  Shield,
+  Truck,
+  Package,
+  Loader2,
+  Download,
+  Share2,
+  FileArchive,
+  Files,
+  Copy,
+} from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
@@ -37,7 +53,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   const [detailsLoaded, setDetailsLoaded] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [thumbnailStartIndex, setThumbnailStartIndex] = useState(0);
-  
+
   // Estados para o zoom direto na imagem
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 });
@@ -57,7 +73,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
   useEffect(() => {
     // 1) Tenta encontrar o produto no cache do DataContext (instantâneo)
-    const cachedProduct = cachedProducts.find(p => p.id === productId);
+    const cachedProduct = cachedProducts.find((p) => p.id === productId);
     if (cachedProduct && !product) {
       // Mostra imediatamente com dados básicos do cache
       setProduct({
@@ -80,7 +96,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     const fetchProduct = async () => {
       try {
         const response = await fetch(`${API_URL}/products/${productId}`, {
-          headers: { 'Authorization': `Bearer ${publicAnonKey}` }
+          headers: { Authorization: `Bearer ${publicAnonKey}` },
         });
 
         const data = await response.json();
@@ -100,14 +116,19 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   }, [productId, cachedProducts]);
 
   // Criar array seguro de imagens
-  const images = product ? [
-    product.image,
-    ...(product.images && Array.isArray(product.images) ? product.images : [])
-  ].filter(Boolean) : [];
+  const images = product
+    ? [
+        product.image,
+        ...(product.images && Array.isArray(product.images) ? product.images : []),
+      ].filter(Boolean)
+    : [];
 
   // Thumbnails visíveis por vez com LOOP INFINITO
   const VISIBLE_THUMBNAILS = 5;
-  const visibleThumbnails = images.slice(thumbnailStartIndex, thumbnailStartIndex + VISIBLE_THUMBNAILS);
+  const visibleThumbnails = images.slice(
+    thumbnailStartIndex,
+    thumbnailStartIndex + VISIBLE_THUMBNAILS
+  );
 
   const scrollThumbnailsLeft = () => {
     // Loop infinito: se estiver no início, volta para o final
@@ -174,21 +195,21 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     // Só funciona em desktop (não mobile)
     if (isMobile) return;
-    
+
     // Só funciona para imagens, não vídeos
     if (images[currentImageIndex]?.includes('.mp4')) return;
-    
+
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-    
+
     setZoomOrigin({ x, y });
   };
 
   const handleMouseEnter = () => {
     // Só funciona em desktop (não mobile)
     if (isMobile) return;
-    
+
     // Só ativa zoom para imagens, não vídeos
     if (!images[currentImageIndex]?.includes('.mp4')) {
       setIsZoomed(true);
@@ -198,7 +219,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   const handleMouseLeave = () => {
     // Só funciona em desktop (não mobile)
     if (isMobile) return;
-    
+
     setIsZoomed(false);
   };
 
@@ -240,7 +261,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
    */
   const handleDownloadSingleImage = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     const url = images[currentImageIndex];
     if (!url || url.includes('.mp4')) {
       toast.error('Esta mídia não pode ser baixada como foto.');
@@ -299,14 +320,17 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     if (product.specifications) {
       const specs = Array.isArray(product.specifications)
         ? product.specifications
-        : Object.entries(product.specifications).map(([key, value]) => ({ key, value: value as string }));
+        : Object.entries(product.specifications).map(([key, value]) => ({
+            key,
+            value: value as string,
+          }));
 
       if (specs.length > 0) {
         lines.push('───────────────────────────────────────────────────────');
         lines.push('  Especificações Técnicas');
         lines.push('───────────────────────────────────────────────────────');
-        const maxKeyLen = Math.max(...specs.map(s => (s.key || '').length), 10);
-        specs.forEach(spec => {
+        const maxKeyLen = Math.max(...specs.map((s) => (s.key || '').length), 10);
+        specs.forEach((spec) => {
           const paddedKey = (spec.key || '').padEnd(maxKeyLen);
           lines.push(`  ${paddedKey}  │  ${spec.value || ''}`);
         });
@@ -333,7 +357,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     }
 
     // Fotos
-    const photoUrls = images.filter(u => !u.includes('.mp4'));
+    const photoUrls = images.filter((u) => !u.includes('.mp4'));
     lines.push('───────────────────────────────────────────────────────');
     lines.push(`  Fotos (${photoUrls.length} arquivo${photoUrls.length > 1 ? 's' : ''})`);
     lines.push('───────────────────────────────────────────────────────');
@@ -343,7 +367,9 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     lines.push('');
 
     lines.push('══════════════════════════════════════════════════════');
-    lines.push(`  Gerado em: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`);
+    lines.push(
+      `  Gerado em: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`
+    );
     lines.push('  SMART PARTS IMPORT - smartpartsimport.com.br');
     lines.push('  WhatsApp: (44) 99726-0058');
     lines.push('═══════════════════════════════════════════════════════');
@@ -357,9 +383,9 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
    */
   const handleDownloadImages = async () => {
     if (isDownloading) return;
-    
-    const photoUrls = images.filter(url => !url.includes('.mp4'));
-    
+
+    const photoUrls = images.filter((url) => !url.includes('.mp4'));
+
     if (photoUrls.length === 0) {
       toast.error('Nenhuma foto disponível para download.');
       return;
@@ -370,7 +396,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
     try {
       const zip = new JSZip();
-      
+
       const sanitizedName = product.name.replace(/[<>:"/\\|?*]/g, '-').trim();
       const folderName = `${product.sku} - ${sanitizedName}`;
       const folder = zip.folder(folderName)!;
@@ -385,7 +411,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       // Processar em batches para não sobrecarregar o browser
       for (let batchStart = 0; batchStart < photoUrls.length; batchStart += BATCH_SIZE) {
         const batch = photoUrls.slice(batchStart, batchStart + BATCH_SIZE);
-        
+
         const results = await Promise.allSettled(
           batch.map(async (url, batchIndex) => {
             const i = batchStart + batchIndex;
@@ -416,10 +442,10 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       }
 
       // Gera o ZIP
-      const content = await zip.generateAsync({ 
+      const content = await zip.generateAsync({
         type: 'blob',
         compression: 'DEFLATE',
-        compressionOptions: { level: 6 }
+        compressionOptions: { level: 6 },
       });
 
       saveAs(content, `${folderName}.zip`);
@@ -445,7 +471,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   const handleDownloadIndividual = async () => {
     if (isDownloading) return;
 
-    const photoUrls = images.filter(url => !url.includes('.mp4'));
+    const photoUrls = images.filter((url) => !url.includes('.mp4'));
 
     if (photoUrls.length === 0) {
       toast.error('Nenhuma foto disponível para download.');
@@ -481,7 +507,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
         // Pequeno delay entre batches para evitar bloqueio do browser
         if (batchStart + BATCH_SIZE < photoUrls.length) {
-          await new Promise(r => setTimeout(r, 500));
+          await new Promise((r) => setTimeout(r, 500));
         }
       }
 
@@ -536,7 +562,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     if (isSharing) return;
     setIsSharing(true);
 
-    const photoUrls = images.filter(url => !url.includes('.mp4'));
+    const photoUrls = images.filter((url) => !url.includes('.mp4'));
 
     if (photoUrls.length === 0) {
       toast.error('Nenhuma foto disponível para compartilhar.');
@@ -563,14 +589,15 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
               const urlPath = url.split('?')[0];
               const ext = urlPath.match(/\.(jpg|jpeg|png|webp|gif|bmp|svg)$/i)?.[1] || 'jpg';
-              const mimeType = ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
+              const mimeType =
+                ext === 'png' ? 'image/png' : ext === 'webp' ? 'image/webp' : 'image/jpeg';
               const fileName = `${product.sku}-foto-${String(i + 1).padStart(2, '0')}.${ext}`;
 
               return new File([blob], fileName, { type: mimeType });
             })
           );
 
-          results.forEach(result => {
+          results.forEach((result) => {
             if (result.status === 'fulfilled') {
               files.push(result.value);
             }
@@ -628,7 +655,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
    * Copia a mensagem com link do produto para a área de transferência.
    */
   const handleCopyShareLink = async () => {
-    const photoUrls = images.filter(url => !url.includes('.mp4'));
+    const photoUrls = images.filter((url) => !url.includes('.mp4'));
 
     if (photoUrls.length === 0) {
       toast.error('Nenhuma foto disponível para copiar.');
@@ -659,20 +686,18 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 py-4">
+      {/* Header Breadcrumbs */}
+      <div className="bg-white border-b border-gray-200 py-4 shadow-sm">
         <div className="container mx-auto px-4">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => onNavigate('category', product.categorySlug)}
-              className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition text-sm"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Voltar
-            </button>
-            <span className="text-gray-300">|</span>
-            <span className="text-xs text-gray-400">{product.category}</span>
-          </div>
+          <nav className="flex items-center gap-2 text-sm font-medium">
+            <Link to="/" className="text-gray-500 hover:text-red-600 transition">Início</Link>
+            <span className="text-gray-300">/</span>
+            <Link to={`/categoria/${product.categorySlug}`} className="text-gray-500 hover:text-red-600 transition">
+              {product.category}
+            </Link>
+            <span className="text-gray-300">/</span>
+            <span className="text-gray-900 font-bold truncate max-w-[200px] md:max-w-md">{product.name}</span>
+          </nav>
         </div>
       </div>
 
@@ -701,7 +726,11 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     src={images[currentImageIndex]}
-                    autoPlay loop muted playsInline controls
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    controls
                     className="max-w-full max-h-full w-auto h-auto object-contain"
                   />
                 ) : (
@@ -716,7 +745,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                     className="max-w-full max-h-full w-auto h-auto object-contain"
                     style={{
                       transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
-                      cursor: isZoomed ? 'zoom-out' : 'zoom-in'
+                      cursor: isZoomed ? 'zoom-out' : 'zoom-in',
                     }}
                   />
                 )}
@@ -818,7 +847,10 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   SKU: {product.sku}
                 </div>
                 {product.verified && (
-                  <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center" title="Verificado">
+                  <div
+                    className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center"
+                    title="Verificado"
+                  >
                     <Check className="w-3 h-3 text-white" />
                   </div>
                 )}
@@ -852,21 +884,22 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 className="grid grid-cols-3 gap-3 mb-6"
               >
                 {[
-                  { icon: Shield, text: 'Garantia', color: 'from-blue-500 to-blue-600' },
-                  { icon: Truck, text: 'Entrega', color: 'from-green-500 to-green-600' },
-                  { icon: Check, text: 'Qualidade', color: 'from-red-500 to-red-600' },
+                  { icon: Shield, text: 'Garantia', color: 'from-red-600 to-red-700' },
+                  { icon: Truck, text: 'Entrega', color: 'from-red-600 to-red-700' },
+                  { icon: Check, text: 'Qualidade', color: 'from-red-600 to-red-700' },
                 ].map((item, index) => (
                   <motion.div
                     key={index}
                     whileHover={{ scale: 1.05, y: -3 }}
-                    className="relative group"
+                    className="relative group cursor-default"
                   >
-                    <div className={`absolute -inset-0.5 bg-gradient-to-r ${item.color} rounded-lg blur opacity-20 group-hover:opacity-40 transition`}></div>
-                    <div className="relative flex flex-col items-center gap-1.5 bg-gradient-to-br from-gray-50 to-white p-3 rounded-lg border border-gray-200 group-hover:border-transparent transition">
-                      <div className={`w-7 h-7 bg-gradient-to-br ${item.color} rounded-md flex items-center justify-center`}>
+                    <div className="relative flex flex-col items-center gap-1.5 bg-gradient-to-br from-gray-50 to-white p-3 rounded-lg border border-gray-200 group-hover:border-red-500 transition-colors duration-300">
+                      <div
+                        className={`w-7 h-7 bg-gradient-to-br ${item.color} rounded-md flex items-center justify-center`}
+                      >
                         <item.icon className="w-4 h-4 text-white" />
                       </div>
-                      <span className="text-xs font-bold text-gray-700">{item.text}</span>
+                      <span className="text-xs font-bold text-gray-700 group-hover:text-red-600 transition-colors">{item.text}</span>
                     </div>
                   </motion.div>
                 ))}
@@ -877,14 +910,38 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                whileHover={{ scale: 1.02, boxShadow: '0 10px 25px rgba(34, 197, 94, 0.3)' }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleWhatsApp}
-                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 rounded-lg transition font-bold text-sm flex items-center justify-center gap-2 shadow-md"
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:scale-[0.98] text-white py-3.5 rounded-xl transition-all duration-300 font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-green-600/30 hover:shadow-green-600/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
               >
-                <MessageCircle className="w-4 h-4" />
+                <MessageCircle className="w-5 h-5" />
                 Falar com Vendedor
               </motion.button>
+
+              {/* Action Bar (Share/Copy) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+                className="grid grid-cols-2 gap-3 mt-4"
+              >
+                <button
+                  onClick={handleShareWhatsApp}
+                  disabled={isSharing}
+                  className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 active:scale-[0.98] text-gray-700 py-2.5 rounded-lg text-xs font-bold transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+                >
+                  {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+                  Compartilhar
+                </button>
+                <button
+                  onClick={handleCopyShareLink}
+                  className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 active:scale-[0.98] text-gray-700 py-2.5 rounded-lg text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+                >
+                  <Copy className="w-4 h-4" />
+                  Copiar Link
+                </button>
+              </motion.div>
 
               {/* Info Banner */}
               <motion.div
@@ -894,7 +951,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 className="mt-4 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg"
               >
                 <p className="text-xs text-gray-700 text-center">
-                  <span className="font-bold">💼 Vendas B2B:</span> Produto exclusivo para revendedores
+                  <span className="font-bold">💼 Vendas B2B:</span> Produto exclusivo para
+                  revendedores
                 </p>
               </motion.div>
 
@@ -941,7 +999,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 >
                   {/* Progress bar background */}
                   {isDownloading && (
-                    <div 
+                    <div
                       className="absolute inset-0 bg-blue-800/40 transition-all duration-300"
                       style={{ width: `${downloadProgress}%` }}
                     />
@@ -954,27 +1012,27 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                       </>
                     ) : (
                       <>
-                        {downloadMode === 'zip' ? <FileArchive className="w-4 h-4" /> : <Files className="w-4 h-4" />}
+                        {downloadMode === 'zip' ? (
+                          <FileArchive className="w-4 h-4" />
+                        ) : (
+                          <Files className="w-4 h-4" />
+                        )}
                         <span>
-                          {downloadMode === 'zip' 
-                            ? `Baixar ZIP (${images.filter(u => !u.includes('.mp4')).length} fotos)`
-                            : `Baixar ${images.filter(u => !u.includes('.mp4')).length} fotos`
-                          }
+                          {downloadMode === 'zip'
+                            ? `Baixar ZIP (${images.filter((u) => !u.includes('.mp4')).length} fotos)`
+                            : `Baixar ${images.filter((u) => !u.includes('.mp4')).length} fotos`}
                         </span>
                       </>
                     )}
                   </div>
                 </motion.button>
                 <p className="text-[10px] text-gray-400 text-center mt-1.5">
-                  {downloadMode === 'zip' 
+                  {downloadMode === 'zip'
                     ? 'ZIP com info.txt organizado por SKU em alta qualidade'
-                    : 'Cada foto salva individualmente com nome do SKU'
-                  }
+                    : 'Cada foto salva individualmente com nome do SKU'}
                 </p>
-
               </motion.div>
             </div>
-
           </motion.div>
         </div>
 
@@ -992,51 +1050,61 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
               </div>
               Especificações Técnicas
             </h2>
-            {product.specifications && (Array.isArray(product.specifications) ? product.specifications.length > 0 : Object.keys(product.specifications).length > 0) && (
-              <button
-                onClick={() => {
-                  const specs = Array.isArray(product.specifications)
-                    ? product.specifications
-                    : Object.entries(product.specifications).map(([key, value]) => ({ key, value: value as string }));
-                  const text = `${product.name}\n\n` + specs.map(s => `${s.key}: ${s.value}`).join('\n');
-                  navigator.clipboard.writeText(text);
-                  toast.success('Ficha técnica copiada!');
-                }}
-                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition"
-              >
-                <Copy className="w-4 h-4" />
-                Copiar
-              </button>
-            )}
+            {product.specifications &&
+              (Array.isArray(product.specifications)
+                ? product.specifications.length > 0
+                : Object.keys(product.specifications).length > 0) && (
+                <button
+                  onClick={() => {
+                    const specs = Array.isArray(product.specifications)
+                      ? product.specifications
+                      : Object.entries(product.specifications).map(([key, value]) => ({
+                          key,
+                          value: value as string,
+                        }));
+                    const text =
+                      `${product.name}\n\n` + specs.map((s) => `${s.key}: ${s.value}`).join('\n');
+                    navigator.clipboard.writeText(text);
+                    toast.success('Ficha técnica copiada!');
+                  }}
+                  className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition"
+                >
+                  <Copy className="w-4 h-4" />
+                  Copiar
+                </button>
+              )}
           </div>
           <div className="space-y-4">
-            {product.specifications && (Array.isArray(product.specifications) ? product.specifications.length > 0 : Object.keys(product.specifications).length > 0) ? (
-              <div className="overflow-hidden rounded-xl border border-gray-200">
-                <table className="w-full">
+            {product.specifications &&
+            (Array.isArray(product.specifications)
+              ? product.specifications.length > 0
+              : Object.keys(product.specifications).length > 0) ? (
+              <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-sm">
+                <table className="w-full text-base">
                   <tbody>
-                    {Array.isArray(product.specifications) ? (
-                      product.specifications.map((spec, index) => (
-                        <tr key={spec.id || index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                          <td className="px-4 py-3 font-semibold text-gray-900 border-r border-gray-200 w-1/3">
-                            {spec.key}
-                          </td>
-                          <td className="px-4 py-3 text-gray-700">
-                            {spec.value}
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      Object.entries(product.specifications).map(([key, value], index) => (
-                        <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                          <td className="px-4 py-3 font-semibold text-gray-900 border-r border-gray-200 w-1/3">
-                            {key}
-                          </td>
-                          <td className="px-4 py-3 text-gray-700">
-                            {value as string}
-                          </td>
-                        </tr>
-                      ))
-                    )}
+                    {Array.isArray(product.specifications)
+                      ? product.specifications.map((spec, index) => (
+                          <tr
+                            key={spec.id || index}
+                            className={`group transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-red-50`}
+                          >
+                            <td className="px-6 py-4 font-bold text-gray-900 border-r border-gray-200 w-1/4 lg:w-1/5 bg-gray-100/80 group-hover:bg-red-100/50 transition-colors">
+                              {spec.key}
+                            </td>
+                            <td className="px-6 py-4 text-gray-800 leading-relaxed">{spec.value}</td>
+                          </tr>
+                        ))
+                      : Object.entries(product.specifications).map(([key, value], index) => (
+                          <tr 
+                            key={index} 
+                            className={`group transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-red-50`}
+                          >
+                            <td className="px-6 py-4 font-bold text-gray-900 border-r border-gray-200 w-1/4 lg:w-1/5 bg-gray-100/80 group-hover:bg-red-100/50 transition-colors">
+                              {key}
+                            </td>
+                            <td className="px-6 py-4 text-gray-800 leading-relaxed">{value as string}</td>
+                          </tr>
+                        ))}
                   </tbody>
                 </table>
               </div>

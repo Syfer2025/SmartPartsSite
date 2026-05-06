@@ -42,7 +42,7 @@ export function CartButton() {
     try {
       const orderData = {
         customer: formData,
-        items: items.map(item => ({
+        items: items.map((item) => ({
           name: item.name,
           sku: item.sku,
           quantity: item.quantity,
@@ -56,8 +56,8 @@ export function CartButton() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
-            'apikey': publicAnonKey,
+            Authorization: `Bearer ${publicAnonKey}`,
+            apikey: publicAnonKey,
           },
           body: JSON.stringify(orderData),
         }
@@ -190,7 +190,7 @@ export function CartButton() {
                     <div className="flex-1">
                       <h3 className="font-black text-sm mb-1">{item.name}</h3>
                       <p className="text-xs text-gray-500 mb-3">SKU: {item.sku}</p>
-                      
+
                       <div className="flex items-center justify-between">
                         {/* Quantity Controls */}
                         <div className="flex items-center gap-2">
@@ -201,7 +201,9 @@ export function CartButton() {
                           >
                             <Minus className="w-4 h-4" />
                           </button>
-                          <span className="font-black text-lg w-8 text-center">{item.quantity}</span>
+                          <span className="font-black text-lg w-8 text-center">
+                            {item.quantity}
+                          </span>
                           <button
                             onClick={() => handleAddItem(item.productId, item.quantity)}
                             className="bg-gray-200 hover:bg-red-600 hover:text-white p-1.5 rounded-lg transition cart-qty-hover"
@@ -263,10 +265,7 @@ export function CartButton() {
 
       {/* Order Form */}
       {showOrderForm && (
-        <OrderForm
-          onSubmit={handleOrderFormSubmit}
-          onCancel={() => setShowOrderForm(false)}
-        />
+        <OrderForm onSubmit={handleOrderFormSubmit} onCancel={() => setShowOrderForm(false)} />
       )}
     </>
   );

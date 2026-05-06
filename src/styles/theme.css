@@ -100,6 +100,7 @@
 }
 
 @theme inline {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -158,6 +159,7 @@
   html {
     font-size: var(--font-size);
     overflow-x: hidden;
+    scroll-behavior: smooth;
   }
 
   h1 {
@@ -201,48 +203,48 @@
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
-  
+
   /* REMOVIDO: scroll-behavior: smooth estava impedindo scroll instantâneo */
   /* Custom Scrollbar - Slim Design */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-  
+
   ::-webkit-scrollbar-track {
     background: #1a1a1a;
   }
-  
+
   ::-webkit-scrollbar-thumb {
-    background: #DC2626;
+    background: #dc2626;
     border-radius: 3px;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
-    background: #B91C1C;
+    background: #b91c1c;
   }
-  
+
   /* Mobile Scrollbar - Extra Slim */
   @media (max-width: 768px) {
     ::-webkit-scrollbar {
       width: 3px;
       height: 3px;
     }
-    
+
     ::-webkit-scrollbar-thumb {
       border-radius: 2px;
     }
   }
-  
+
   /* Selection Color */
   ::selection {
-    background-color: #DC2626;
+    background-color: #dc2626;
     color: white;
   }
-  
+
   /* Remove default focus outline and add custom */
   *:focus-visible {
-    outline: 2px solid #DC2626;
+    outline: 2px solid #dc2626;
     outline-offset: 2px;
   }
 }

@@ -40,7 +40,7 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
     mediaType: 'image' as 'image' | 'video',
     buttonText: 'Ver Catálogo',
     buttonLink: '#catalog',
-    order: 0
+    order: 0,
   });
 
   useEffect(() => {
@@ -51,8 +51,8 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
     try {
       const res = await fetch(`${API_URL}/admin/banners`, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       const data = await res.json();
       if (data.banners) {
@@ -91,9 +91,9 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
       const res = await fetch(`${API_URL}/admin/upload`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: formDataUpload
+        body: formDataUpload,
       });
 
       const data = await res.json();
@@ -135,9 +135,9 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
       const res = await fetch(`${API_URL}/admin/upload`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: formDataUpload
+        body: formDataUpload,
       });
 
       const data = await res.json();
@@ -174,9 +174,9 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -205,7 +205,7 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
       mediaType: banner.mediaType || 'image',
       buttonText: banner.buttonText || 'Ver Catálogo',
       buttonLink: banner.buttonLink || '#catalog',
-      order: banner.order
+      order: banner.order,
     });
     setShowForm(true);
   };
@@ -217,8 +217,8 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
       const res = await fetch(`${API_URL}/admin/banners/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (res.ok) {
@@ -236,35 +236,35 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
 
   const handleMoveUp = async (banner: Banner, index: number) => {
     if (index === 0) return;
-    
+
     const prevBanner = banners[index - 1];
     const newBanners = [...banners];
-    
+
     // Swap orders
     newBanners[index].order = prevBanner.order;
     newBanners[index - 1].order = banner.order;
-    
+
     // Update both banners
     await updateBannerOrder(newBanners[index]);
     await updateBannerOrder(newBanners[index - 1]);
-    
+
     fetchBanners();
   };
 
   const handleMoveDown = async (banner: Banner, index: number) => {
     if (index === banners.length - 1) return;
-    
+
     const nextBanner = banners[index + 1];
     const newBanners = [...banners];
-    
+
     // Swap orders
     newBanners[index].order = nextBanner.order;
     newBanners[index + 1].order = banner.order;
-    
+
     // Update both banners
     await updateBannerOrder(newBanners[index]);
     await updateBannerOrder(newBanners[index + 1]);
-    
+
     fetchBanners();
   };
 
@@ -274,9 +274,9 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ order: banner.order })
+        body: JSON.stringify({ order: banner.order }),
       });
     } catch (error) {
       console.error('Error updating banner order:', error);
@@ -292,7 +292,7 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
       mediaType: 'image' as 'image' | 'video',
       buttonText: 'Ver Catálogo',
       buttonLink: '#catalog',
-      order: banners.length
+      order: banners.length,
     });
     setEditingBanner(null);
     setShowForm(false);
@@ -356,9 +356,7 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Título *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-300 mb-2">Título *</label>
                   <input
                     type="text"
                     value={formData.title}
@@ -538,9 +536,7 @@ export default function BannerManager({ accessToken, onUpdate }: BannerManagerPr
                 <div className="flex-1">
                   <h4 className="font-semibold text-white mb-1">{banner.title}</h4>
                   <p className="text-sm text-gray-400">{banner.subtitle}</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Ordem: {banner.order + 1}
-                  </p>
+                  <p className="text-xs text-gray-500 mt-1">Ordem: {banner.order + 1}</p>
                 </div>
 
                 {/* Actions */}

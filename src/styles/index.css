@@ -76,20 +76,20 @@
   .carousel-container {
     padding: 0 10px;
   }
-  
+
   .carousel-container .slick-slide {
     padding: 0 8px;
   }
-  
+
   .carousel-container .slick-list {
     margin: 0 -8px;
     overflow: hidden !important;
   }
-  
+
   .carousel-container .slick-track {
     display: flex !important;
   }
-  
+
   .carousel-container .slick-dots {
     bottom: -40px;
   }

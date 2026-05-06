@@ -16,7 +16,10 @@ const FeatureCards = memo(function FeatureCards() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featureCards.map((item, index) => (
-            <div key={index} className="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
+            <div
+              key={index}
+              className="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors"
+            >
               <div className="flex items-start gap-4">
                 <div className="bg-red-600 p-3 rounded-lg">
                   <item.icon className="w-6 h-6 text-white" />
@@ -38,8 +41,14 @@ export const Hero = memo(function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { banners, bannersLoading } = useData();
 
-  const nextSlide = useCallback(() => setCurrentSlide((prev) => (prev + 1) % banners.length), [banners.length]);
-  const prevSlide = useCallback(() => setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length), [banners.length]);
+  const nextSlide = useCallback(
+    () => setCurrentSlide((prev) => (prev + 1) % banners.length),
+    [banners.length]
+  );
+  const prevSlide = useCallback(
+    () => setCurrentSlide((prev) => (prev - 1 + banners.length) % banners.length),
+    [banners.length]
+  );
 
   // Auto-advance slides
   useEffect(() => {
@@ -52,8 +61,16 @@ export const Hero = memo(function Hero() {
   if (bannersLoading && banners.length === 0) {
     return (
       <section className="relative bg-black -mt-[104px] pt-[104px]">
-        <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-black flex items-center justify-center">
-          <div className="w-12 h-12 border-4 border-red-600/30 border-t-red-600 rounded-full animate-spin" />
+        <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-gray-900">
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-[length:200%_100%] animate-pulse" />
+          <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
+            <div className="max-w-3xl w-full">
+              <div className="h-8 w-32 bg-gray-800 rounded-full mb-4 animate-pulse" />
+              <div className="h-16 md:h-24 w-3/4 bg-gray-800 rounded-xl mb-4 animate-pulse" />
+              <div className="h-6 w-1/2 bg-gray-800 rounded-lg mb-6 animate-pulse" />
+              <div className="h-12 w-48 bg-gray-800 rounded-lg animate-pulse" />
+            </div>
+          </div>
         </div>
         <FeatureCards />
       </section>
@@ -63,8 +80,8 @@ export const Hero = memo(function Hero() {
   if (banners.length === 0) {
     return (
       <section className="relative bg-black -mt-[104px] pt-[104px]">
-        <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-black flex items-center justify-center">
-          <div className="text-white text-lg">Carregando...</div>
+        <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-gray-900 flex items-center justify-center">
+          <div className="text-gray-500 font-medium">Banners em manutenção...</div>
         </div>
         <FeatureCards />
       </section>
@@ -95,18 +112,18 @@ export const Hero = memo(function Hero() {
               />
             ) : (
               <div className="absolute inset-0 w-full h-full">
-                <img 
+                <img
                   src={optimizeSupabaseImage(banner.imageUrl, 1920, 80)}
                   srcSet={getSupabaseImageSrcSet(banner.imageUrl)}
                   sizes="100vw"
                   alt={banner.title}
                   className="w-full h-full object-cover"
                   // LCP Optimization: Load first image eagerly and with high priority
-                  loading={index === 0 ? "eager" : "lazy"}
-                  fetchpriority={index === 0 ? "high" : "auto"}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={index === 0 ? 'high' : 'auto'}
                   width="1920"
                   height="1080"
-                  decoding={index === 0 ? "sync" : "async"}
+                  decoding={index === 0 ? 'sync' : 'async'}
                 />
                 <div className="absolute inset-0 bg-black/60"></div>
               </div>
@@ -129,7 +146,7 @@ export const Hero = memo(function Hero() {
                     {banner.subtitle}
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg transition-colors shadow-lg shadow-red-600/30">
+                    <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white px-6 py-3 rounded-lg font-bold shadow-lg shadow-red-600/30 hover:shadow-red-600/50 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">
                       Solicitar Orçamento
                     </button>
                   </div>

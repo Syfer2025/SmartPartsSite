@@ -26,7 +26,9 @@ export default function AdminGuard({ children, onNavigate }: AdminGuardProps) {
   const checkAdminAccess = async () => {
     try {
       // 1. Verificar se tem sessão ativa
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
         setStatus('denied');
@@ -38,9 +40,9 @@ export default function AdminGuard({ children, onNavigate }: AdminGuardProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
+          Authorization: `Bearer ${publicAnonKey}`,
         },
-        body: JSON.stringify({ token: session.access_token })
+        body: JSON.stringify({ token: session.access_token }),
       });
 
       const data = await res.json();
@@ -93,12 +95,8 @@ export default function AdminGuard({ children, onNavigate }: AdminGuardProps) {
               <ShieldAlert className="w-10 h-10 text-white" />
             </motion.div>
 
-            <h2 className="text-2xl font-black text-white mb-3">
-              Acesso Restrito
-            </h2>
-            <p className="text-gray-400 mb-2">
-              Esta página requer autenticação de administrador.
-            </p>
+            <h2 className="text-2xl font-black text-white mb-3">Acesso Restrito</h2>
+            <p className="text-gray-400 mb-2">Esta página requer autenticação de administrador.</p>
             <p className="text-gray-500 text-sm mb-8">
               Faça login no painel administrativo para acessar esta funcionalidade.
             </p>

@@ -1,4 +1,5 @@
 import { ArrowRight, Package, Users, Handshake, ShoppingBag } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { optimizeSupabaseImage, createImageFallback } from '@/app/utils/imageOptimizer';
 import { useMemo } from 'react';
@@ -13,7 +14,7 @@ export function Products({ onNavigate }: ProductsProps) {
   // Embaralhar produtos aleatoriamente a cada render
   const randomProducts = useMemo(() => {
     const shuffled = [...products].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 8);
+    return shuffled.slice(0, 12);
   }, [products]);
 
   return (
@@ -28,9 +29,7 @@ export function Products({ onNavigate }: ProductsProps) {
           <h2 className="text-3xl md:text-4xl font-black mb-3 text-gray-900">
             Nossas Categorias de Produtos
           </h2>
-          <p className="text-lg text-gray-600">
-            Linha completa de peças importadas premium
-          </p>
+          <p className="text-lg text-gray-600">Linha completa de peças importadas premium</p>
           <div className="h-1 w-24 bg-red-600 mx-auto mt-4 rounded-full" />
         </div>
 
@@ -47,8 +46,8 @@ export function Products({ onNavigate }: ProductsProps) {
             <div className="col-span-full text-center py-12">
               <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <p className="text-gray-600 mb-2">Erro ao carregar categorias.</p>
-              <button 
-                onClick={() => window.location.reload()} 
+              <button
+                onClick={() => window.location.reload()}
                 className="text-red-600 hover:text-red-700 font-semibold text-sm"
               >
                 Tentar novamente
@@ -61,20 +60,20 @@ export function Products({ onNavigate }: ProductsProps) {
             </div>
           ) : (
             categories.map((category, index) => (
-              <div
+              <Link
+                to={`/categoria/${category.slug}`}
                 key={category.slug || `cat-${index}`}
-                onClick={() => onNavigate('category', category.slug)}
                 className="cursor-pointer group flex flex-col items-center"
                 style={{
-                  animation: `fadeInUp 0.4s ease-out ${index * 0.05}s both`
+                  animation: `fadeInUp 0.4s ease-out ${index * 0.05}s both`,
                 }}
               >
                 <div className="w-24 h-24 flex items-center justify-center mb-3 bg-white rounded-xl shadow border border-gray-200 group-hover:border-red-500 group-hover:shadow-lg transition-all duration-300">
                   <div className="text-4xl">
                     {category.icon.startsWith('data:image') || category.icon.startsWith('http') ? (
-                      <img 
-                        src={category.icon} 
-                        alt={category.name} 
+                      <img
+                        src={category.icon}
+                        alt={category.name}
                         className="w-16 h-16 object-contain"
                         loading="lazy"
                       />
@@ -86,7 +85,7 @@ export function Products({ onNavigate }: ProductsProps) {
                 <h3 className="text-xs font-bold text-center text-gray-800 group-hover:text-red-600 transition-colors max-w-[90px]">
                   {category.name}
                 </h3>
-              </div>
+              </Link>
             ))
           )}
         </div>
@@ -121,20 +120,20 @@ export function Products({ onNavigate }: ProductsProps) {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {randomProducts.map((product, index) => (
-                <div
+                <Link
+                  to={`/produto/${product.id}`}
                   key={product.id || `prod-${index}`}
-                  onClick={() => onNavigate('product', product.categorySlug, product.id)}
-                  className="cursor-pointer group bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg will-change-auto flex flex-col"
-                  style={{ transition: 'box-shadow 0.2s ease-in-out' }}
+                  className="cursor-pointer block group bg-white border border-gray-200 rounded-xl p-4 hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
+                  style={{ willChange: 'transform, box-shadow' }}
                 >
                   <div className="h-40 mb-3 flex items-center justify-center bg-white rounded-lg overflow-hidden">
                     <img
                       src={optimizeSupabaseImage(product.image, 300, 85)}
                       alt={product.name}
-                      className="max-w-full max-h-full object-contain p-2"
-                      loading={index < 2 ? "eager" : "lazy"}
+                      className="max-w-full max-h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500 ease-out"
+                      loading={index < 2 ? 'eager' : 'lazy'}
                       decoding="async"
-                      fetchpriority={index === 0 ? "high" : undefined}
+                      fetchpriority={index === 0 ? 'high' : undefined}
                       width="252"
                       height="252"
                       onError={createImageFallback(product.image)}
@@ -143,7 +142,7 @@ export function Products({ onNavigate }: ProductsProps) {
                   <h4 className="font-bold text-sm text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 mb-2">
                     {product.name}
                   </h4>
-                  
+
                   {/* SKU */}
                   {product.sku && (
                     <div className="mb-2">
@@ -152,20 +151,20 @@ export function Products({ onNavigate }: ProductsProps) {
                       </span>
                     </div>
                   )}
-                  
+
                   <p className="text-xs text-gray-600 line-clamp-2 mb-2">
                     {product.description || 'Produto de alta qualidade importado.'}
                   </p>
                   <p className="text-xs text-gray-500 mb-3">{product.category}</p>
-                  
+
                   {/* Spacer to push button to bottom */}
                   <div className="flex-1"></div>
-                  
-                  <button className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all lg:shadow-lg lg:shadow-red-500/30">
+
+                  <button tabIndex={-1} className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 active:scale-[0.98] text-white py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md shadow-red-600/20 hover:shadow-lg hover:shadow-red-600/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">
                     Ver Detalhes
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
-                </div>
+                </Link>
               ))}
             </div>
           )}
@@ -175,7 +174,12 @@ export function Products({ onNavigate }: ProductsProps) {
         <div className="bg-gradient-to-r from-black to-gray-900 rounded-2xl p-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center text-white">
             {[
-              { icon: Package, number: '12+', label: 'Categorias', desc: '100% produtos importados' },
+              {
+                icon: Package,
+                number: '12+',
+                label: 'Categorias',
+                desc: '100% produtos importados',
+              },
               { icon: Users, number: 'B2B', label: 'Exclusivo', desc: 'Vendas para revendedores' },
               { icon: Handshake, number: 'Premium', label: 'Suporte', desc: 'Assessoria técnica' },
             ].map((stat, index) => (

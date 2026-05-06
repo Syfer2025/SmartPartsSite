@@ -56,8 +56,25 @@ interface Category {
   name: string;
 }
 
-export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'categories' | 'banners' | 'analytics' | 'settings' | 'orders' | 'customers' | 'backup' | 'status' | 'upload-assets' | 'catalogs'>('dashboard');
+export default function AdminDashboard({
+  accessToken,
+  onLogout,
+  onNavigateHome,
+}: AdminDashboardProps) {
+  const [activeTab, setActiveTab] = useState<
+    | 'dashboard'
+    | 'products'
+    | 'categories'
+    | 'banners'
+    | 'analytics'
+    | 'settings'
+    | 'orders'
+    | 'customers'
+    | 'backup'
+    | 'status'
+    | 'upload-assets'
+    | 'catalogs'
+  >('dashboard');
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalCategories: 0,
@@ -79,20 +96,20 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
     try {
       const [productsRes, categoriesRes, bannersRes, ordersRes, customersRes] = await Promise.all([
         fetch(`${API_URL}/admin/products`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${accessToken}` },
         }),
         fetch(`${API_URL}/admin/categories`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${accessToken}` },
         }),
         fetch(`${API_URL}/admin/banners`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${accessToken}` },
         }),
         fetch(`${API_URL}/admin/orders`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${accessToken}` },
         }),
         fetch(`${API_URL}/admin/customers`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        })
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }),
       ]);
 
       const productsData = await productsRes.json();
@@ -101,7 +118,13 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
       const ordersData = await ordersRes.json();
       const customersData = await customersRes.json();
 
-      console.log('Stats loaded:', { productsData, categoriesData, bannersData, ordersData, customersData });
+      console.log('Stats loaded:', {
+        productsData,
+        categoriesData,
+        bannersData,
+        ordersData,
+        customersData,
+      });
 
       const products = productsData.products || [];
       const categories = categoriesData.categories || [];
@@ -184,7 +207,7 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                   <span className="hidden md:inline">Voltar ao Site</span>
                 </motion.button>
               )}
-              
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -252,7 +275,7 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                       Personalize os banners do carrossel da página inicial
                     </p>
                   </div>
-                  <div 
+                  <div
                     onClick={() => setActiveTab('status')}
                     className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform"
                   >
@@ -265,11 +288,14 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                 </div>
                 <div className="mt-8">
                   <h3 className="text-xl font-bold text-white mb-4">Estatísticas</h3>
-                  
+
                   {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-6 animate-pulse">
+                        <div
+                          key={i}
+                          className="bg-white/5 border border-white/10 rounded-xl p-6 animate-pulse"
+                        >
                           <div className="w-8 h-8 bg-white/10 rounded-lg mb-3"></div>
                           <div className="h-5 bg-white/10 rounded w-24 mb-2"></div>
                           <div className="h-4 bg-white/10 rounded w-32"></div>
@@ -286,11 +312,15 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                       >
                         <div className="flex items-center justify-between mb-3">
                           <Package className="w-8 h-8 text-green-400" />
-                          <span className="text-3xl font-black text-green-400">{stats.totalProducts}</span>
+                          <span className="text-3xl font-black text-green-400">
+                            {stats.totalProducts}
+                          </span>
                         </div>
                         <h4 className="text-lg font-semibold text-white mb-1">Produtos</h4>
                         <p className="text-gray-400 text-sm">
-                          {stats.totalProducts === 1 ? 'produto cadastrado' : 'produtos cadastrados'}
+                          {stats.totalProducts === 1
+                            ? 'produto cadastrado'
+                            : 'produtos cadastrados'}
                         </p>
                       </motion.div>
 
@@ -302,11 +332,15 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                       >
                         <div className="flex items-center justify-between mb-3">
                           <FolderTree className="w-8 h-8 text-purple-400" />
-                          <span className="text-3xl font-black text-purple-400">{stats.totalCategories}</span>
+                          <span className="text-3xl font-black text-purple-400">
+                            {stats.totalCategories}
+                          </span>
                         </div>
                         <h4 className="text-lg font-semibold text-white mb-1">Categorias</h4>
                         <p className="text-gray-400 text-sm">
-                          {stats.totalCategories === 1 ? 'categoria cadastrada' : 'categorias cadastradas'}
+                          {stats.totalCategories === 1
+                            ? 'categoria cadastrada'
+                            : 'categorias cadastradas'}
                         </p>
                       </motion.div>
 
@@ -318,11 +352,17 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                       >
                         <div className="flex items-center justify-between mb-3">
                           <FileImage className="w-8 h-8 text-red-400" />
-                          <span className="text-3xl font-black text-red-400">{stats.totalProductImages}</span>
+                          <span className="text-3xl font-black text-red-400">
+                            {stats.totalProductImages}
+                          </span>
                         </div>
-                        <h4 className="text-lg font-semibold text-white mb-1">Imagens de Produtos</h4>
+                        <h4 className="text-lg font-semibold text-white mb-1">
+                          Imagens de Produtos
+                        </h4>
                         <p className="text-gray-400 text-sm">
-                          {stats.totalProductImages === 1 ? 'imagem cadastrada' : 'imagens cadastradas'}
+                          {stats.totalProductImages === 1
+                            ? 'imagem cadastrada'
+                            : 'imagens cadastradas'}
                         </p>
                       </motion.div>
 
@@ -334,11 +374,15 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                       >
                         <div className="flex items-center justify-between mb-3">
                           <ImageIcon className="w-8 h-8 text-yellow-400" />
-                          <span className="text-3xl font-black text-yellow-400">{stats.totalBanners}</span>
+                          <span className="text-3xl font-black text-yellow-400">
+                            {stats.totalBanners}
+                          </span>
                         </div>
                         <h4 className="text-lg font-semibold text-white mb-1">Banners</h4>
                         <p className="text-gray-400 text-sm">
-                          {stats.totalBanners === 1 ? 'banner no carrossel' : 'banners no carrossel'}
+                          {stats.totalBanners === 1
+                            ? 'banner no carrossel'
+                            : 'banners no carrossel'}
                         </p>
                       </motion.div>
 
@@ -350,7 +394,9 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                       >
                         <div className="flex items-center justify-between mb-3">
                           <ShoppingCart className="w-8 h-8 text-cyan-400" />
-                          <span className="text-3xl font-black text-cyan-400">{stats.totalOrders}</span>
+                          <span className="text-3xl font-black text-cyan-400">
+                            {stats.totalOrders}
+                          </span>
                         </div>
                         <h4 className="text-lg font-semibold text-white mb-1">Pedidos</h4>
                         <p className="text-gray-400 text-sm">
@@ -366,11 +412,15 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
                       >
                         <div className="flex items-center justify-between mb-3">
                           <Users className="w-8 h-8 text-pink-400" />
-                          <span className="text-3xl font-black text-pink-400">{stats.totalCustomers}</span>
+                          <span className="text-3xl font-black text-pink-400">
+                            {stats.totalCustomers}
+                          </span>
                         </div>
                         <h4 className="text-lg font-semibold text-white mb-1">Clientes</h4>
                         <p className="text-gray-400 text-sm">
-                          {stats.totalCustomers === 1 ? 'cliente cadastrado' : 'clientes cadastrados'}
+                          {stats.totalCustomers === 1
+                            ? 'cliente cadastrado'
+                            : 'clientes cadastrados'}
                         </p>
                       </motion.div>
                     </div>
@@ -380,16 +430,24 @@ export default function AdminDashboard({ accessToken, onLogout, onNavigateHome }
             </div>
           )}
 
-          {activeTab === 'products' && <ProductManager accessToken={accessToken} onUpdate={loadStats} />}
-          {activeTab === 'categories' && <CategoryManager accessToken={accessToken} onUpdate={loadStats} />}
-          {activeTab === 'banners' && <BannerManager accessToken={accessToken} onUpdate={loadStats} />}
+          {activeTab === 'products' && (
+            <ProductManager accessToken={accessToken} onUpdate={loadStats} />
+          )}
+          {activeTab === 'categories' && (
+            <CategoryManager accessToken={accessToken} onUpdate={loadStats} />
+          )}
+          {activeTab === 'banners' && (
+            <BannerManager accessToken={accessToken} onUpdate={loadStats} />
+          )}
           {activeTab === 'analytics' && <Analytics accessToken={accessToken} />}
           {activeTab === 'settings' && <Settings accessToken={accessToken} />}
           {activeTab === 'orders' && <OrderManager accessToken={accessToken} />}
           {activeTab === 'customers' && <CustomerManager accessToken={accessToken} />}
           {activeTab === 'backup' && <BackupManager accessToken={accessToken} />}
           {activeTab === 'status' && <ConnectionStatus accessToken={accessToken} />}
-          {activeTab === 'catalogs' && <CatalogManager accessToken={accessToken} onUpdate={loadStats} />}
+          {activeTab === 'catalogs' && (
+            <CatalogManager accessToken={accessToken} onUpdate={loadStats} />
+          )}
           {activeTab === 'upload-assets' && <UploadAssets />}
         </motion.div>
       </div>

@@ -10,7 +10,8 @@
 
 /* Background blob floating animation */
 @keyframes footer-blob-1 {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1) rotate(0deg);
     opacity: 0.05;
   }
@@ -21,7 +22,8 @@
 }
 
 @keyframes footer-blob-2 {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1.3) rotate(360deg);
     opacity: 0.05;
   }
@@ -45,7 +47,9 @@
 .footer-reveal {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
 }
 
 .footer-reveal.in-view {
@@ -76,7 +80,9 @@
 
 /* Social link hover (replaces whileHover scale/y/rotate) */
 .footer-social-link {
-  transition: transform 0.25s ease, background-color 0.3s ease;
+  transition:
+    transform 0.25s ease,
+    background-color 0.3s ease;
 }
 
 .footer-social-link:hover {
@@ -91,7 +97,9 @@
 .footer-badge {
   opacity: 0;
   transform: scale(0);
-  transition: opacity 0.4s ease-out, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .footer-badge.in-view {
@@ -114,7 +122,9 @@
 .footer-contact-item {
   opacity: 0;
   transform: translateX(-20px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
 }
 
 .footer-contact-item.in-view {
@@ -127,13 +137,23 @@
 }
 
 /* Staggered delays for contact items */
-.footer-stagger-0 { transition-delay: 0.4s; }
-.footer-stagger-1 { transition-delay: 0.5s; }
-.footer-stagger-2 { transition-delay: 0.6s; }
+.footer-stagger-0 {
+  transition-delay: 0.4s;
+}
+.footer-stagger-1 {
+  transition-delay: 0.5s;
+}
+.footer-stagger-2 {
+  transition-delay: 0.6s;
+}
 
 /* Branch card reveal with stagger per card index */
-.footer-branch-0 { transition-delay: 0s; }
-.footer-branch-1 { transition-delay: 0.2s; }
+.footer-branch-0 {
+  transition-delay: 0s;
+}
+.footer-branch-1 {
+  transition-delay: 0.2s;
+}
 
 /* ============================================================
  * CategoryPage CSS-only animations (replaces motion/react)
@@ -141,7 +161,8 @@
 
 /* Category hero blob */
 @keyframes category-blob {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1) rotate(0deg);
     opacity: 0.1;
   }
@@ -167,16 +188,30 @@
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
-.cat-fade-in-delay-1 { animation-delay: 0.2s; }
-.cat-fade-in-delay-2 { animation-delay: 0.3s; }
-.cat-fade-in-delay-3 { animation-delay: 0.5s; }
-.cat-fade-in-delay-4 { animation-delay: 0.7s; }
-.cat-fade-in-delay-5 { animation-delay: 0.8s; }
+.cat-fade-in-delay-1 {
+  animation-delay: 0.2s;
+}
+.cat-fade-in-delay-2 {
+  animation-delay: 0.3s;
+}
+.cat-fade-in-delay-3 {
+  animation-delay: 0.5s;
+}
+.cat-fade-in-delay-4 {
+  animation-delay: 0.7s;
+}
+.cat-fade-in-delay-5 {
+  animation-delay: 0.8s;
+}
 
 /* Category divider line expand */
 @keyframes expandWidth {
-  from { width: 0; }
-  to { width: 8rem; }
+  from {
+    width: 0;
+  }
+  to {
+    width: 8rem;
+  }
 }
 
 .cat-divider-expand {
@@ -186,7 +221,9 @@
 
 /* Product card hover lift */
 .product-card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .product-card-hover:hover {
@@ -222,7 +259,8 @@
 
 /* About blob (same pattern as footer/category) */
 @keyframes about-blob {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.1;
   }
@@ -241,7 +279,9 @@
 .about-badge-pop {
   opacity: 0;
   transform: scale(0);
-  transition: opacity 0.4s ease-out, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .about-badge-pop.in-view {
@@ -253,7 +293,9 @@
 .about-card {
   opacity: 0;
   transform: translateY(50px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
 }
 
 .about-card.in-view {
@@ -261,9 +303,15 @@
   transform: translateY(0);
 }
 
-.about-card-delay-0 { transition-delay: 0s; }
-.about-card-delay-1 { transition-delay: 0.2s; }
-.about-card-delay-2 { transition-delay: 0.4s; }
+.about-card-delay-0 {
+  transition-delay: 0s;
+}
+.about-card-delay-1 {
+  transition-delay: 0.2s;
+}
+.about-card-delay-2 {
+  transition-delay: 0.4s;
+}
 
 /* About card hover */
 .about-card-hover {
@@ -287,7 +335,9 @@
 .about-value-item {
   opacity: 0;
   transform: translateX(-20px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
 }
 
 .about-value-item.in-view {
@@ -299,7 +349,9 @@
 .faq-item {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.4s ease-out;
 }
 
 .faq-item.in-view {
@@ -312,7 +364,9 @@
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  transition: grid-template-rows 0.3s ease, opacity 0.3s ease;
+  transition:
+    grid-template-rows 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .faq-content.open {
@@ -326,7 +380,9 @@
 
 /* About CTA button hover */
 .about-cta-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .about-cta-hover:hover {
@@ -357,9 +413,15 @@
 
 /* WhatsApp notification dot entrance */
 @keyframes notifPop {
-  0% { transform: scale(0); }
-  70% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .whatsapp-notif {
@@ -369,7 +431,9 @@
 /* WhatsApp dropdown entrance/exit */
 .whatsapp-dropdown {
   transform-origin: bottom right;
-  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .whatsapp-dropdown-enter {
@@ -423,9 +487,16 @@
 
 /* Phone icon wiggle */
 @keyframes phoneWiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(10deg); }
-  75% { transform: rotate(-10deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
 }
 
 .phone-wiggle {
@@ -451,7 +522,9 @@
 
 /* Subtle hover for logo */
 .header-logo-hover {
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .header-logo-hover:hover {
@@ -464,21 +537,42 @@
 
 /* Search clear button pop-in */
 @keyframes searchClearPop {
-  from { transform: translateY(-50%) scale(0); }
-  to { transform: translateY(-50%) scale(1); }
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .search-clear-pop {
   animation: searchClearPop 0.2s ease-out forwards;
 }
 
+.search-clear-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(255 255 255 / 0.1);
+  border-radius: 9999px;
+  color: rgb(209 213 219);
+  transition: background-color 0.15s, color 0.15s;
+}
+.search-clear-btn:hover {
+  background-color: rgb(255 255 255 / 0.2);
+  color: white;
+}
+
 .search-clear-pop:hover {
-  transform: translateY(-50%) scale(1.2) rotate(90deg);
+  transform: scale(1.2) rotate(90deg);
   transition: transform 0.2s ease;
 }
 
 .search-clear-pop:active {
-  transform: translateY(-50%) scale(0.8);
+  transform: scale(0.8);
 }
 
 /* Search dropdown show/hide */
@@ -486,7 +580,9 @@
   opacity: 0;
   transform: translateY(-10px) scale(0.95);
   pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 .search-dropdown.visible {
@@ -528,7 +624,9 @@
   opacity: 0;
   transform: translateY(10px) scale(0.95);
   pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 
 .mega-menu.visible {
@@ -591,8 +689,12 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Mobile sidebar & backdrop */
@@ -643,8 +745,12 @@
 
 /* Cart badge pop */
 @keyframes cartBadgePop {
-  from { transform: scale(0); }
-  to { transform: scale(1); }
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 
 .cart-badge-pop {
@@ -721,7 +827,9 @@
 
 /* Cart CTA button */
 .cart-cta-hover {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .cart-cta-hover:hover {
@@ -761,7 +869,9 @@
 
 /* Order form button hover */
 .order-form-btn {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .order-form-btn:hover {

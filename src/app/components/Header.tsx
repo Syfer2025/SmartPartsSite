@@ -1,8 +1,29 @@
-import { Search, ChevronDown, Phone, Menu, X, Package, Snowflake, Wind, Disc, Settings, Circle, Wrench, CircleDot, Box, Zap } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import {
+  Search,
+  ChevronDown,
+  Phone,
+  Menu,
+  X,
+  Package,
+  Snowflake,
+  Wind,
+  Disc,
+  Settings,
+  Circle,
+  Wrench,
+  CircleDot,
+  Box,
+  Zap,
+} from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useDebounce } from '../hooks/useDebounce';
 import logo from 'figma:asset/93a318fedff287cf8ae9966775cd849f3e3199e4.png';
 import { useData } from '../context/DataContext';
-import { optimizeWithPreset, createImageFallback, optimizeSupabaseImage } from '@/app/utils/imageOptimizer';
+import {
+  optimizeWithPreset,
+  createImageFallback,
+  optimizeSupabaseImage,
+} from '@/app/utils/imageOptimizer';
 import { quickSearch } from '../utils/searchEngine';
 
 interface HeaderProps {
@@ -22,11 +43,11 @@ const categoryIcons: { [key: string]: any } = {
   'ar-condicionado': Wind,
   'catracas-freio': Disc,
   'patim-freio': Settings,
-  'cuicas': Circle,
-  'eixos': Wrench,
+  cuicas: Circle,
+  eixos: Wrench,
   'rodas-ferro': CircleDot,
   'rodas-aluminio': CircleDot,
-  'rolamentos': Circle,
+  rolamentos: Circle,
   'cinta-catraca': Package,
   'pe-carreta': Box,
   'mola-cuica': Settings,
@@ -56,6 +77,27 @@ export function Header({ onNavigate }: HeaderProps) {
     };
   }, [mobileMenuOpen]);
 
+  // Atalho de Teclado (Ctrl+K / Cmd+K) para focar na busca
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById('desktop-search-input');
+        if (searchInput) {
+          searchInput.focus();
+        } else {
+          // Fallback para mobile se o desktop não estiver visível
+          const mobileInputs = document.querySelectorAll('input[placeholder*="Buscar"]');
+          if (mobileInputs.length > 0) {
+            (mobileInputs[0] as HTMLElement).focus();
+          }
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // OTIMIZAÇÃO: Usar DataContext em vez de fazer fetch separado
   // Isso elimina a chamada duplicada de categorias (economiza 5.899 KiB!)
   const { categories, products: allProducts, loading } = useData();
@@ -65,19 +107,25 @@ export function Header({ onNavigate }: HeaderProps) {
     { label: 'Várzea Grande', number: '(65) 99329-1135', whatsapp: '+5565993291135' },
   ];
 
-  // Motor de busca avançado — fuzzy, plurais PT-BR, sinônimos, SKU
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (query.trim().length > 0) {
-      const results = quickSearch(allProducts, query);
-      setSearchResults(results.map(r => r.product));
+  const debouncedQuery = useDebounce(searchQuery, 300);
+
+  const allProductsRef = useRef(allProducts);
+  allProductsRef.current = allProducts;
+
+  useEffect(() => {
+    if (debouncedQuery.trim().length > 0) {
+      const results = quickSearch(allProductsRef.current, debouncedQuery);
+      setSearchResults(results.map((r) => r.product));
     } else {
       setSearchResults([]);
     }
-  };
+  }, [debouncedQuery]);
 
-  // Ao apertar Enter, navegar para a página de resultados completa
-  const handleSearchSubmit = (e: React.KeyboardEvent | React.FormEvent) => {
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+  }, []);
+
+  const handleSearchSubmit = useCallback((e: React.KeyboardEvent | React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim().length > 0) {
       onNavigate('search', searchQuery.trim());
@@ -85,42 +133,36 @@ export function Header({ onNavigate }: HeaderProps) {
       setSearchResults([]);
       setMobileMenuOpen(false);
     }
-  };
+  }, [searchQuery, onNavigate]);
 
-  const handleWhatsAppCall = (phone: string) => {
+  const handleWhatsAppCall = useCallback((phone: string) => {
     const message = 'Olá! Vim do site e gostaria de mais informações.';
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
-  };
+  }, []);
 
   const isSearchVisible = showSearch && searchQuery.length > 0;
 
   return (
-    <header
-      className="bg-gradient-to-r from-black via-gray-900 to-black text-white shadow-2xl fixed top-0 left-0 right-0 z-50 border-b border-white/20 header-entrance"
-    >
+    <header className="bg-black/80 backdrop-blur-lg text-white shadow-2xl fixed top-0 left-0 right-0 z-50 border-b border-white/10 header-entrance transition-colors duration-300">
       {/* Top Bar with Phones */}
-      <div className="bg-gradient-to-r from-red-600/90 via-red-700/90 to-red-600/90 relative overflow-hidden backdrop-blur-sm">
-        {/* Animated background shimmer — CSS @keyframes */}
-        <div
-          className="absolute inset-0 header-shimmer"
-          style={{
-            background: 'linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent)',
-          }}
-        />
-        <div className="container mx-auto px-2 md:px-4 py-1.5 md:py-2 relative z-10">
-          <div className="flex items-center justify-center gap-2 md:gap-8 text-xs md:text-sm">
+      <div className="bg-red-600/95 backdrop-blur-md relative overflow-hidden">
+        {/* Gradiente nas pontas — só desktop */}
+        <div className="hidden md:block absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-red-800/80 to-transparent pointer-events-none z-10" />
+        <div className="hidden md:block absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-red-800/80 to-transparent pointer-events-none z-10" />
+        <div className="container mx-auto px-4 md:px-6 py-px relative z-20">
+          <div className="flex flex-row items-center justify-center gap-6 md:gap-8 text-[11px] font-semibold tracking-wide">
             {phones.map((phone, phoneIndex) => (
               <button
                 key={phone.whatsapp}
                 onClick={() => handleWhatsAppCall(phone.whatsapp)}
-                className="flex items-center gap-1 md:gap-2 hover:bg-white/10 px-2 md:px-4 py-1 rounded-lg transition backdrop-blur-sm header-btn-hover"
+                className="flex items-center gap-1.5 hover:opacity-80 transition-opacity whitespace-nowrap md:border md:border-white/25 md:rounded-full md:px-3 md:py-0.5 md:bg-white/5 md:hover:bg-white/10 md:backdrop-blur-sm py-0.5"
               >
                 <div className={phoneIndex === 0 ? 'phone-wiggle' : 'phone-wiggle-delay'}>
-                  <Phone className="w-3 h-3 md:w-4 md:h-4" />
+                  <Phone className="w-3 h-3 flex-shrink-0" />
                 </div>
-                <span className="font-semibold text-[10px] md:text-sm">{phone.label}:</span>
-                <span className="text-[10px] md:text-sm">{phone.number}</span>
+                <span className="opacity-80 hidden sm:inline">{phone.label}:</span>
+                <span>{phone.number}</span>
               </button>
             ))}
           </div>
@@ -128,7 +170,7 @@ export function Header({ onNavigate }: HeaderProps) {
       </div>
 
       {/* Main Header */}
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-3 md:py-4">
         {/* Mobile Header - Logo left, Menu right */}
         <div className="flex lg:hidden items-center justify-between mb-4">
           {/* Logo */}
@@ -136,10 +178,10 @@ export function Header({ onNavigate }: HeaderProps) {
             onClick={() => onNavigate('home')}
             className="flex items-center gap-2 hover:opacity-80 transition header-logo-hover"
           >
-            <img 
-              src={optimizedLogo} 
-              alt="Smart Parts Import" 
-              className="h-8 w-auto object-contain" 
+            <img
+              src={optimizedLogo}
+              alt="Smart Parts Import"
+              className="h-8 w-auto object-contain"
               fetchpriority="high"
               width="684"
               height="162"
@@ -149,25 +191,25 @@ export function Header({ onNavigate }: HeaderProps) {
           {/* Hamburger Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="bg-red-600 hover:bg-red-700 p-3 rounded-lg transition header-btn-hover"
-            aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+            className="bg-white/5 hover:bg-white/10 border border-white/10 p-2.5 rounded-xl transition-colors backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+            aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {/* Mobile Search Bar */}
-        <div className="lg:hidden mb-4">
-          <form onSubmit={handleSearchSubmit} className="relative">
+        <div className="lg:hidden mb-4 px-2">
+          <form onSubmit={handleSearchSubmit} className="relative group">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               onFocus={() => setShowSearch(true)}
-              placeholder="Buscar por nome, SKU, categoria..."
-              className="w-full bg-white/10 backdrop-blur-md border-2 border-white/20 focus:border-red-600 text-white px-4 py-2.5 pl-10 rounded-lg transition outline-none placeholder-gray-300 text-sm"
+              placeholder="Buscar por nome, SKU..."
+              className="w-full bg-white/5 hover:bg-white/10 focus:bg-white/10 backdrop-blur-md border border-white/10 focus:border-red-500 focus:shadow-[0_0_15px_rgba(220,38,38,0.3)] text-white px-4 py-2.5 pl-10 pr-10 rounded-xl transition-all duration-300 outline-none placeholder-gray-400 text-sm font-medium"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-red-500 transition-colors" />
             {searchQuery && (
               <button
                 type="button"
@@ -176,9 +218,9 @@ export function Header({ onNavigate }: HeaderProps) {
                   setSearchResults([]);
                   setShowSearch(false);
                 }}
-                className="absolute right-3 top-1/2 text-gray-300 search-clear-pop"
+                className="search-clear-btn search-clear-pop right-3 p-1"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </form>
@@ -192,7 +234,8 @@ export function Header({ onNavigate }: HeaderProps) {
             {searchResults.length > 0 ? (
               <>
                 <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-2 text-xs font-bold">
-                  {searchResults.length} {searchResults.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
+                  {searchResults.length}{' '}
+                  {searchResults.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
                 </div>
                 {searchResults.map((product, index) => (
                   <button
@@ -214,12 +257,20 @@ export function Header({ onNavigate }: HeaderProps) {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-xs mb-0.5 group-hover:text-red-600 transition line-clamp-1">{product.name}</h4>
-                      <p className="text-[10px] text-gray-600 mb-1 line-clamp-1">{product.description}</p>
+                      <h4 className="font-bold text-xs mb-0.5 group-hover:text-red-600 transition line-clamp-1">
+                        {product.name}
+                      </h4>
+                      <p className="text-[10px] text-gray-600 mb-1 line-clamp-1">
+                        {product.description}
+                      </p>
                       <div className="flex items-center gap-2">
-                        <span className="text-[9px] bg-gray-100 px-1.5 py-0.5 rounded">{product.category}</span>
+                        <span className="text-[9px] bg-gray-100 px-1.5 py-0.5 rounded">
+                          {product.category}
+                        </span>
                         {product.sku && (
-                          <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">SKU: {product.sku}</span>
+                          <span className="text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">
+                            SKU: {product.sku}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -243,26 +294,34 @@ export function Header({ onNavigate }: HeaderProps) {
             onClick={() => onNavigate('home')}
             className="flex items-center gap-3 hover:opacity-80 transition flex-shrink-0 header-logo-hover"
           >
-            <img 
-              src={optimizedLogo} 
-              alt="Smart Parts Import" 
-              className="h-12 w-auto object-contain" 
+            <img
+              src={optimizedLogo}
+              alt="Smart Parts Import"
+              className="h-12 w-auto object-contain"
               fetchpriority="high"
             />
           </button>
 
           {/* Search Bar */}
           <div className="w-full lg:flex-1 lg:max-w-2xl relative order-3 lg:order-2">
-            <form onSubmit={handleSearchSubmit} className="relative search-bar-entrance">
+            <form onSubmit={handleSearchSubmit} className="relative search-bar-entrance group">
               <input
+                id="desktop-search-input"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 onFocus={() => setShowSearch(true)}
                 placeholder="Buscar produtos por nome, SKU, categoria..."
-                className="w-full bg-gray-900 border-2 border-gray-800 focus:border-red-600 text-white px-5 py-3 pl-12 rounded-xl transition outline-none placeholder-gray-500"
+                className="w-full bg-white/5 hover:bg-white/10 focus:bg-white/10 backdrop-blur-md border border-white/10 focus:border-red-500 focus:shadow-[0_0_20px_rgba(220,38,38,0.3)] text-white px-5 py-3 pl-12 pr-16 rounded-xl transition-all duration-300 outline-none placeholder-gray-400 font-medium"
               />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-red-500 transition-colors duration-300" />
+              
+              {!searchQuery && (
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-1 pointer-events-none opacity-60 group-focus-within:opacity-0 transition-opacity">
+                  <kbd className="bg-white/10 border border-white/20 rounded px-1.5 py-0.5 text-[10px] font-mono font-bold text-white shadow-sm">⌘K</kbd>
+                </div>
+              )}
+
               {searchQuery && (
                 <button
                   type="button"
@@ -271,9 +330,9 @@ export function Header({ onNavigate }: HeaderProps) {
                     setSearchResults([]);
                     setShowSearch(false);
                   }}
-                  className="absolute right-4 top-1/2 text-gray-500 hover:text-red-500 transition search-clear-pop"
+                  className="search-clear-btn search-clear-pop right-4 p-1.5"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </form>
@@ -289,7 +348,10 @@ export function Header({ onNavigate }: HeaderProps) {
                   <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-3 flex items-center justify-between">
                     <div>
                       <p className="font-bold text-sm">Resultados da Busca</p>
-                      <p className="text-xs text-red-100">{searchResults.length} {searchResults.length === 1 ? 'produto encontrado' : 'produtos encontrados'}</p>
+                      <p className="text-xs text-red-100">
+                        {searchResults.length}{' '}
+                        {searchResults.length === 1 ? 'produto encontrado' : 'produtos encontrados'}
+                      </p>
                     </div>
                     <Search className="w-5 h-5 opacity-50" />
                   </div>
@@ -312,8 +374,12 @@ export function Header({ onNavigate }: HeaderProps) {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-black text-base mb-1 group-hover:text-red-600 transition line-clamp-1">{product.name}</h4>
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">{product.description}</p>
+                        <h4 className="font-black text-base mb-1 group-hover:text-red-600 transition line-clamp-1">
+                          {product.name}
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                          {product.description}
+                        </p>
                         <div className="flex items-center gap-2">
                           <span className="text-xs bg-gray-100 group-hover:bg-red-100 px-2 py-1 rounded font-medium transition">
                             {product.category}
@@ -339,7 +405,11 @@ export function Header({ onNavigate }: HeaderProps) {
                       className="w-full bg-gradient-to-r from-gray-100 to-gray-50 hover:from-red-50 hover:to-red-100 px-6 py-4 border-t border-gray-200 transition text-left"
                     >
                       <p className="text-sm font-semibold text-gray-700">
-                        Pressione <kbd className="bg-gray-200 px-1.5 py-0.5 rounded text-xs font-mono">Enter</kbd> ou clique para ver todos os resultados
+                        Pressione{' '}
+                        <kbd className="bg-gray-200 px-1.5 py-0.5 rounded text-xs font-mono">
+                          Enter
+                        </kbd>{' '}
+                        ou clique para ver todos os resultados
                       </p>
                       <p className="text-xs text-gray-500">
                         Busca avançada com correspondência inteligente
@@ -352,7 +422,9 @@ export function Header({ onNavigate }: HeaderProps) {
                   <div className="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Search className="w-10 h-10 text-gray-400" />
                   </div>
-                  <p className="text-base font-bold text-gray-700 mb-1">Nenhum produto encontrado</p>
+                  <p className="text-base font-bold text-gray-700 mb-1">
+                    Nenhum produto encontrado
+                  </p>
                   <p className="text-sm text-gray-500">Tente pesquisar usando outros termos</p>
                   <div className="mt-4 text-xs text-gray-400">
                     <p>Dicas: busque por nome, categoria ou descrição</p>
@@ -366,7 +438,7 @@ export function Header({ onNavigate }: HeaderProps) {
           <nav className="flex items-center gap-2 md:gap-4 flex-shrink-0 order-2 lg:order-3">
             <button
               onClick={() => onNavigate('catalogs')}
-              className="flex items-center gap-2 hover:text-red-500 transition-all font-semibold hidden md:block nav-btn-hover"
+              className="hidden md:flex items-center gap-2 text-sm font-bold text-gray-300 hover:text-white px-4 py-2.5 rounded-xl border border-transparent hover:border-white/10 hover:bg-white/5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
             >
               Acessar Catálogo
             </button>
@@ -378,13 +450,11 @@ export function Header({ onNavigate }: HeaderProps) {
                 setShowCategories(false);
               }}
             >
-              <button
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 cat-btn-hover"
-              >
+              <button className="flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:scale-[0.98] text-white px-5 py-2.5 rounded-xl font-bold shadow-[0_4px_15px_rgba(220,38,38,0.3)] hover:shadow-[0_4px_25px_rgba(220,38,38,0.5)] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">
                 <Package className="w-4 h-4" />
                 <span>Categorias</span>
                 <div className={`chevron-rotate ${showCategories ? 'open' : ''}`}>
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className="w-4 h-4 opacity-80" />
                 </div>
               </button>
 
@@ -394,80 +464,84 @@ export function Header({ onNavigate }: HeaderProps) {
                   showCategories ? 'visible' : ''
                 }`}
               >
-               <div className="bg-gradient-to-br from-white to-gray-50 text-black shadow-2xl rounded-2xl overflow-hidden border-2 border-gray-200">
-                {/* Header */}
-                <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="icon-spin">
-                      <Package className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="font-black">Nossas Categorias</h3>
-                      <p className="text-xs text-red-100">Peças premium para caminhões e carretas</p>
+                <div className="bg-gradient-to-br from-white to-gray-50 text-black shadow-2xl rounded-2xl overflow-hidden border-2 border-gray-200">
+                  {/* Header */}
+                  <div className="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="icon-spin">
+                        <Package className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-black">Nossas Categorias</h3>
+                        <p className="text-xs text-red-100">
+                          Peças premium para caminhões e carretas
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Categories Grid */}
-                <div className="grid grid-cols-4 gap-3 p-4">
-                  {categories.map((category, index) => {
-                    const Icon = categoryIcons[category.slug] || Package;
-                    const productCount = allProducts.filter(p => p.categorySlug === category.slug).length;
-                    
-                    return (
-                      <button
-                        key={`category-${category.id || index}-${index}`}
-                        onClick={() => {
-                          onNavigate('category', category.slug);
-                          setShowCategories(false);
-                        }}
-                        className="p-4 rounded-xl transition-all duration-300 text-left relative overflow-hidden bg-white border-2 border-gray-200 hover:bg-red-50 hover:border-red-500 hover:shadow-xl shadow-sm group mega-menu-card"
-                        style={{ animationDelay: `${index * 0.02}s` }}
-                      >
-                        {/* Icon and Title Row */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-300 flex-shrink-0 overflow-hidden bg-gray-100 group-hover:bg-gradient-to-br group-hover:from-red-600 group-hover:to-red-700 group-hover:shadow-lg">
-                            {category.icon ? (
-                              <img 
-                                src={category.icon} 
-                                alt={category.name}
-                                className="w-6 h-6 object-contain transition-all duration-300"
-                              />
-                            ) : (
-                              <Icon className="w-5 h-5 transition-colors duration-300 text-gray-700 group-hover:text-white" />
-                            )}
+                  {/* Categories Grid */}
+                  <div className="grid grid-cols-4 gap-3 p-4">
+                    {categories.map((category, index) => {
+                      const Icon = categoryIcons[category.slug] || Package;
+                      const productCount = allProducts.filter(
+                        (p) => p.categorySlug === category.slug
+                      ).length;
+
+                      return (
+                        <button
+                          key={`category-${category.id || index}-${index}`}
+                          onClick={() => {
+                            onNavigate('category', category.slug);
+                            setShowCategories(false);
+                          }}
+                          className="p-4 rounded-xl transition-all duration-300 text-left relative overflow-hidden bg-white border-2 border-gray-200 hover:bg-red-50 hover:border-red-500 hover:shadow-xl shadow-sm group mega-menu-card"
+                          style={{ animationDelay: `${index * 0.02}s` }}
+                        >
+                          {/* Icon and Title Row */}
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-11 h-11 rounded-lg flex items-center justify-center transition-all duration-300 flex-shrink-0 overflow-hidden bg-gray-100 group-hover:bg-gradient-to-br group-hover:from-red-600 group-hover:to-red-700 group-hover:shadow-lg">
+                              {category.icon ? (
+                                <img
+                                  src={category.icon}
+                                  alt={category.name}
+                                  className="w-6 h-6 object-contain transition-all duration-300"
+                                />
+                              ) : (
+                                <Icon className="w-5 h-5 transition-colors duration-300 text-gray-700 group-hover:text-white" />
+                              )}
+                            </div>
+
+                            {/* Title - Limited to 2 lines */}
+                            <h4 className="flex-1 font-bold text-sm leading-tight transition-colors duration-300 line-clamp-2 text-gray-900 group-hover:text-red-600">
+                              {category.name}
+                            </h4>
                           </div>
 
-                          {/* Title - Limited to 2 lines */}
-                          <h4 className="flex-1 font-bold text-sm leading-tight transition-colors duration-300 line-clamp-2 text-gray-900 group-hover:text-red-600">
-                            {category.name}
-                          </h4>
-                        </div>
+                          {/* Product Count */}
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium transition-colors duration-300 text-gray-500 group-hover:text-red-700">
+                              {productCount} {productCount === 1 ? 'produto' : 'produtos'}
+                            </span>
+                            <ChevronDown className="w-4 h-4 text-red-600 rotate-[-90deg] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-                        {/* Product Count */}
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium transition-colors duration-300 text-gray-500 group-hover:text-red-700">
-                            {productCount} {productCount === 1 ? 'produto' : 'produtos'}
-                          </span>
-                          <ChevronDown className="w-4 h-4 text-red-600 rotate-[-90deg] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Footer with CTA */}
-                <div className="bg-gradient-to-r from-gray-100 to-gray-50 px-6 py-4 border-t border-gray-200 mega-menu-cta">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-700">
-                      Explore todas as nossas categorias acima
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Peças premium para caminhões e carretas
-                    </p>
+                  {/* Footer with CTA */}
+                  <div className="bg-gradient-to-r from-gray-100 to-gray-50 px-6 py-4 border-t border-gray-200 mega-menu-cta">
+                    <div>
+                      <p className="text-sm font-semibold text-gray-700">
+                        Explore todas as nossas categorias acima
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Peças premium para caminhões e carretas
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
               </div>
             </div>
           </nav>
@@ -490,7 +564,15 @@ export function Header({ onNavigate }: HeaderProps) {
       <div
         onClick={() => setMobileMenuOpen(false)}
         className={`fixed inset-0 bg-black/80 z-50 lg:hidden sidebar-backdrop ${mobileMenuOpen ? 'open' : ''}`}
-        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, height: '100vh', width: '100vw' }}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: '100vh',
+          width: '100vw',
+        }}
       />
 
       {/* Sidebar - Desliza da Esquerda */}
@@ -553,8 +635,8 @@ export function Header({ onNavigate }: HeaderProps) {
                   >
                     <div className="w-8 h-8 bg-gray-700 group-hover:bg-red-600 rounded-lg flex items-center justify-center transition flex-shrink-0 overflow-hidden">
                       {category.icon ? (
-                        <img 
-                          src={category.icon} 
+                        <img
+                          src={category.icon}
                           alt={category.name}
                           className="w-5 h-5 object-contain"
                         />

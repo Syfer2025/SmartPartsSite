@@ -30,7 +30,7 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
   const [formData, setFormData] = useState({
     name: '',
     icon: '',
-    description: ''
+    description: '',
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -44,13 +44,13 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
     try {
       const res = await fetch(`${API_URL}/admin/categories`, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       const data = await res.json();
-      
+
       console.log('Categories fetched:', data);
-      
+
       if (data.categories) {
         setCategories(data.categories);
       }
@@ -81,9 +81,9 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -107,7 +107,7 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
     setFormData({
       name: category.name,
       icon: category.icon,
-      description: category.description
+      description: category.description,
     });
     setShowForm(true);
   };
@@ -119,8 +119,8 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
       const res = await fetch(`${API_URL}/admin/categories/${slug}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       const data = await res.json();
@@ -142,7 +142,7 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
     setFormData({
       name: '',
       icon: '',
-      description: ''
+      description: '',
     });
     setEditingCategory(null);
     setShowForm(false);
@@ -268,18 +268,22 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
                     {/* Preview */}
                     {formData.icon && (
                       <div className="flex items-center justify-center w-32 h-32 bg-white/10 rounded-xl border-2 border-dashed border-white/20 overflow-hidden">
-                        <img 
-                          src={formData.icon} 
+                        <img
+                          src={formData.icon}
                           alt="Preview"
                           className="w-full h-full object-contain p-2"
                         />
                       </div>
                     )}
-                    
+
                     {/* Upload button */}
                     <label className="flex items-center justify-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg cursor-pointer transition-colors border border-white/20">
                       <Package className="w-4 h-4" />
-                      {uploadingImage ? 'Carregando...' : formData.icon ? 'Trocar Imagem' : 'Escolher Imagem'}
+                      {uploadingImage
+                        ? 'Carregando...'
+                        : formData.icon
+                          ? 'Trocar Imagem'
+                          : 'Escolher Imagem'}
                       <input
                         type="file"
                         accept="image/png,image/jpeg,image/jpg"
@@ -297,9 +301,7 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Descrição
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -352,7 +354,11 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
             >
               <div className="flex items-start justify-between mb-4">
                 {category.icon.startsWith('data:image') ? (
-                  <img src={category.icon} alt={category.name} className="w-16 h-16 object-contain" />
+                  <img
+                    src={category.icon}
+                    alt={category.name}
+                    className="w-16 h-16 object-contain"
+                  />
                 ) : (
                   <div className="text-4xl">{category.icon}</div>
                 )}
@@ -373,14 +379,12 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
                   </button>
                 </div>
               </div>
-              
+
               <h4 className="font-semibold text-white mb-2">{category.name}</h4>
               <p className="text-sm text-gray-400 mb-3 line-clamp-2">
                 {category.description || 'Sem descrição'}
               </p>
-              <p className="text-xs text-gray-500">
-                Slug: {category.slug}
-              </p>
+              <p className="text-xs text-gray-500">Slug: {category.slug}</p>
             </motion.div>
           ))
         )}

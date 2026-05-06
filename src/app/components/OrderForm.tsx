@@ -38,21 +38,19 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
   const formatPhone = (value: string) => {
     const numbers = value.replace(/\D/g, '');
     if (numbers.length <= 11) {
-      return numbers
-        .replace(/^(\d{2})(\d)/, '($1) $2')
-        .replace(/(\d{5})(\d)/, '$1-$2');
+      return numbers.replace(/^(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
     }
     return value;
   };
 
   const validateCNPJ = (cnpj: string) => {
     const numbers = cnpj.replace(/\D/g, '');
-    
+
     if (numbers.length !== 14) return false;
-    
+
     // Verifica se todos os dígitos são iguais
     if (/^(\d)\1+$/.test(numbers)) return false;
-    
+
     // Validação do primeiro dígito verificador
     let sum = 0;
     let weight = 5;
@@ -62,7 +60,7 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
     }
     let digit = sum % 11 < 2 ? 0 : 11 - (sum % 11);
     if (digit !== parseInt(numbers[12])) return false;
-    
+
     // Validação do segundo dígito verificador
     sum = 0;
     weight = 6;
@@ -72,7 +70,7 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
     }
     digit = sum % 11 < 2 ? 0 : 11 - (sum % 11);
     if (digit !== parseInt(numbers[13])) return false;
-    
+
     return true;
   };
 
@@ -144,13 +142,16 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
           >
             <X className="w-5 h-5" />
           </button>
-          
+
           <h2 className="font-black text-2xl mb-2">Dados do Solicitante</h2>
           <p className="text-sm text-gray-300">Preencha seus dados para finalizar o pedido</p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto max-h-[calc(90vh-140px)]">
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 space-y-4 overflow-y-auto max-h-[calc(90vh-140px)]"
+        >
           {/* CNPJ */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -169,9 +170,7 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
                   : 'border-gray-300 focus:border-black focus:ring-gray-200'
               }`}
             />
-            {errors.cnpj && (
-              <p className="text-red-600 text-xs mt-1 ml-1">{errors.cnpj}</p>
-            )}
+            {errors.cnpj && <p className="text-red-600 text-xs mt-1 ml-1">{errors.cnpj}</p>}
           </div>
 
           {/* Nome Completo */}
@@ -214,9 +213,7 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
                   : 'border-gray-300 focus:border-black focus:ring-gray-200'
               }`}
             />
-            {errors.telefone && (
-              <p className="text-red-600 text-xs mt-1 ml-1">{errors.telefone}</p>
-            )}
+            {errors.telefone && <p className="text-red-600 text-xs mt-1 ml-1">{errors.telefone}</p>}
           </div>
 
           {/* Email */}
@@ -236,9 +233,7 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
                   : 'border-gray-300 focus:border-black focus:ring-gray-200'
               }`}
             />
-            {errors.email && (
-              <p className="text-red-600 text-xs mt-1 ml-1">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-red-600 text-xs mt-1 ml-1">{errors.email}</p>}
           </div>
 
           {/* Botões */}

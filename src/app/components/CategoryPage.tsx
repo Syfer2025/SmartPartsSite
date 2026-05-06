@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ArrowLeft, Package, ShoppingBag, Sparkles, TrendingUp } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
@@ -35,24 +36,22 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
   useEffect(() => {
     // Find the category
     const foundCategory = categories.find((c: Category) => c.slug === categorySlug);
-    
+
     if (foundCategory) {
       setCategory(foundCategory);
-      
+
       // Filter products for this category
-      const categoryProducts = allProducts.filter(
-        (p: Product) => p.categorySlug === categorySlug
-      );
-      
+      const categoryProducts = allProducts.filter((p: Product) => p.categorySlug === categorySlug);
+
       // Ordenar por SKU numérico (crescente)
       categoryProducts.sort((a, b) => {
         const skuA = parseInt(a.sku) || 0;
         const skuB = parseInt(b.sku) || 0;
         return skuA - skuB;
       });
-      
+
       setProducts(categoryProducts);
-      
+
       // Track category view
       analytics.trackCategoryView(categorySlug, foundCategory.name);
     } else {
@@ -89,29 +88,28 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Hero Header */}
-      <div className="bg-white border-b border-gray-200 py-4">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-3 mb-2">
-            <button
-              onClick={() => onNavigate('home')}
-              className="flex items-center gap-1 text-gray-500 hover:text-red-500 transition text-sm"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Voltar
-            </button>
-            <span className="text-gray-300">|</span>
-            <span className="text-xs text-gray-400">Categoria</span>
-          </div>
+      <div className="bg-white border-b border-gray-200 py-8 shadow-sm relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-30"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <nav className="flex items-center gap-2 text-sm font-medium mb-4">
+            <Link to="/" className="text-gray-500 hover:text-red-600 transition">Início</Link>
+            <span className="text-gray-300">/</span>
+            <span className="text-gray-900 font-bold">{category.name}</span>
+          </nav>
 
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <h1 className="text-2xl font-black text-gray-900">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
               {category.name}
             </h1>
 
-            <div className="flex items-center gap-4 text-sm text-gray-500">
-              <div className="flex items-center gap-1.5">
-                <ShoppingBag className="w-4 h-4 text-red-500" />
-                <span><strong className="text-gray-900">{products.length}</strong> produtos</span>
+            <div className="flex items-center gap-4 text-sm text-gray-500 bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-red-600" />
+                <span>
+                  <strong className="text-gray-900">{products.length}</strong> produto{products.length !== 1 ? 's' : ''}
+                </span>
               </div>
             </div>
           </div>
@@ -122,16 +120,17 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product, index) => (
-            <div
+            <Link
+              to={`/produto/${product.id}`}
               key={product.id || `product-${index}`}
-              onClick={() => handleProductClick(product)}
-              className="cursor-pointer group product-card-hover"
+              onClick={() => analytics.trackProductView(product.id, product.name)}
+              className="block group outline-none"
               style={{
                 opacity: 0,
                 animation: `fadeInUp 0.5s ease-out ${index * 0.1}s forwards`,
               }}
             >
-              <div className="bg-white/40 backdrop-blur-md border border-white/60 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 h-full flex flex-col">
+              <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 h-full flex flex-col focus-within:ring-2 focus-within:ring-red-500 focus-within:ring-offset-2">
                 {/* Image container */}
                 <div className="relative h-48 mb-4 flex items-center justify-center bg-white rounded-xl overflow-hidden">
                   <div className="w-full h-full flex items-center justify-center product-img-zoom">
@@ -151,7 +150,7 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
                 <h4 className="font-bold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 mb-2">
                   {product.name}
                 </h4>
-                
+
                 {/* SKU */}
                 {product.sku && (
                   <div className="mb-2 flex items-center gap-2">
@@ -160,26 +159,25 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
                     </span>
                   </div>
                 )}
-                
+
                 <p className="text-sm text-gray-600 line-clamp-3 mb-2">
                   {product.description || 'Produto de alta qualidade importado.'}
                 </p>
-                <p className="text-xs text-gray-500 mb-2">
-                  {product.category}
-                </p>
+                <p className="text-xs text-gray-500 mb-2">{product.category}</p>
 
                 {/* Spacer to push button to bottom */}
                 <div className="flex-1"></div>
 
                 {/* CTA Button - at bottom */}
-                <button
-                  className="w-full mt-4 bg-gradient-to-r from-red-600 to-red-500 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 hover:from-red-700 hover:to-red-600 transition-all shadow-lg shadow-red-500/30 product-cta-hover"
+                <button 
+                  tabIndex={-1}
+                  className="w-full mt-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 active:scale-[0.98] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-200 shadow-md shadow-red-600/20 hover:shadow-lg hover:shadow-red-600/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                 >
                   Ver Detalhes
-                  <TrendingUp className="w-4 h-4" />
+                  <TrendingUp className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

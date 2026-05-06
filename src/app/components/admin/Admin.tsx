@@ -21,8 +21,10 @@ export default function Admin({ onNavigate }: AdminProps = {}) {
 
   const checkSession = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (session?.access_token) {
         setAccessToken(session.access_token);
         setCheckingAdmin(true);
@@ -74,7 +76,7 @@ export default function Admin({ onNavigate }: AdminProps = {}) {
 
   if (showSignup) {
     return (
-      <AdminSignup 
+      <AdminSignup
         onSignupSuccess={handleSignupSuccess}
         onBackToLogin={() => setShowSignup(false)}
       />
@@ -83,10 +85,7 @@ export default function Admin({ onNavigate }: AdminProps = {}) {
 
   if (!accessToken) {
     return (
-      <AdminLogin 
-        onLoginSuccess={handleLoginSuccess}
-        onShowSignup={() => setShowSignup(true)}
-      />
+      <AdminLogin onLoginSuccess={handleLoginSuccess} onShowSignup={() => setShowSignup(true)} />
     );
   }
 
@@ -101,9 +100,11 @@ export default function Admin({ onNavigate }: AdminProps = {}) {
     );
   }
 
-  return <AdminDashboard 
-    accessToken={accessToken} 
-    onLogout={handleLogout}
-    onNavigateHome={onNavigate ? () => onNavigate('home') : undefined}
-  />;
+  return (
+    <AdminDashboard
+      accessToken={accessToken}
+      onLogout={handleLogout}
+      onNavigateHome={onNavigate ? () => onNavigate('home') : undefined}
+    />
+  );
 }

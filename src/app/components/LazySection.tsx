@@ -15,11 +15,11 @@ interface LazySectionProps {
 /**
  * LazySection: Delays rendering of children until the section enters
  * (or is near) the viewport. Uses IntersectionObserver for efficiency.
- * 
+ *
  * This is ideal for below-the-fold content like AboutUs, Footer, etc.
  * Combined with React.lazy() imports, this creates true on-demand
  * code splitting + render deferral.
- * 
+ *
  * Performance impact:
  * - Reduces initial JS parsing/execution time
  * - Reduces initial DOM node count
@@ -64,20 +64,11 @@ export const LazySection = memo(function LazySection({
 
   if (!isVisible) {
     return (
-      <div
-        ref={sentinelRef}
-        className={className}
-        style={{ minHeight }}
-        aria-hidden="true"
-      >
+      <div ref={sentinelRef} className={className} style={{ minHeight }} aria-hidden="true">
         {fallback || null}
       </div>
     );
   }
 
-  return (
-    <Suspense fallback={fallback || <div style={{ minHeight }} />}>
-      {children}
-    </Suspense>
-  );
+  return <Suspense fallback={fallback || <div style={{ minHeight }} />}>{children}</Suspense>;
 });

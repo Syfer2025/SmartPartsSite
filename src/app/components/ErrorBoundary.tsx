@@ -44,7 +44,9 @@ export class ErrorBoundary extends Component<Props, State> {
               <div className="bg-red-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                 <span className="text-4xl">⚠️</span>
               </div>
-              <h2 className="text-2xl font-black text-gray-900 mb-2 text-center">Erro ao Carregar Página</h2>
+              <h2 className="text-2xl font-black text-gray-900 mb-2 text-center">
+                Erro ao Carregar Página
+              </h2>
               <p className="text-gray-600 mb-6 text-center">
                 Ocorreu um erro ao renderizar este componente.
               </p>
@@ -55,7 +57,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 </div>
               )}
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => (window.location.href = '/')}
                 className="w-full px-6 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition"
               >
                 Voltar ao Site
@@ -69,11 +71,15 @@ export class ErrorBoundary extends Component<Props, State> {
                 {this.state.error && (
                   <div className="mb-4">
                     <div className="text-yellow-400 font-bold mb-2">Error:</div>
-                    <div className="text-white whitespace-pre-wrap">{this.state.error.toString()}</div>
+                    <div className="text-white whitespace-pre-wrap">
+                      {this.state.error.toString()}
+                    </div>
                     {this.state.error.stack && (
                       <>
                         <div className="text-yellow-400 font-bold mb-2 mt-4">Stack Trace:</div>
-                        <div className="text-white whitespace-pre-wrap text-xs">{this.state.error.stack}</div>
+                        <div className="text-white whitespace-pre-wrap text-xs">
+                          {this.state.error.stack}
+                        </div>
                       </>
                     )}
                   </div>
@@ -81,7 +87,9 @@ export class ErrorBoundary extends Component<Props, State> {
                 {this.state.errorInfo && (
                   <div>
                     <div className="text-yellow-400 font-bold mb-2">Component Stack:</div>
-                    <div className="text-white whitespace-pre-wrap text-xs">{this.state.errorInfo.componentStack}</div>
+                    <div className="text-white whitespace-pre-wrap text-xs">
+                      {this.state.errorInfo.componentStack}
+                    </div>
                   </div>
                 )}
               </div>

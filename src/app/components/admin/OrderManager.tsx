@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Package, 
-  Search, 
-  Calendar, 
-  User, 
-  Phone, 
-  Mail, 
-  Building, 
+import {
+  Package,
+  Search,
+  Calendar,
+  User,
+  Phone,
+  Mail,
+  Building,
   Clock,
   CheckCircle,
   XCircle,
@@ -16,7 +16,7 @@ import {
   Filter,
   MessageSquare,
   CheckSquare,
-  Square
+  Square,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { projectId } from '../../../../utils/supabase/info';
@@ -48,7 +48,9 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>(
+    'all'
+  );
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
@@ -67,7 +69,7 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
     try {
       const response = await fetch(`${API_URL}/admin/orders`, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -92,7 +94,7 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
       const response = await fetch(`${API_URL}/admin/orders/${orderId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -127,7 +129,7 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
           const response = await fetch(`${API_URL}/admin/orders/${orderId}`, {
             method: 'DELETE',
             headers: {
-              'Authorization': `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           });
 
@@ -157,10 +159,8 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
   };
 
   const toggleSelectOrder = (orderId: string) => {
-    setSelectedOrders(prev => 
-      prev.includes(orderId) 
-        ? prev.filter(id => id !== orderId)
-        : [...prev, orderId]
+    setSelectedOrders((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
     );
   };
 
@@ -168,28 +168,31 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
     if (selectedOrders.length === filteredOrders.length) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(filteredOrders.map(order => order.id));
+      setSelectedOrders(filteredOrders.map((order) => order.id));
     }
   };
 
-  const updateOrderStatus = async (orderId: string, status: 'pending' | 'approved' | 'rejected') => {
+  const updateOrderStatus = async (
+    orderId: string,
+    status: 'pending' | 'approved' | 'rejected'
+  ) => {
     try {
       console.log(`[OrderManager] Atualizando status do pedido ${orderId} para ${status}`);
-      
+
       const url = `${API_URL}/admin/orders/${orderId}/status`;
       console.log(`[OrderManager] URL: ${url}`);
-      
+
       const response = await fetch(url, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ status }),
       });
 
       console.log(`[OrderManager] Response status: ${response.status}`);
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
         console.error('[OrderManager] Erro na resposta:', errorData);
@@ -198,7 +201,7 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
 
       const data = await response.json();
       console.log('[OrderManager] Status atualizado com sucesso:', data);
-      
+
       toast.success('Status atualizado com sucesso');
       loadOrders();
       if (selectedOrder?.id === orderId) {
@@ -209,9 +212,9 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
       console.error('[OrderManager] Error details:', {
         message: error.message,
         name: error.name,
-        stack: error.stack
+        stack: error.stack,
       });
-      
+
       if (error.message === 'Failed to fetch') {
         toast.error('Erro de conexão. Verifique se o servidor está acessível.');
       } else {
@@ -220,8 +223,8 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
     }
   };
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = 
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch =
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customer.nomeCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customer.cnpj.includes(searchTerm) ||
@@ -233,9 +236,9 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
   });
 
   // Contadores por status
-  const pendingCount = orders.filter(order => order.status === 'pending').length;
-  const approvedCount = orders.filter(order => order.status === 'approved').length;
-  const rejectedCount = orders.filter(order => order.status === 'rejected').length;
+  const pendingCount = orders.filter((order) => order.status === 'pending').length;
+  const approvedCount = orders.filter((order) => order.status === 'approved').length;
+  const rejectedCount = orders.filter((order) => order.status === 'rejected').length;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -333,7 +336,8 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
 
         <div className="flex items-center justify-between text-sm">
           <p className="text-gray-600">
-            <span className="font-bold text-gray-900">{filteredOrders.length}</span> pedidos encontrados
+            <span className="font-bold text-gray-900">{filteredOrders.length}</span> pedidos
+            encontrados
           </p>
         </div>
       </div>
@@ -427,7 +431,11 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
                     <button
                       onClick={toggleSelectAll}
                       className="p-1 hover:bg-gray-200 rounded transition"
-                      title={selectedOrders.length === filteredOrders.length ? 'Desmarcar todos' : 'Selecionar todos'}
+                      title={
+                        selectedOrders.length === filteredOrders.length
+                          ? 'Desmarcar todos'
+                          : 'Selecionar todos'
+                      }
                     >
                       {selectedOrders.length === filteredOrders.length ? (
                         <CheckSquare className="w-5 h-5 text-red-600" />
@@ -488,9 +496,7 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
                       <p className="font-bold text-red-600">{order.totalItems} itens</p>
                       <p className="text-xs text-gray-500">{order.items.length} produtos</p>
                     </td>
-                    <td className="px-6 py-4">
-                      {getStatusBadge(order.status)}
-                    </td>
+                    <td className="px-6 py-4">{getStatusBadge(order.status)}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
@@ -576,7 +582,9 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
                       <User className="w-4 h-4 text-gray-400 mt-1" />
                       <div>
                         <p className="text-xs text-gray-500">Nome</p>
-                        <p className="font-bold text-gray-900">{selectedOrder.customer.nomeCompleto}</p>
+                        <p className="font-bold text-gray-900">
+                          {selectedOrder.customer.nomeCompleto}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
@@ -606,10 +614,18 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
                     <table className="w-full">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-black text-gray-700">#</th>
-                          <th className="px-4 py-3 text-left text-xs font-black text-gray-700">Produto</th>
-                          <th className="px-4 py-3 text-left text-xs font-black text-gray-700">SKU</th>
-                          <th className="px-4 py-3 text-right text-xs font-black text-gray-700">Qtd</th>
+                          <th className="px-4 py-3 text-left text-xs font-black text-gray-700">
+                            #
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-black text-gray-700">
+                            Produto
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-black text-gray-700">
+                            SKU
+                          </th>
+                          <th className="px-4 py-3 text-right text-xs font-black text-gray-700">
+                            Qtd
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
@@ -618,7 +634,9 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
                             <td className="px-4 py-3 text-sm text-gray-600">{index + 1}</td>
                             <td className="px-4 py-3 font-bold text-gray-900">{item.name}</td>
                             <td className="px-4 py-3 text-sm text-gray-600">{item.sku}</td>
-                            <td className="px-4 py-3 text-right font-bold text-red-600">{item.quantity}x</td>
+                            <td className="px-4 py-3 text-right font-bold text-red-600">
+                              {item.quantity}x
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -626,7 +644,9 @@ export default function OrderManager({ accessToken }: OrderManagerProps) {
                   </div>
                   <div className="mt-4 bg-red-50 rounded-xl p-4 flex justify-between items-center border-2 border-red-200">
                     <span className="font-bold text-gray-700">Total de Itens:</span>
-                    <span className="text-2xl font-black text-red-600">{selectedOrder.totalItems}</span>
+                    <span className="text-2xl font-black text-red-600">
+                      {selectedOrder.totalItems}
+                    </span>
                   </div>
                 </div>
 

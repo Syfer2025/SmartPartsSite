@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Settings as SettingsIcon, Save, BarChart2, Globe, Phone, Mail, MapPin } from 'lucide-react';
+import {
+  Settings as SettingsIcon,
+  Save,
+  BarChart2,
+  Globe,
+  Phone,
+  Mail,
+  MapPin,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { projectId } from '../../../../utils/supabase/info';
 
@@ -28,7 +36,7 @@ export default function Settings({ accessToken }: SettingsProps) {
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/admin/settings`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       const data = await res.json();
       if (data.settings) {
@@ -48,14 +56,14 @@ export default function Settings({ accessToken }: SettingsProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ settings })
+        body: JSON.stringify({ settings }),
       });
 
       if (res.ok) {
         toast.success('Configurações salvas com sucesso!');
-        
+
         // Update Google Analytics script if ID changed
         if (settings.googleAnalyticsId) {
           updateGoogleAnalytics(settings.googleAnalyticsId);
@@ -74,7 +82,7 @@ export default function Settings({ accessToken }: SettingsProps) {
   const updateGoogleAnalytics = (gaId: string) => {
     // Remove existing GA scripts
     const existingScripts = document.querySelectorAll('script[src*="googletagmanager.com"]');
-    existingScripts.forEach(script => script.remove());
+    existingScripts.forEach((script) => script.remove());
 
     // Add new GA scripts
     if (gaId && gaId.startsWith('G-')) {
@@ -129,7 +137,9 @@ export default function Settings({ accessToken }: SettingsProps) {
           </div>
           <div>
             <h3 className="text-xl font-bold text-white">Google Analytics</h3>
-            <p className="text-gray-400 text-sm">Integre o Google Analytics para rastreamento avançado</p>
+            <p className="text-gray-400 text-sm">
+              Integre o Google Analytics para rastreamento avançado
+            </p>
           </div>
         </div>
 
@@ -153,7 +163,17 @@ export default function Settings({ accessToken }: SettingsProps) {
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
             <h4 className="font-bold text-blue-400 mb-2">Como obter o Google Analytics ID:</h4>
             <ol className="text-gray-300 text-sm space-y-2 list-decimal list-inside">
-              <li>Acesse <a href="https://analytics.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">analytics.google.com</a></li>
+              <li>
+                Acesse{' '}
+                <a
+                  href="https://analytics.google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:underline"
+                >
+                  analytics.google.com
+                </a>
+              </li>
               <li>Crie uma conta e propriedade (se ainda não tiver)</li>
               <li>Vá em Admin → Fluxos de dados → Web</li>
               <li>Copie o ID de medição (começa com G-)</li>

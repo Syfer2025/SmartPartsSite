@@ -8,16 +8,20 @@ const listeners = new Set<() => void>();
 
 if (typeof window !== 'undefined') {
   let resizeTimeout: ReturnType<typeof setTimeout>;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      const newState = window.innerWidth < MOBILE_BREAKPOINT;
-      if (newState !== mobileState) {
-        mobileState = newState;
-        listeners.forEach(listener => listener());
-      }
-    }, 150); // Debounce 150ms
-  }, { passive: true });
+  window.addEventListener(
+    'resize',
+    () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const newState = window.innerWidth < MOBILE_BREAKPOINT;
+        if (newState !== mobileState) {
+          mobileState = newState;
+          listeners.forEach((listener) => listener());
+        }
+      }, 150); // Debounce 150ms
+    },
+    { passive: true }
+  );
 }
 
 function subscribe(callback: () => void) {

@@ -34,14 +34,39 @@ function normalize(text: string): string {
 
 // ── Stop words PT-BR (ignoradas na busca) ────────────────────
 const STOP_WORDS = new Set([
-  'de', 'do', 'da', 'dos', 'das', 'em', 'no', 'na', 'nos', 'nas',
-  'um', 'uma', 'uns', 'umas', 'o', 'a', 'os', 'as', 'e', 'ou',
-  'com', 'por', 'para', 'que', 'se', 'ao', 'aos',
+  'de',
+  'do',
+  'da',
+  'dos',
+  'das',
+  'em',
+  'no',
+  'na',
+  'nos',
+  'nas',
+  'um',
+  'uma',
+  'uns',
+  'umas',
+  'o',
+  'a',
+  'os',
+  'as',
+  'e',
+  'ou',
+  'com',
+  'por',
+  'para',
+  'que',
+  'se',
+  'ao',
+  'aos',
 ]);
 
 // ── Levenshtein (só para typos) ──────────────────────────────
 function levenshtein(a: string, b: string): number {
-  const m = a.length, n = b.length;
+  const m = a.length,
+    n = b.length;
   if (m === 0) return n;
   if (n === 0) return m;
   let prev = Array.from({ length: n + 1 }, (_, i) => i);
@@ -78,7 +103,13 @@ function getVariants(word: string): string[] {
   if (word.endsWith('ao')) v.add(word.slice(0, -2) + 'oes');
   if (word.endsWith('l')) v.add(word.slice(0, -1) + 'is');
   if (word.endsWith('r') || word.endsWith('z')) v.add(word + 'es');
-  if (!word.endsWith('s') && !word.endsWith('l') && !word.endsWith('r') && !word.endsWith('z') && !word.endsWith('ao')) {
+  if (
+    !word.endsWith('s') &&
+    !word.endsWith('l') &&
+    !word.endsWith('r') &&
+    !word.endsWith('z') &&
+    !word.endsWith('ao')
+  ) {
     v.add(word + 's');
   }
   return Array.from(v);
@@ -112,11 +143,11 @@ export function smartSearch(
   if (!query || query.length === 0) return [];
 
   // Separar tokens e remover stop words
-  const allTokens = query.split(/\s+/).filter(t => t.length > 0);
-  const tokens = allTokens.filter(t => !STOP_WORDS.has(t) && t.length >= 2);
+  const allTokens = query.split(/\s+/).filter((t) => t.length > 0);
+  const tokens = allTokens.filter((t) => !STOP_WORDS.has(t) && t.length >= 2);
 
   // Se sobrou nada após remover stop words, usar todos
-  const searchTokens = tokens.length > 0 ? tokens : allTokens.filter(t => t.length >= 2);
+  const searchTokens = tokens.length > 0 ? tokens : allTokens.filter((t) => t.length >= 2);
   if (searchTokens.length === 0) return [];
 
   const results: SearchResult[] = [];
@@ -188,9 +219,6 @@ export function smartSearch(
 }
 
 // ── Quick search para dropdown ───────────────────────────────
-export function quickSearch(
-  products: SearchableProduct[],
-  query: string
-): SearchResult[] {
+export function quickSearch(products: SearchableProduct[], query: string): SearchResult[] {
   return smartSearch(products, query, 50);
 }

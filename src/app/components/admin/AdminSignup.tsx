@@ -7,7 +7,7 @@ export default function AdminSignup() {
   const [formData, setFormData] = useState({
     email: 'alexmeira@protonmail.com',
     password: 'Gouranga22',
-    name: 'Alex Meira'
+    name: 'Alex Meira',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -25,9 +25,9 @@ export default function AdminSignup() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`
+          Authorization: `Bearer ${publicAnonKey}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -61,7 +61,7 @@ export default function AdminSignup() {
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: 'linear',
           }}
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-3xl"
         />
@@ -73,7 +73,7 @@ export default function AdminSignup() {
           transition={{
             duration: 15,
             repeat: Infinity,
-            ease: "linear"
+            ease: 'linear',
           }}
           className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-800/10 rounded-full blur-3xl"
         />
@@ -90,17 +90,13 @@ export default function AdminSignup() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
             className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl mb-4 shadow-xl"
           >
             <Shield className="w-10 h-10 text-white" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Criar Conta Admin
-          </h1>
-          <p className="text-gray-400">
-            SMART PARTS IMPORT
-          </p>
+          <h1 className="text-3xl font-bold text-white mb-2">Criar Conta Admin</h1>
+          <p className="text-gray-400">SMART PARTS IMPORT</p>
         </div>
 
         {success ? (
@@ -111,16 +107,22 @@ export default function AdminSignup() {
           >
             <div className="text-center">
               <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <svg
+                  className="w-8 h-8 text-green-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                Conta Criada!
-              </h2>
-              <p className="text-gray-300 mb-4">
-                Redirecionando para o login...
-              </p>
+              <h2 className="text-2xl font-bold text-white mb-2">Conta Criada!</h2>
+              <p className="text-gray-300 mb-4">Redirecionando para o login...</p>
             </div>
           </motion.div>
         ) : (
@@ -153,9 +155,7 @@ export default function AdminSignup() {
 
               {/* Email Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Email
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Mail className="w-5 h-5 text-gray-400" />
@@ -173,9 +173,7 @@ export default function AdminSignup() {
 
               {/* Password Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Senha
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Senha</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Lock className="w-5 h-5 text-gray-400" />
@@ -219,7 +217,7 @@ export default function AdminSignup() {
                   <span className="flex items-center justify-center gap-2">
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                       className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
                     />
                     Criando conta...

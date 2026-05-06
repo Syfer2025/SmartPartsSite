@@ -18,9 +18,7 @@ interface UseInViewOptions {
  * - `once: true` disconnects after first intersection, freeing memory.
  * - No external dependency (replaces motion/react import in Footer).
  */
-export function useInView<T extends HTMLElement = HTMLDivElement>(
-  options: UseInViewOptions = {}
-) {
+export function useInView<T extends HTMLElement = HTMLDivElement>(options: UseInViewOptions = {}) {
   const { threshold = 0.1, rootMargin = '0px', once = true } = options;
   const ref = useRef<T>(null);
   const [inView, setInView] = useState(false);

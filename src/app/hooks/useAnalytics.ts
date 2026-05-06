@@ -8,9 +8,9 @@ export const trackEvent = async (event: string, data: any = {}) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${publicAnonKey}`
+        Authorization: `Bearer ${publicAnonKey}`,
       },
-      body: JSON.stringify({ event, data })
+      body: JSON.stringify({ event, data }),
     });
   } catch {
     // Silently ignore — analytics endpoint may not be deployed yet
@@ -20,14 +20,14 @@ export const trackEvent = async (event: string, data: any = {}) => {
 export const useAnalytics = () => {
   return {
     trackPageView: (page: string) => trackEvent('page_view', { page }),
-    trackProductView: (productId: string, productName: string) => 
+    trackProductView: (productId: string, productName: string) =>
       trackEvent('product_view', { productId, productName }),
-    trackCategoryView: (categorySlug: string, categoryName: string) => 
+    trackCategoryView: (categorySlug: string, categoryName: string) =>
       trackEvent('category_view', { categorySlug, categoryName }),
-    trackWhatsAppClick: (location: string, productId?: string) => 
+    trackWhatsAppClick: (location: string, productId?: string) =>
       trackEvent('whatsapp_click', { location, productId }),
     trackCatalogOpen: () => trackEvent('catalog_open', {}),
-    trackCartAction: (action: string, productId?: string) => 
+    trackCartAction: (action: string, productId?: string) =>
       trackEvent('cart_action', { action, productId }),
   };
 };

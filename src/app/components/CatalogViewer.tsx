@@ -27,7 +27,7 @@ export default function CatalogViewer({ onNavigate }: CatalogViewerProps) {
     const fetchCatalogs = async () => {
       try {
         const res = await fetch(`${API_URL}/pdf-catalogs`, {
-          headers: { 'Authorization': `Bearer ${publicAnonKey}` },
+          headers: { Authorization: `Bearer ${publicAnonKey}` },
         });
         if (!res.ok) throw new Error('Falha ao carregar');
         const data = await res.json();
@@ -57,7 +57,9 @@ export default function CatalogViewer({ onNavigate }: CatalogViewerProps) {
                 Voltar
               </button>
               <span className="text-gray-300">|</span>
-              <h1 className="text-sm font-bold text-gray-900 truncate max-w-[50%]">{selectedCatalog.name}</h1>
+              <h1 className="text-sm font-bold text-gray-900 truncate max-w-[50%]">
+                {selectedCatalog.name}
+              </h1>
             </div>
             <a
               href={selectedCatalog.pdfUrl}
@@ -73,7 +75,10 @@ export default function CatalogViewer({ onNavigate }: CatalogViewerProps) {
 
         {/* PDF com margens laterais */}
         <div className="container mx-auto px-4 md:px-12 lg:px-24 pt-2 pb-6">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden" style={{ height: '75vh' }}>
+          <div
+            className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
+            style={{ height: '75vh' }}
+          >
             <iframe
               src={`${selectedCatalog.pdfUrl}#toolbar=1&navpanes=1&scrollbar=1`}
               className="w-full h-full border-0"
@@ -102,9 +107,7 @@ export default function CatalogViewer({ onNavigate }: CatalogViewerProps) {
             <span className="text-gray-300">|</span>
             <span className="text-xs text-gray-400">Catálogos</span>
           </div>
-          <h1 className="text-2xl font-black text-gray-900">
-            Nossos Catálogos
-          </h1>
+          <h1 className="text-2xl font-black text-gray-900">Nossos Catálogos</h1>
           <p className="text-gray-500 text-sm mt-1">
             Explore nossos catálogos completos de produtos
           </p>

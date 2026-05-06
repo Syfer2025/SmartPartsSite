@@ -19,7 +19,7 @@ import {
   Activity,
   Zap,
   Download,
-  Package
+  Package,
 } from 'lucide-react';
 import { projectId, publicAnonKey } from '../../../utils/supabase/info';
 import { useData } from '../context/DataContext';
@@ -46,10 +46,10 @@ export default function Debug({ onNavigate }: DebugProps) {
   const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-d06f92b7`;
 
   const updateTest = (name: string, updates: Partial<TestResult>) => {
-    setTests(prev => {
-      const existing = prev.find(t => t.name === name);
+    setTests((prev) => {
+      const existing = prev.find((t) => t.name === name);
       if (existing) {
-        return prev.map(t => t.name === name ? { ...t, ...updates } : t);
+        return prev.map((t) => (t.name === name ? { ...t, ...updates } : t));
       }
       return [...prev, { name, status: 'pending', message: '', ...updates } as TestResult];
     });
@@ -58,7 +58,7 @@ export default function Debug({ onNavigate }: DebugProps) {
   const runTest = async (name: string, testFn: () => Promise<any>) => {
     const startTime = Date.now();
     updateTest(name, { status: 'running', message: 'Executando...' });
-    
+
     try {
       const result = await testFn();
       const duration = Date.now() - startTime;
@@ -66,7 +66,7 @@ export default function Debug({ onNavigate }: DebugProps) {
         status: 'success',
         message: 'Teste passou com sucesso',
         data: result,
-        duration
+        duration,
       });
       return result;
     } catch (error: any) {
@@ -75,7 +75,7 @@ export default function Debug({ onNavigate }: DebugProps) {
         status: 'error',
         message: error.message || 'Teste falhou',
         error: error,
-        duration
+        duration,
       });
       throw error;
     }
@@ -91,13 +91,13 @@ export default function Debug({ onNavigate }: DebugProps) {
         return {
           projectId,
           publicAnonKey: publicAnonKey.substring(0, 20) + '...',
-          warning: 'ProjectId não parece ser um URL do Supabase'
+          warning: 'ProjectId não parece ser um URL do Supabase',
         };
       }
       return {
         projectId,
         publicAnonKey: publicAnonKey.substring(0, 20) + '...',
-        apiUrl: API_URL
+        apiUrl: API_URL,
       };
     });
   };
@@ -106,22 +106,22 @@ export default function Debug({ onNavigate }: DebugProps) {
   const testServerHealth = async () => {
     return runTest('Servidor Health Check', async () => {
       console.log('[DEBUG] Testando servidor em:', `${API_URL}/health`);
-      
+
       const response = await fetch(`${API_URL}/health`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
-      
+
       console.log('[DEBUG] Status da resposta:', response.status);
-      
+
       if (!response.ok) {
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
       console.log('[DEBUG] Resposta do servidor:', data);
-      
+
       return data;
     });
   };
@@ -131,8 +131,8 @@ export default function Debug({ onNavigate }: DebugProps) {
     return runTest('Categorias Públicas', async () => {
       const response = await fetch(`${API_URL}/categories`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
       if (!response.ok) {
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
@@ -141,21 +141,21 @@ export default function Debug({ onNavigate }: DebugProps) {
       if (!data.categories || !Array.isArray(data.categories)) {
         throw new Error('Formato de resposta inválido');
       }
-      
+
       // Truncar ícones base64 para não sobrecarregar o JSON - NÃO INCLUIR O ÍCONE!
       const categoriesSummary = data.categories.map((cat: any) => ({
         name: cat.name,
         slug: cat.slug,
         hasIcon: !!cat.icon,
         iconSize: cat.icon ? `${(cat.icon.length / 1024).toFixed(2)} KB` : '0 KB',
-        createdAt: cat.createdAt
+        createdAt: cat.createdAt,
         // NÃO INCLUIR cat.icon aqui!
       }));
-      
+
       return {
         total: data.categories.length,
         categories: categoriesSummary.slice(0, 5), // Apenas 5 primeiras
-        allSlugs: data.categories.map((c: any) => c.slug)
+        allSlugs: data.categories.map((c: any) => c.slug),
       };
     });
   };
@@ -165,8 +165,8 @@ export default function Debug({ onNavigate }: DebugProps) {
     return runTest('Produtos Públicos', async () => {
       const response = await fetch(`${API_URL}/products`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
       if (!response.ok) {
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
@@ -182,7 +182,7 @@ export default function Debug({ onNavigate }: DebugProps) {
         porCategoria: data.products.reduce((acc: any, p: any) => {
           acc[p.category] = (acc[p.category] || 0) + 1;
           return acc;
-        }, {})
+        }, {}),
       };
     });
   };
@@ -192,8 +192,8 @@ export default function Debug({ onNavigate }: DebugProps) {
     return runTest('Banners', async () => {
       const response = await fetch(`${API_URL}/banners`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
       if (!response.ok) {
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
@@ -204,7 +204,7 @@ export default function Debug({ onNavigate }: DebugProps) {
       }
       return {
         total: data.banners.length,
-        banners: data.banners
+        banners: data.banners,
       };
     });
   };
@@ -213,23 +213,23 @@ export default function Debug({ onNavigate }: DebugProps) {
   const testDataContext = async () => {
     return runTest('DataContext', async () => {
       const { categories, products, loading, error } = dataContext;
-      
+
       if (error) {
         throw new Error(`DataContext em erro: ${error}`);
       }
-      
+
       if (loading) {
         return {
           status: 'loading',
-          warning: 'DataContext ainda está carregando'
+          warning: 'DataContext ainda está carregando',
         };
       }
-      
+
       return {
         categoriesCount: categories.length,
         productsCount: products.length,
         categories: categories.slice(0, 3),
-        products: products.slice(0, 3)
+        products: products.slice(0, 3),
       };
     });
   };
@@ -240,27 +240,27 @@ export default function Debug({ onNavigate }: DebugProps) {
       // Primeiro pega a lista de produtos
       const productsRes = await fetch(`${API_URL}/products`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
       const productsData = await productsRes.json();
-      
+
       if (!productsData.products || productsData.products.length === 0) {
         throw new Error('Nenhum produto disponível para testar');
       }
-      
+
       const firstProduct = productsData.products[0];
-      
+
       // Tenta buscar o produto específico
       const response = await fetch(`${API_URL}/products/${firstProduct.id}`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
       if (!response.ok) {
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
       return {
         productId: firstProduct.id,
@@ -268,7 +268,7 @@ export default function Debug({ onNavigate }: DebugProps) {
         data: data.product,
         hasSpecifications: !!data.product?.specifications,
         hasImages: !!data.product?.images,
-        specificationsType: Array.isArray(data.product?.specifications) ? 'array' : 'object'
+        specificationsType: Array.isArray(data.product?.specifications) ? 'array' : 'object',
       };
     });
   };
@@ -279,33 +279,33 @@ export default function Debug({ onNavigate }: DebugProps) {
       // Primeiro pega categorias
       const categoriesRes = await fetch(`${API_URL}/categories`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
       const categoriesData = await categoriesRes.json();
-      
+
       if (!categoriesData.categories || categoriesData.categories.length === 0) {
         throw new Error('Nenhuma categoria disponível');
       }
-      
+
       const firstCategory = categoriesData.categories[0];
-      
+
       // Busca produtos da categoria usando a rota correta
       const response = await fetch(`${API_URL}/products/category/${firstCategory.slug}`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
       if (!response.ok) {
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
       return {
         categorySlug: firstCategory.slug,
         categoryName: firstCategory.name,
         total: data.products?.length || 0,
-        products: data.products?.slice(0, 3)
+        products: data.products?.slice(0, 3),
       };
     });
   };
@@ -315,22 +315,22 @@ export default function Debug({ onNavigate }: DebugProps) {
     return runTest('Carregamento de Imagens', async () => {
       const productsRes = await fetch(`${API_URL}/products`, {
         headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        }
+          Authorization: `Bearer ${publicAnonKey}`,
+        },
       });
       const productsData = await productsRes.json();
-      
+
       if (!productsData.products || productsData.products.length === 0) {
         throw new Error('Nenhum produto com imagens para testar');
       }
-      
+
       const productsWithImages = productsData.products.filter((p: any) => p.image);
       if (productsWithImages.length === 0) {
         throw new Error('Nenhum produto tem imagens');
       }
-      
+
       const imageUrl = productsWithImages[0].image;
-      
+
       // Testa se a imagem carrega
       const imageTest = await new Promise((resolve, reject) => {
         const img = new Image();
@@ -339,12 +339,12 @@ export default function Debug({ onNavigate }: DebugProps) {
         img.src = imageUrl;
         setTimeout(() => reject(new Error('Timeout ao carregar imagem')), 10000);
       });
-      
+
       return {
         totalProducts: productsData.products.length,
         productsWithImages: productsWithImages.length,
         testedImageUrl: imageUrl,
-        imageTest
+        imageTest,
       };
     });
   };
@@ -353,31 +353,31 @@ export default function Debug({ onNavigate }: DebugProps) {
   const testPerformance = async () => {
     return runTest('Performance', async () => {
       const tests = [];
-      
+
       // Teste 1: Latência da API
       const apiStart = performance.now();
       await fetch(`${API_URL}/health`);
       const apiLatency = performance.now() - apiStart;
       tests.push({ test: 'API Latency', value: `${apiLatency.toFixed(2)}ms` });
-      
+
       // Teste 2: Tempo de carregamento de categorias
       const catStart = performance.now();
       await fetch(`${API_URL}/categories`);
       const catLatency = performance.now() - catStart;
       tests.push({ test: 'Categories Load', value: `${catLatency.toFixed(2)}ms` });
-      
+
       // Teste 3: Tempo de carregamento de produtos
       const prodStart = performance.now();
       await fetch(`${API_URL}/products`);
       const prodLatency = performance.now() - prodStart;
       tests.push({ test: 'Products Load', value: `${prodLatency.toFixed(2)}ms` });
-      
+
       const avgLatency = (apiLatency + catLatency + prodLatency) / 3;
-      
+
       return {
         tests,
         averageLatency: `${avgLatency.toFixed(2)}ms`,
-        status: avgLatency < 1000 ? 'Excelente' : avgLatency < 3000 ? 'Bom' : 'Lento'
+        status: avgLatency < 1000 ? 'Excelente' : avgLatency < 3000 ? 'Bom' : 'Lento',
       };
     });
   };
@@ -387,22 +387,23 @@ export default function Debug({ onNavigate }: DebugProps) {
     return runTest('Estrutura de Dados', async () => {
       const [categoriesRes, productsRes] = await Promise.all([
         fetch(`${API_URL}/categories`),
-        fetch(`${API_URL}/products`)
+        fetch(`${API_URL}/products`),
       ]);
-      
+
       const categoriesData = await categoriesRes.json();
       const productsData = await productsRes.json();
-      
+
       const issues = [];
-      
+
       // Verificar categorias
       if (!categoriesData.categories) issues.push('categories.categories não existe');
-      if (!Array.isArray(categoriesData.categories)) issues.push('categories.categories não é array');
-      
+      if (!Array.isArray(categoriesData.categories))
+        issues.push('categories.categories não é array');
+
       // Verificar produtos
       if (!productsData.products) issues.push('products.products não existe');
       if (!Array.isArray(productsData.products)) issues.push('products.products não é array');
-      
+
       // Verificar estrutura de cada categoria
       if (categoriesData.categories && categoriesData.categories.length > 0) {
         const cat = categoriesData.categories[0];
@@ -410,7 +411,7 @@ export default function Debug({ onNavigate }: DebugProps) {
         if (!cat.slug) issues.push('Categoria sem campo slug');
         if (!cat.icon) issues.push('Categoria sem campo icon');
       }
-      
+
       // Verificar estrutura de cada produto
       if (productsData.products && productsData.products.length > 0) {
         const prod = productsData.products[0];
@@ -418,7 +419,7 @@ export default function Debug({ onNavigate }: DebugProps) {
         if (!prod.name) issues.push('Produto sem campo name');
         if (!prod.category) issues.push('Produto sem campo category');
         if (!prod.categorySlug) issues.push('Produto sem campo categorySlug');
-        
+
         // Verificar especificações
         if (prod.specifications) {
           const isArray = Array.isArray(prod.specifications);
@@ -427,11 +428,11 @@ export default function Debug({ onNavigate }: DebugProps) {
           }
         }
       }
-      
+
       return {
         issues: issues.length > 0 ? issues : ['Nenhum problema encontrado'],
         categoriesStructure: categoriesData.categories?.[0],
-        productsStructure: productsData.products?.[0]
+        productsStructure: productsData.products?.[0],
       };
     });
   };
@@ -441,28 +442,28 @@ export default function Debug({ onNavigate }: DebugProps) {
     return runTest('Sistema de Cache', async () => {
       const cacheKey = 'debug-cache-test';
       const testData = { test: true, timestamp: Date.now() };
-      
+
       // Testa localStorage
       try {
         localStorage.setItem(cacheKey, JSON.stringify(testData));
         const retrieved = JSON.parse(localStorage.getItem(cacheKey) || '{}');
         localStorage.removeItem(cacheKey);
-        
+
         if (retrieved.test !== testData.test) {
           throw new Error('Cache não funciona corretamente');
         }
       } catch (e) {
         throw new Error('localStorage não disponível ou bloqueado');
       }
-      
+
       return {
         localStorageAvailable: true,
         testPassed: true,
         dataContextCache: {
           categoriesCount: dataContext.categories.length,
           productsCount: dataContext.products.length,
-          loading: dataContext.loading
-        }
+          loading: dataContext.loading,
+        },
       };
     });
   };
@@ -473,13 +474,13 @@ export default function Debug({ onNavigate }: DebugProps) {
       // Primeiro verifica se tem categorias
       const categoriesRes = await fetch(`${API_URL}/categories`);
       const categoriesData = await categoriesRes.json();
-      
+
       if (!categoriesData.categories || categoriesData.categories.length === 0) {
         throw new Error('Nenhuma categoria disponível. Crie uma categoria primeiro.');
       }
-      
+
       const firstCategory = categoriesData.categories[0];
-      
+
       // Dados de teste para criar produto
       const testProduct = {
         name: `TESTE DEBUG - ${Date.now()}`,
@@ -492,40 +493,40 @@ export default function Debug({ onNavigate }: DebugProps) {
         specifications: [
           { id: 'spec-1', key: 'Voltagem', value: '12V/24V' },
           { id: 'spec-2', key: 'Capacidade', value: '45L' },
-          { id: 'spec-3', key: 'Peso', value: '15kg' }
-        ]
+          { id: 'spec-3', key: 'Peso', value: '15kg' },
+        ],
       };
-      
+
       console.log('[DEBUG TEST] Tentando criar produto:', testProduct);
-      
+
       // IMPORTANTE: Este teste precisa de um token de admin válido
       // Por enquanto, vamos apenas testar se a rota está acessível
       const response = await fetch(`${API_URL}/admin/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}` // Vai falhar mas vamos ver o erro
+          Authorization: `Bearer ${publicAnonKey}`, // Vai falhar mas vamos ver o erro
         },
-        body: JSON.stringify(testProduct)
+        body: JSON.stringify(testProduct),
       });
-      
+
       const responseText = await response.text();
       console.log('[DEBUG TEST] Resposta do servidor (texto):', responseText);
-      
+
       let data;
       try {
         data = JSON.parse(responseText);
       } catch (e) {
         throw new Error(`Erro ao fazer parse da resposta: ${responseText}`);
       }
-      
+
       console.log('[DEBUG TEST] Resposta do servidor (JSON):', data);
-      
+
       return {
         status: response.status,
         ok: response.ok,
         response: data,
-        note: 'Este teste precisa de um token de admin válido. Se retornar 401 é esperado.'
+        note: 'Este teste precisa de um token de admin válido. Se retornar 401 é esperado.',
       };
     });
   };
@@ -533,29 +534,28 @@ export default function Debug({ onNavigate }: DebugProps) {
   const runAllTests = async () => {
     setRunning(true);
     setTests([]);
-    
+
     try {
       // Testes básicos
       await testSupabaseConfig();
       await testServerHealth();
-      
+
       // Testes de dados
       await testPublicCategories();
       await testPublicProducts();
       await testBanners();
       await testDataContext();
-      
+
       // Testes específicos
       await testSpecificProduct();
       await testProductsByCategory();
-      
+
       // Testes avançados
       await testImageLoading();
       await testDataStructure();
       await testCache();
       await testPerformance();
       await testCreateProductWithSpecs();
-      
     } catch (error) {
       console.error('Erro ao executar testes:', error);
     } finally {
@@ -572,10 +572,10 @@ export default function Debug({ onNavigate }: DebugProps) {
         categoriesCount: dataContext.categories.length,
         productsCount: dataContext.products.length,
         loading: dataContext.loading,
-        error: dataContext.error
-      }
+        error: dataContext.error,
+      },
     };
-    
+
     const blob = new Blob([JSON.stringify(results, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -614,9 +614,9 @@ export default function Debug({ onNavigate }: DebugProps) {
     }
   };
 
-  const successCount = tests.filter(t => t.status === 'success').length;
-  const errorCount = tests.filter(t => t.status === 'error').length;
-  const warningCount = tests.filter(t => t.status === 'warning').length;
+  const successCount = tests.filter((t) => t.status === 'success').length;
+  const errorCount = tests.filter((t) => t.status === 'error').length;
+  const warningCount = tests.filter((t) => t.status === 'warning').length;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 py-20">
@@ -631,7 +631,7 @@ export default function Debug({ onNavigate }: DebugProps) {
             <Bug className="w-6 h-6" />
             <span className="font-bold text-lg">Debug Tool</span>
           </motion.div>
-          
+
           <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
             Sistema de Debug Completo
           </h1>
@@ -729,11 +729,11 @@ export default function Debug({ onNavigate }: DebugProps) {
             { name: 'Estrutura', fn: testDataStructure, icon: Database },
             { name: 'Cache', fn: testCache, icon: Zap },
             { name: 'Performance', fn: testPerformance, icon: Activity },
-            { name: 'Criar Produto com Specs', fn: testCreateProductWithSpecs, icon: Package }
+            { name: 'Criar Produto com Specs', fn: testCreateProductWithSpecs, icon: Package },
           ].map((test) => {
             const Icon = test.icon;
-            const testResult = tests.find(t => t.name === test.name);
-            
+            const testResult = tests.find((t) => t.name === test.name);
+
             return (
               <motion.button
                 key={test.name}
@@ -748,16 +748,12 @@ export default function Debug({ onNavigate }: DebugProps) {
                 } disabled:opacity-50`}
               >
                 <Icon className="w-6 h-6 text-white mx-auto mb-2" />
-                <div className="text-white text-sm font-semibold text-center">
-                  {test.name}
-                </div>
+                <div className="text-white text-sm font-semibold text-center">{test.name}</div>
                 {testResult && (
                   <div className="flex items-center justify-center gap-1 mt-2">
                     {getStatusIcon(testResult.status)}
                     {testResult.duration && (
-                      <span className="text-xs text-gray-400">
-                        {testResult.duration}ms
-                      </span>
+                      <span className="text-xs text-gray-400">{testResult.duration}ms</span>
                     )}
                   </div>
                 )}
@@ -770,7 +766,7 @@ export default function Debug({ onNavigate }: DebugProps) {
         {tests.length > 0 && (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold text-white mb-6">Resultados dos Testes</h2>
-            
+
             {tests.map((test, index) => (
               <motion.div
                 key={test.name}
@@ -790,9 +786,7 @@ export default function Debug({ onNavigate }: DebugProps) {
                         <h3 className="text-lg font-bold text-white mb-1">{test.name}</h3>
                         <p className="text-gray-400 text-sm">{test.message}</p>
                         {test.duration && (
-                          <p className="text-gray-500 text-xs mt-1">
-                            Tempo: {test.duration}ms
-                          </p>
+                          <p className="text-gray-500 text-xs mt-1">Tempo: {test.duration}ms</p>
                         )}
                       </div>
                     </div>
@@ -839,7 +833,9 @@ export default function Debug({ onNavigate }: DebugProps) {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">API URL:</span>
-                <span className="text-white font-mono text-xs truncate max-w-[200px]">{API_URL}</span>
+                <span className="text-white font-mono text-xs truncate max-w-[200px]">
+                  {API_URL}
+                </span>
               </div>
             </div>
           </div>

@@ -25,7 +25,7 @@ export default function UploadAssets() {
   const BUCKET_NAME = 'assets';
 
   const uploadAsset = async (asset: AssetItem, index: number) => {
-    setAssets(prev => prev.map((a, i) => i === index ? { ...a, status: 'uploading' } : a));
+    setAssets((prev) => prev.map((a, i) => (i === index ? { ...a, status: 'uploading' } : a)));
 
     try {
       // Fetch the image as blob
@@ -34,18 +34,18 @@ export default function UploadAssets() {
       const blob = await response.blob();
 
       // Upload to Supabase Storage (upsert = overwrite if exists)
-      const { error } = await supabase.storage
-        .from(BUCKET_NAME)
-        .upload(asset.fileName, blob, {
-          contentType: 'image/png',
-          upsert: true,
-        });
+      const { error } = await supabase.storage.from(BUCKET_NAME).upload(asset.fileName, blob, {
+        contentType: 'image/png',
+        upsert: true,
+      });
 
       if (error) throw error;
 
-      setAssets(prev => prev.map((a, i) => i === index ? { ...a, status: 'success' } : a));
+      setAssets((prev) => prev.map((a, i) => (i === index ? { ...a, status: 'success' } : a)));
     } catch (err: any) {
-      setAssets(prev => prev.map((a, i) => i === index ? { ...a, status: 'error', error: err.message } : a));
+      setAssets((prev) =>
+        prev.map((a, i) => (i === index ? { ...a, status: 'error', error: err.message } : a))
+      );
     }
   };
 
@@ -62,8 +62,9 @@ export default function UploadAssets() {
     setDone(true);
   };
 
-  const allSuccess = assets.every(a => a.status === 'success');
-  const SUPABASE_STORAGE = 'https://khvkawwzikfcnirkwnih.supabase.co/storage/v1/object/public/assets';
+  const allSuccess = assets.every((a) => a.status === 'success');
+  const SUPABASE_STORAGE =
+    'https://khvkawwzikfcnirkwnih.supabase.co/storage/v1/object/public/assets';
 
   return (
     <div className="min-h-screen bg-gray-950 text-white p-8">
@@ -72,15 +73,23 @@ export default function UploadAssets() {
         <p className="text-gray-400 mb-8">
           Esta página faz upload das imagens do Figma Make direto para o Supabase Storage.
           <br />
-          <strong className="text-yellow-400">Execute isso AQUI no Figma Make</strong> (não em produção).
+          <strong className="text-yellow-400">Execute isso AQUI no Figma Make</strong> (não em
+          produção).
         </p>
 
         {/* Preview dos assets */}
         <div className="space-y-4 mb-8">
           {assets.map((asset, i) => (
-            <div key={asset.fileName} className="bg-gray-900 rounded-lg p-4 flex items-center gap-4">
+            <div
+              key={asset.fileName}
+              className="bg-gray-900 rounded-lg p-4 flex items-center gap-4"
+            >
               <div className="w-20 h-20 bg-gray-800 rounded flex items-center justify-center overflow-hidden flex-shrink-0">
-                <img src={asset.src} alt={asset.name} className="max-w-full max-h-full object-contain" />
+                <img
+                  src={asset.src}
+                  alt={asset.name}
+                  className="max-w-full max-h-full object-contain"
+                />
               </div>
               <div className="flex-1">
                 <p className="text-lg">{asset.name}</p>
@@ -88,7 +97,9 @@ export default function UploadAssets() {
               </div>
               <div className="flex-shrink-0">
                 {asset.status === 'pending' && <Image className="w-6 h-6 text-gray-500" />}
-                {asset.status === 'uploading' && <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />}
+                {asset.status === 'uploading' && (
+                  <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
+                )}
                 {asset.status === 'success' && <CheckCircle className="w-6 h-6 text-green-500" />}
                 {asset.status === 'error' && (
                   <div className="text-right">
@@ -109,8 +120,8 @@ export default function UploadAssets() {
             allSuccess
               ? 'bg-green-700 cursor-default'
               : uploading
-              ? 'bg-gray-700 cursor-wait'
-              : 'bg-red-600 hover:bg-red-700 cursor-pointer'
+                ? 'bg-gray-700 cursor-wait'
+                : 'bg-red-600 hover:bg-red-700 cursor-pointer'
           }`}
         >
           {uploading ? (
@@ -136,7 +147,7 @@ export default function UploadAssets() {
           <div className="mt-8 bg-green-900/20 border border-green-700 rounded-lg p-6">
             <h2 className="text-green-400 text-lg mb-3">Tudo pronto! Verifique as URLs:</h2>
             <ul className="space-y-2">
-              {assets.map(asset => (
+              {assets.map((asset) => (
                 <li key={asset.fileName}>
                   <a
                     href={`${SUPABASE_STORAGE}/${asset.fileName}`}
@@ -150,7 +161,8 @@ export default function UploadAssets() {
               ))}
             </ul>
             <p className="text-gray-400 mt-4 text-sm">
-              Se as URLs abrem as imagens, faça push pro GitHub e rebuild no cPanel. A logo vai aparecer.
+              Se as URLs abrem as imagens, faça push pro GitHub e rebuild no cPanel. A logo vai
+              aparecer.
             </p>
           </div>
         )}

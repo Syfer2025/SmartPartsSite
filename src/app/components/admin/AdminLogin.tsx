@@ -41,19 +41,21 @@ export default function AdminLogin({ onLoginSuccess, onShowSignup }: AdminLoginP
       }
     } catch (err: any) {
       console.error('Login error:', err);
-      
+
       // Verificar se é erro de bloqueio de IP
       if (err?.status === 429 || err?.message?.includes('tentativas')) {
         const minutes = err?.remainingMinutes || blockedMinutes;
         setBlockedMinutes(minutes);
-        setError(err.message || `IP bloqueado por ${minutes} minutos por múltiplas tentativas falhadas.`);
+        setError(
+          err.message || `IP bloqueado por ${minutes} minutos por múltiplas tentativas falhadas.`
+        );
       } else if (err?.remainingAttempts !== undefined) {
         setRemainingAttempts(err.remainingAttempts);
         setError(`Email ou senha incorretos. ${err.remainingAttempts} tentativa(s) restante(s).`);
       } else {
         setError('Erro ao fazer login. Tente novamente.');
       }
-      
+
       setLoading(false);
     }
   };
@@ -70,7 +72,7 @@ export default function AdminLogin({ onLoginSuccess, onShowSignup }: AdminLoginP
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: 'linear',
           }}
           className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-600/10 rounded-full blur-3xl"
         />
@@ -82,7 +84,7 @@ export default function AdminLogin({ onLoginSuccess, onShowSignup }: AdminLoginP
           transition={{
             duration: 15,
             repeat: Infinity,
-            ease: "linear"
+            ease: 'linear',
           }}
           className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-800/10 rounded-full blur-3xl"
         />
@@ -99,17 +101,13 @@ export default function AdminLogin({ onLoginSuccess, onShowSignup }: AdminLoginP
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
             className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-2xl mb-4 shadow-xl"
           >
             <Shield className="w-10 h-10 text-white" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Painel Administrativo
-          </h1>
-          <p className="text-gray-400">
-            SMART PARTS IMPORT
-          </p>
+          <h1 className="text-3xl font-bold text-white mb-2">Painel Administrativo</h1>
+          <p className="text-gray-400">SMART PARTS IMPORT</p>
         </div>
 
         {/* Login Form */}
@@ -122,9 +120,7 @@ export default function AdminLogin({ onLoginSuccess, onShowSignup }: AdminLoginP
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <User className="w-5 h-5 text-gray-400" />
@@ -142,9 +138,7 @@ export default function AdminLogin({ onLoginSuccess, onShowSignup }: AdminLoginP
 
             {/* Password Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Senha
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Senha</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Lock className="w-5 h-5 text-gray-400" />
@@ -162,11 +156,7 @@ export default function AdminLogin({ onLoginSuccess, onShowSignup }: AdminLoginP
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-white transition-colors"
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -194,7 +184,7 @@ export default function AdminLogin({ onLoginSuccess, onShowSignup }: AdminLoginP
                 <span className="flex items-center justify-center gap-2">
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                     className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
                   />
                   Entrando...

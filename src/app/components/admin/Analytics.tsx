@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { 
-  BarChart3, 
-  Eye, 
-  MousePointer, 
-  MessageCircle, 
-  Package, 
+import {
+  BarChart3,
+  Eye,
+  MousePointer,
+  MessageCircle,
+  Package,
   TrendingUp,
   Users,
   Calendar,
-  Clock
+  Clock,
 } from 'lucide-react';
 import { projectId } from '../../../../utils/supabase/info';
 
@@ -46,7 +46,7 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/admin/analytics`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       const data = await res.json();
       setEvents(data.events || []);
@@ -59,10 +59,10 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
 
   const filterEventsByTimeRange = (events: AnalyticsEvent[]) => {
     if (timeRange === 'all') return events;
-    
+
     const now = new Date();
     const cutoff = new Date(now);
-    
+
     switch (timeRange) {
       case '24h':
         cutoff.setHours(now.getHours() - 24);
@@ -74,24 +74,24 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
         cutoff.setDate(now.getDate() - 30);
         break;
     }
-    
-    return events.filter(e => new Date(e.timestamp) >= cutoff);
+
+    return events.filter((e) => new Date(e.timestamp) >= cutoff);
   };
 
   const filteredEvents = filterEventsByTimeRange(events);
 
   // Statistics
   const stats = {
-    totalPageViews: filteredEvents.filter(e => e.event === 'page_view').length,
-    uniqueVisitors: new Set(filteredEvents.map(e => e.ip)).size,
-    productViews: filteredEvents.filter(e => e.event === 'product_view').length,
-    whatsappClicks: filteredEvents.filter(e => e.event === 'whatsapp_click').length,
-    catalogOpens: filteredEvents.filter(e => e.event === 'catalog_open').length,
-    categoryViews: filteredEvents.filter(e => e.event === 'category_view').length,
+    totalPageViews: filteredEvents.filter((e) => e.event === 'page_view').length,
+    uniqueVisitors: new Set(filteredEvents.map((e) => e.ip)).size,
+    productViews: filteredEvents.filter((e) => e.event === 'product_view').length,
+    whatsappClicks: filteredEvents.filter((e) => e.event === 'whatsapp_click').length,
+    catalogOpens: filteredEvents.filter((e) => e.event === 'catalog_open').length,
+    categoryViews: filteredEvents.filter((e) => e.event === 'category_view').length,
   };
 
   // Most viewed products
-  const productViews = filteredEvents.filter(e => e.event === 'product_view');
+  const productViews = filteredEvents.filter((e) => e.event === 'product_view');
   const productViewCounts = productViews.reduce((acc: any, e) => {
     const key = `${e.productId}:${e.productName}`;
     acc[key] = (acc[key] || 0) + 1;
@@ -106,7 +106,7 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
     .slice(0, 5);
 
   // Most viewed categories
-  const categoryViews = filteredEvents.filter(e => e.event === 'category_view');
+  const categoryViews = filteredEvents.filter((e) => e.event === 'category_view');
   const categoryViewCounts = categoryViews.reduce((acc: any, e) => {
     const key = `${e.categorySlug}:${e.categoryName}`;
     acc[key] = (acc[key] || 0) + 1;
@@ -122,7 +122,7 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
 
   // WhatsApp clicks by location
   const whatsappByLocation = filteredEvents
-    .filter(e => e.event === 'whatsapp_click')
+    .filter((e) => e.event === 'whatsapp_click')
     .reduce((acc: any, e) => {
       const location = e.location || 'Desconhecido';
       acc[location] = (acc[location] || 0) + 1;
@@ -184,9 +184,24 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
         {[
           { icon: Eye, label: 'Visualizações', value: stats.totalPageViews, color: 'blue' },
           { icon: Users, label: 'Visitantes Únicos', value: stats.uniqueVisitors, color: 'green' },
-          { icon: Package, label: 'Produtos Visualizados', value: stats.productViews, color: 'purple' },
-          { icon: MessageCircle, label: 'Cliques WhatsApp', value: stats.whatsappClicks, color: 'emerald' },
-          { icon: MousePointer, label: 'Categorias Visitadas', value: stats.categoryViews, color: 'orange' },
+          {
+            icon: Package,
+            label: 'Produtos Visualizados',
+            value: stats.productViews,
+            color: 'purple',
+          },
+          {
+            icon: MessageCircle,
+            label: 'Cliques WhatsApp',
+            value: stats.whatsappClicks,
+            color: 'emerald',
+          },
+          {
+            icon: MousePointer,
+            label: 'Categorias Visitadas',
+            value: stats.categoryViews,
+            color: 'orange',
+          },
           { icon: TrendingUp, label: 'Catálogo Aberto', value: stats.catalogOpens, color: 'red' },
         ].map((stat, index) => (
           <motion.div
@@ -233,7 +248,7 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
                   </div>
                   <div className="flex-shrink-0">
                     <div className="w-20 h-2 bg-white/10 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-purple-500 rounded-full"
                         style={{ width: `${(product.views / topProducts[0].views) * 100}%` }}
                       />
@@ -266,7 +281,7 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
                   </div>
                   <div className="flex-shrink-0">
                     <div className="w-20 h-2 bg-white/10 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-orange-500 rounded-full"
                         style={{ width: `${(category.views / topCategories[0].views) * 100}%` }}
                       />
@@ -316,16 +331,25 @@ export default function Analytics({ accessToken }: AnalyticsProps) {
               >
                 <div className="flex-shrink-0 w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
                   {event.event === 'page_view' && <Eye className="w-5 h-5 text-blue-400" />}
-                  {event.event === 'product_view' && <Package className="w-5 h-5 text-purple-400" />}
-                  {event.event === 'category_view' && <MousePointer className="w-5 h-5 text-orange-400" />}
-                  {event.event === 'whatsapp_click' && <MessageCircle className="w-5 h-5 text-emerald-400" />}
-                  {event.event === 'catalog_open' && <TrendingUp className="w-5 h-5 text-red-400" />}
+                  {event.event === 'product_view' && (
+                    <Package className="w-5 h-5 text-purple-400" />
+                  )}
+                  {event.event === 'category_view' && (
+                    <MousePointer className="w-5 h-5 text-orange-400" />
+                  )}
+                  {event.event === 'whatsapp_click' && (
+                    <MessageCircle className="w-5 h-5 text-emerald-400" />
+                  )}
+                  {event.event === 'catalog_open' && (
+                    <TrendingUp className="w-5 h-5 text-red-400" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-medium">
                     {event.event === 'page_view' && `Página visualizada: ${event.page}`}
                     {event.event === 'product_view' && `Produto visualizado: ${event.productName}`}
-                    {event.event === 'category_view' && `Categoria visualizada: ${event.categoryName}`}
+                    {event.event === 'category_view' &&
+                      `Categoria visualizada: ${event.categoryName}`}
                     {event.event === 'whatsapp_click' && `WhatsApp clicado em: ${event.location}`}
                     {event.event === 'catalog_open' && 'Catálogo aberto'}
                     {event.event === 'cart_action' && `Ação no carrinho: ${event.action}`}

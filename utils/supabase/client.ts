@@ -1,27 +1,26 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { projectId, publicAnonKey } from './info';
 
-// Singleton instance - only create once
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Supabase env vars not set. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env');
+}
+
 let supabaseInstance: SupabaseClient | null = null;
-let instanceCount = 0;
 
 export function getSupabaseClient(): SupabaseClient {
   if (!supabaseInstance) {
-    instanceCount++;
-    const supabaseUrl = `https://${projectId}.supabase.co`;
-    supabaseInstance = createClient(supabaseUrl, publicAnonKey, {
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
-        // Use single storage key to avoid multiple instances
-        storageKey: 'sb-khvkawwzikfcnirkwnih-auth-token',
+        storageKey: 'sb-smart-auth-token',
         autoRefreshToken: true,
         persistSession: true,
-        detectSessionInUrl: true
-      }
+        detectSessionInUrl: true,
+      },
     });
-    console.log(`%c[Supabase Client] ✅ Singleton instance #${instanceCount} created`, 'color: #10b981; font-weight: bold;');
   }
   return supabaseInstance;
 }
 
-// Export the singleton instance for convenience
 export const supabase = getSupabaseClient();

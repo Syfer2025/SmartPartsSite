@@ -28,9 +28,9 @@ export default function AdminCheck({ accessToken, onAdminVerified, onNotAdmin }:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
+          Authorization: `Bearer ${publicAnonKey}`,
         },
-        body: JSON.stringify({ token: accessToken })
+        body: JSON.stringify({ token: accessToken }),
       });
 
       const data = await res.json();
@@ -54,13 +54,13 @@ export default function AdminCheck({ accessToken, onAdminVerified, onNotAdmin }:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
+          Authorization: `Bearer ${publicAnonKey}`,
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           token: accessToken,
           name: adminStatus?.email || 'Admin',
-          force: false
-        })
+          force: false,
+        }),
       });
 
       const data = await res.json();
@@ -89,13 +89,13 @@ export default function AdminCheck({ accessToken, onAdminVerified, onNotAdmin }:
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
+          Authorization: `Bearer ${publicAnonKey}`,
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           token: accessToken,
           name: adminStatus?.email || 'Admin',
-          force: true
-        })
+          force: true,
+        }),
       });
 
       const data = await res.json();
@@ -152,11 +152,9 @@ export default function AdminCheck({ accessToken, onAdminVerified, onNotAdmin }:
           className="bg-gray-800 rounded-lg p-8 max-w-md w-full"
         >
           <ShieldAlert className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-          
-          <h2 className="text-2xl font-bold text-white text-center mb-4">
-            Acesso Negado
-          </h2>
-          
+
+          <h2 className="text-2xl font-bold text-white text-center mb-4">Acesso Negado</h2>
+
           <div className="space-y-3 mb-6">
             <div className="bg-gray-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2 text-gray-300 mb-2">
@@ -165,7 +163,7 @@ export default function AdminCheck({ accessToken, onAdminVerified, onNotAdmin }:
               </div>
               <p className="text-white font-mono text-sm break-all">{adminStatus.userId}</p>
             </div>
-            
+
             <div className="bg-gray-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2 text-gray-300 mb-2">
                 <Mail className="w-4 h-4" />
@@ -214,14 +212,15 @@ export default function AdminCheck({ accessToken, onAdminVerified, onNotAdmin }:
           className="bg-gray-800 rounded-lg p-8 max-w-md w-full"
         >
           <ShieldCheck className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-          
+
           <h2 className="text-2xl font-bold text-white text-center mb-2">
             Primeiro Acesso Administrativo
           </h2>
           <p className="text-gray-400 text-center mb-6">
-            Nenhum administrador foi configurado ainda. Você pode se tornar o primeiro admin do sistema.
+            Nenhum administrador foi configurado ainda. Você pode se tornar o primeiro admin do
+            sistema.
           </p>
-          
+
           <div className="space-y-3 mb-6">
             <div className="bg-gray-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2 text-gray-300 mb-2">
@@ -230,7 +229,7 @@ export default function AdminCheck({ accessToken, onAdminVerified, onNotAdmin }:
               </div>
               <p className="text-white font-mono text-sm break-all">{adminStatus.userId}</p>
             </div>
-            
+
             <div className="bg-gray-700/50 rounded-lg p-4">
               <div className="flex items-center gap-2 text-gray-300 mb-2">
                 <Mail className="w-4 h-4" />

@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Download, Archive, FileText, Image as ImageIcon, Loader, CheckCircle, AlertTriangle } from 'lucide-react';
+import {
+  Download,
+  Archive,
+  FileText,
+  Image as ImageIcon,
+  Loader,
+  CheckCircle,
+  AlertTriangle,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -64,12 +72,12 @@ export default function BackupManager({ accessToken }: BackupManagerProps) {
       setStatus('Buscando lista de produtos...');
       const response = await fetch(`${API_URL}/admin/products`, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (!response.ok) throw new Error('Falha ao buscar produtos');
-      
+
       const data = await response.json();
       const products: Product[] = data.products || [];
       setTotalProducts(products.length);
@@ -100,29 +108,29 @@ export default function BackupManager({ accessToken }: BackupManagerProps) {
 
         // --- A. Gerar PDF Ficha Técnica ---
         const doc = new jsPDF();
-        
+
         // Título
         doc.setFontSize(18);
         doc.text(product.name, 14, 20);
-        
+
         // Info Básica
         doc.setFontSize(12);
         doc.text(`SKU: ${product.sku || 'N/A'}`, 14, 30);
         doc.text(`Categoria: ${product.category}`, 14, 38);
-        
+
         // Descrição
         doc.setFontSize(10);
         const splitDesc = doc.splitTextToSize(product.description || '', 180);
         doc.text(splitDesc, 14, 48);
-        
+
         // Tabela de Especificações
-        let specsY = 48 + (splitDesc.length * 5) + 10;
-        
+        let specsY = 48 + splitDesc.length * 5 + 10;
+
         // Preparar dados para tabela
         // O formato de specs pode variar (array de objetos ou objeto chave/valor antigo)
         let specsData: string[][] = [];
         if (Array.isArray(product.specifications)) {
-          specsData = product.specifications.map(s => [s.key, s.value]);
+          specsData = product.specifications.map((s) => [s.key, s.value]);
         } else if (typeof product.specifications === 'object') {
           // Fallback para formato antigo se existir
           specsData = Object.entries(product.specifications).map(([k, v]) => [k, String(v)]);
@@ -134,7 +142,7 @@ export default function BackupManager({ accessToken }: BackupManagerProps) {
             head: [['Especificação', 'Detalhe']],
             body: specsData,
             theme: 'grid',
-            headStyles: { fillColor: [220, 38, 38] } // Vermelho Smart Parts
+            headStyles: { fillColor: [220, 38, 38] }, // Vermelho Smart Parts
           });
         }
 
@@ -175,7 +183,7 @@ export default function BackupManager({ accessToken }: BackupManagerProps) {
         productFolder.file('dados_brutos.json', JSON.stringify(product, null, 2));
 
         // Atualizar progresso
-        setProcessedCount(prev => prev + 1);
+        setProcessedCount((prev) => prev + 1);
         setProgress(Math.round(((i + 1) / products.length) * 100));
       }
 
@@ -186,7 +194,6 @@ export default function BackupManager({ accessToken }: BackupManagerProps) {
 
       toast.success('Backup concluído com sucesso!');
       setStatus('Backup concluído!');
-
     } catch (error: any) {
       console.error('Erro no backup:', error);
       toast.error(`Erro ao gerar backup: ${error.message}`);
@@ -219,7 +226,9 @@ export default function BackupManager({ accessToken }: BackupManagerProps) {
         <div className="bg-gray-800/50 p-4 rounded-xl border border-gray-700 flex flex-col items-center text-center">
           <ImageIcon className="w-8 h-8 text-purple-400 mb-2" />
           <h3 className="font-semibold text-white">Imagens Originais</h3>
-          <p className="text-xs text-gray-400 mt-1">Download em alta resolução organizado por pasta</p>
+          <p className="text-xs text-gray-400 mt-1">
+            Download em alta resolução organizado por pasta
+          </p>
         </div>
         <div className="bg-gray-800/50 p-4 rounded-xl border border-gray-700 flex flex-col items-center text-center">
           <Archive className="w-8 h-8 text-yellow-400 mb-2" />
@@ -262,9 +271,10 @@ export default function BackupManager({ accessToken }: BackupManagerProps) {
         <div>
           <h4 className="text-yellow-500 font-semibold text-sm">Nota Importante</h4>
           <p className="text-yellow-200/70 text-xs mt-1">
-            O processo pode demorar alguns minutos dependendo da quantidade de imagens.
-            Não feche esta página enquanto o backup estiver sendo gerado.
-            Se houver erro no download de alguma imagem específica, um arquivo de texto será criado na pasta do produto informando o erro.
+            O processo pode demorar alguns minutos dependendo da quantidade de imagens. Não feche
+            esta página enquanto o backup estiver sendo gerado. Se houver erro no download de alguma
+            imagem específica, um arquivo de texto será criado na pasta do produto informando o
+            erro.
           </p>
         </div>
       </div>

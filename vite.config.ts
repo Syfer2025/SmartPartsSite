@@ -90,4 +90,34 @@ export default defineConfig({
     historyApiFallback: true,
     host: true,
   },
+  build: {
+    // Remove console.* e debugger em produção
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Admin separado do bundle público
+          admin: [
+            './src/app/components/admin/Admin',
+            './src/app/components/admin/AdminDashboard',
+            './src/app/components/admin/ProductManager',
+            './src/app/components/admin/CategoryManager',
+            './src/app/components/admin/OrderManager',
+            './src/app/components/admin/BannerManager',
+            './src/app/components/admin/CatalogManager',
+            './src/app/components/admin/CustomerManager',
+            './src/app/components/admin/Analytics',
+            './src/app/components/admin/Settings',
+          ],
+          // Bibliotecas pesadas isoladas
+          pdf: ['jspdf', 'jspdf-autotable'],
+          zip: ['jszip', 'file-saver'],
+          charts: ['recharts'],
+        },
+      },
+    },
+    esbuildOptions: {
+      drop: ['console', 'debugger'],
+    },
+  },
 })

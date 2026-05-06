@@ -32,7 +32,7 @@ export default function CustomerManager({ accessToken }: CustomerManagerProps) {
     setLoading(true);
     try {
       const response = await fetch(`${API_URL}/admin/customers`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       const data = await response.json();
@@ -53,7 +53,7 @@ export default function CustomerManager({ accessToken }: CustomerManagerProps) {
     });
   };
 
-  const filteredCustomers = customers.filter(customer => {
+  const filteredCustomers = customers.filter((customer) => {
     const search = searchTerm.toLowerCase();
     return (
       customer.nomeCompleto.toLowerCase().includes(search) ||
@@ -119,7 +119,9 @@ export default function CustomerManager({ accessToken }: CustomerManagerProps) {
                     <h3 className="font-bold text-white text-lg">{customer.nomeCompleto}</h3>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <ShoppingCart className="w-3 h-3" />
-                      <span>{customer.totalOrders} pedido{customer.totalOrders !== 1 ? 's' : ''}</span>
+                      <span>
+                        {customer.totalOrders} pedido{customer.totalOrders !== 1 ? 's' : ''}
+                      </span>
                     </div>
                   </div>
                 </div>

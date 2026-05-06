@@ -22,7 +22,7 @@ export default function SearchResults({ query, onNavigate }: SearchResultsProps)
   // Aplicar filtro de categoria
   const results = useMemo(() => {
     if (!filterCategory) return allResults;
-    return allResults.filter(r => r.product.categorySlug === filterCategory);
+    return allResults.filter((r) => r.product.categorySlug === filterCategory);
   }, [allResults, filterCategory]);
 
   // Categorias que aparecem nos resultados (para filtro dinâmico)
@@ -46,14 +46,19 @@ export default function SearchResults({ query, onNavigate }: SearchResultsProps)
       <div className="border-b border-gray-200 bg-white">
         <div className="container mx-auto px-4 py-4">
           <p className="text-sm text-gray-600">
-            {allResults.length === 0
-              ? <>Nenhum resultado encontrado para <span className="font-bold text-gray-900">"{query}"</span></>
-              : <>
-                  <span className="font-bold text-gray-900">{results.length}</span>
-                  {filterCategory && ` de ${allResults.length}`} resultado{results.length !== 1 ? 's' : ''} para{' '}
-                  <span className="font-bold text-gray-900">"{query}"</span>
-                </>
-            }
+            {allResults.length === 0 ? (
+              <>
+                Nenhum resultado encontrado para{' '}
+                <span className="font-bold text-gray-900">"{query}"</span>
+              </>
+            ) : (
+              <>
+                <span className="font-bold text-gray-900">{results.length}</span>
+                {filterCategory && ` de ${allResults.length}`} resultado
+                {results.length !== 1 ? 's' : ''} para{' '}
+                <span className="font-bold text-gray-900">"{query}"</span>
+              </>
+            )}
           </p>
         </div>
       </div>
@@ -82,7 +87,7 @@ export default function SearchResults({ query, onNavigate }: SearchResultsProps)
                     Todas ({allResults.length})
                   </button>
 
-                  {resultCategories.map(cat => (
+                  {resultCategories.map((cat) => (
                     <button
                       key={cat.slug}
                       onClick={() => setFilterCategory(cat.slug === filterCategory ? '' : cat.slug)}
@@ -109,7 +114,7 @@ export default function SearchResults({ query, onNavigate }: SearchResultsProps)
                     onClick={() => setFilterCategory('')}
                     className="flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-red-200 transition"
                   >
-                    {resultCategories.find(c => c.slug === filterCategory)?.name}
+                    {resultCategories.find((c) => c.slug === filterCategory)?.name}
                     <X className="w-3 h-3" />
                   </button>
                 </div>
@@ -181,12 +186,11 @@ export default function SearchResults({ query, onNavigate }: SearchResultsProps)
             <div className="bg-gray-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="w-12 h-12 text-gray-400" />
             </div>
-            <h2 className="text-2xl font-black text-gray-800 mb-3">
-              Nenhum produto encontrado
-            </h2>
+            <h2 className="text-2xl font-black text-gray-800 mb-3">Nenhum produto encontrado</h2>
             <p className="text-gray-500 mb-6">
-              Nao encontramos resultados para <span className="font-bold text-gray-700">"{query}"</span>.
-              Tente termos diferentes ou navegue pelas categorias.
+              Nao encontramos resultados para{' '}
+              <span className="font-bold text-gray-700">"{query}"</span>. Tente termos diferentes ou
+              navegue pelas categorias.
             </p>
             <div className="bg-gray-50 rounded-2xl p-6 text-left">
               <h3 className="font-bold text-gray-700 text-sm mb-3">Dicas de busca:</h3>
@@ -201,7 +205,8 @@ export default function SearchResults({ query, onNavigate }: SearchResultsProps)
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 font-bold mt-0.5">-</span>
-                  Use termos mais gerais (ex: "geladeira" em vez de "geladeira portatil 12v compacta")
+                  Use termos mais gerais (ex: "geladeira" em vez de "geladeira portatil 12v
+                  compacta")
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-500 font-bold mt-0.5">-</span>
@@ -214,7 +219,7 @@ export default function SearchResults({ query, onNavigate }: SearchResultsProps)
             <div className="mt-8">
               <h3 className="font-bold text-gray-700 text-sm mb-4">Ou navegue por categorias:</h3>
               <div className="flex flex-wrap justify-center gap-2">
-                {categories.map(cat => (
+                {categories.map((cat) => (
                   <button
                     key={cat.slug}
                     onClick={() => onNavigate('category', cat.slug)}

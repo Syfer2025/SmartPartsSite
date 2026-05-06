@@ -17,14 +17,14 @@ export default function AdminReset() {
     setLoadingList(true);
     try {
       console.log('[List] 📋 Buscando lista de admins...');
-      
+
       const res = await fetch(`${API_URL}/admin/list-all`, {
         method: 'GET',
       });
 
       const data = await res.json();
       console.log('[List] Resultado:', data);
-      
+
       setAdminList(data);
       toast.success(`${data.total} admin(s) encontrado(s)`);
     } catch (error) {
@@ -38,18 +38,18 @@ export default function AdminReset() {
   const handleDeleteAdmin = async (adminId: string) => {
     try {
       console.log('[Delete] 🗑️ Deletando admin:', adminId);
-      
+
       const res = await fetch(`${API_URL}/admin/delete-by-id`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ adminId })
+        body: JSON.stringify({ adminId }),
       });
 
       const data = await res.json();
       console.log('[Delete] Resultado:', data);
-      
+
       if (data.wasDeleted) {
         toast.success('Admin deletado com sucesso!');
         handleListAdmins(); // Refresh list
@@ -71,17 +71,17 @@ export default function AdminReset() {
     setLoading(true);
     try {
       console.log('[Reset] 🚨 Iniciando reset de admins...');
-      
+
       const res = await fetch(`${API_URL}/admin/reset-all-admins`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
 
       const data = await res.json();
       console.log('[Reset] Resultado:', data);
-      
+
       setResult(data);
 
       if (data.success) {
@@ -105,12 +105,11 @@ export default function AdminReset() {
         className="bg-gray-800 rounded-lg p-8 max-w-md w-full border-2 border-red-600/30"
       >
         <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        
-        <h1 className="text-2xl font-bold text-white text-center mb-2">
-          Reset do Sistema Admin
-        </h1>
+
+        <h1 className="text-2xl font-bold text-white text-center mb-2">Reset do Sistema Admin</h1>
         <p className="text-gray-400 text-center mb-6">
-          Esta ação irá remover <strong className="text-red-400">TODOS</strong> os administradores cadastrados no sistema.
+          Esta ação irá remover <strong className="text-red-400">TODOS</strong> os administradores
+          cadastrados no sistema.
         </p>
 
         {result && (
@@ -148,9 +147,7 @@ export default function AdminReset() {
               onChange={(e) => setConfirmed(e.target.checked)}
               className="w-5 h-5 rounded border-gray-600 text-red-600 focus:ring-2 focus:ring-red-600"
             />
-            <span className="text-white">
-              Confirmo que desejo resetar o sistema
-            </span>
+            <span className="text-white">Confirmo que desejo resetar o sistema</span>
           </label>
         </div>
 
@@ -201,7 +198,7 @@ export default function AdminReset() {
               <h3 className="text-white font-semibold mb-3">
                 📋 Admins Encontrados: {adminList.total}
               </h3>
-              
+
               {adminList.total === 0 ? (
                 <p className="text-green-400 text-sm">
                   ✅ Nenhum admin encontrado! Você pode criar uma conta nova.

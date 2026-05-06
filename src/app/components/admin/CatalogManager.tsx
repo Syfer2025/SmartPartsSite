@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
-import { FileText, Upload, Trash2, Loader2, Plus, GripVertical, X, Eye, ImageIcon } from 'lucide-react';
+import {
+  FileText,
+  Upload,
+  Trash2,
+  Loader2,
+  Plus,
+  GripVertical,
+  X,
+  Eye,
+  ImageIcon,
+} from 'lucide-react';
 import { projectId } from '../../../../utils/supabase/info';
 
 interface PdfCatalog {
@@ -41,7 +51,7 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/admin/pdf-catalogs`, {
-        headers: { 'Authorization': `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!res.ok) throw new Error('Falha ao carregar catálogos');
       const data = await res.json();
@@ -69,7 +79,7 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
 
     setSelectedFile(file);
     if (!formData.name) {
-      setFormData(prev => ({ ...prev, name: file.name.replace('.pdf', '') }));
+      setFormData((prev) => ({ ...prev, name: file.name.replace('.pdf', '') }));
     }
   };
 
@@ -98,7 +108,7 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
 
     const res = await fetch(`${API_URL}/admin/upload`, {
       method: 'POST',
-      headers: { 'Authorization': `Bearer ${accessToken}` },
+      headers: { Authorization: `Bearer ${accessToken}` },
       body: form,
     });
 
@@ -139,7 +149,7 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
       const saveRes = await fetch(`${API_URL}/admin/pdf-catalogs`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -172,7 +182,7 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
     try {
       const res = await fetch(`${API_URL}/admin/pdf-catalogs/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       if (!res.ok) throw new Error('Falha ao excluir catálogo');
@@ -220,22 +230,26 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
           <h3 className="text-lg font-bold text-white mb-4">Adicionar Catálogo PDF</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Nome do Catálogo *</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">
+                Nome do Catálogo *
+              </label>
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="Ex: Catálogo Geral 2026"
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Descrição (opcional)</label>
+              <label className="block text-sm font-medium text-gray-300 mb-1">
+                Descrição (opcional)
+              </label>
               <input
                 type="text"
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
                 placeholder="Descrição breve do catálogo"
                 className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
@@ -245,7 +259,9 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Cover Image Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Imagem de Capa *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Imagem de Capa *
+                </label>
                 <div
                   onClick={() => coverInputRef.current?.click()}
                   className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors h-[200px] flex items-center justify-center ${
@@ -293,7 +309,9 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
 
               {/* PDF Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Arquivo PDF *</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Arquivo PDF *
+                </label>
                 <div
                   onClick={() => fileInputRef.current?.click()}
                   className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors h-[200px] flex items-center justify-center ${
@@ -378,7 +396,9 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
         <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-12 text-center">
           <FileText className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-gray-400 mb-2">Nenhum catálogo cadastrado</h3>
-          <p className="text-gray-500">Clique em "Novo Catálogo" para adicionar seu primeiro PDF.</p>
+          <p className="text-gray-500">
+            Clique em "Novo Catálogo" para adicionar seu primeiro PDF.
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -394,7 +414,11 @@ export default function CatalogManager({ accessToken, onUpdate }: CatalogManager
               {/* Thumbnail */}
               <div className="w-14 h-18 rounded-lg overflow-hidden flex-shrink-0 border border-white/10">
                 {catalog.coverUrl ? (
-                  <img src={catalog.coverUrl} alt={catalog.name} className="w-full h-full object-cover" />
+                  <img
+                    src={catalog.coverUrl}
+                    alt={catalog.name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="w-full h-full bg-red-600/20 flex items-center justify-center">
                     <FileText className="w-6 h-6 text-red-400" />

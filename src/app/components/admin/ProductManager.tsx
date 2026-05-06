@@ -13,7 +13,7 @@ import {
   XCircle,
   Filter,
   CheckCircle2,
-  ShieldCheck
+  ShieldCheck,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
@@ -68,7 +68,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     image: '',
     images: [] as string[],
     verified: false,
-    specifications: [] as Array<{ id: string; key: string; value: string }>
+    specifications: [] as Array<{ id: string; key: string; value: string }>,
   });
 
   useEffect(() => {
@@ -79,19 +79,19 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     setLoading(true);
     try {
       console.log('[ProductManager] Iniciando carregamento de dados...');
-      
+
       const [productsRes, categoriesRes] = await Promise.all([
         fetch(`${API_URL}/admin/products`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${accessToken}` },
         }),
         fetch(`${API_URL}/admin/categories`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        })
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }),
       ]);
 
       console.log('[ProductManager] Status das respostas:', {
         products: productsRes.status,
-        categories: categoriesRes.status
+        categories: categoriesRes.status,
       });
 
       if (!productsRes.ok || !categoriesRes.ok) {
@@ -109,7 +109,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       // Converter especificações antigas (objeto) para novo formato (array)
       const convertedProducts = (productsData.products || []).map((product: any) => {
         let specifications = product.specifications || [];
-        
+
         // Se specifications for um objeto, converter para array
         if (!Array.isArray(specifications)) {
           console.log('[ProductManager] Convertendo especificações do produto:', product.name);
@@ -117,21 +117,21 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
           specifications = Object.entries(specsObj).map(([key, value]) => ({
             id: `spec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             key,
-            value
+            value,
           }));
         }
-        
+
         return {
           ...product,
-          specifications
+          specifications,
         };
       });
 
       console.log('[ProductManager] Produtos convertidos:', convertedProducts.length);
-      
+
       setProducts(convertedProducts);
       setCategories(categoriesData.categories || []);
-      
+
       console.log('[ProductManager] ✅ Dados carregados com sucesso');
     } catch (error) {
       console.error('[ProductManager] ❌ Error loading data:', error);
@@ -141,7 +141,10 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, isMainImage: boolean = true) => {
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    isMainImage: boolean = true
+  ) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
@@ -149,7 +152,9 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     if (!isMainImage) {
       const totalImages = formData.images.length + files.length;
       if (totalImages > 10) {
-        toast.error(`Você pode adicionar no máximo 10 imagens adicionais. Atualmente você tem ${formData.images.length} imagens.`);
+        toast.error(
+          `Você pode adicionar no máximo 10 imagens adicionais. Atualmente você tem ${formData.images.length} imagens.`
+        );
         return;
       }
     }
@@ -164,13 +169,15 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     const validFiles: File[] = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       // Aceitar imagens estáticas, GIFs e vídeos MP4
       const isImage = file.type.startsWith('image/');
       const isVideo = file.type === 'video/mp4';
-      
+
       if (!isImage && !isVideo) {
-        toast.error(`${file.name} não é uma imagem ou vídeo válido. Formatos aceitos: imagens e MP4`);
+        toast.error(
+          `${file.name} não é uma imagem ou vídeo válido. Formatos aceitos: imagens e MP4`
+        );
         continue;
       }
 
@@ -181,7 +188,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       } else if (isVideo) {
         maxSize = 50 * 1024 * 1024; // 50MB para vídeos
       }
-      
+
       if (file.size > maxSize) {
         const maxSizeMB = file.type === 'image/gif' ? '10MB' : isVideo ? '50MB' : '5MB';
         toast.error(`${file.name} excede o tamanho máximo de ${maxSizeMB}`);
@@ -199,7 +206,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     try {
       // Upload em massa
       toast.info(`Enviando ${validFiles.length} imagem(ns)...`);
-      
+
       for (const file of validFiles) {
         const formDataUpload = new FormData();
         formDataUpload.append('file', file);
@@ -207,9 +214,9 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
         const res = await fetch(`${API_URL}/admin/upload`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${accessToken}`
+            Authorization: `Bearer ${accessToken}`,
           },
-          body: formDataUpload
+          body: formDataUpload,
         });
 
         const data = await res.json();
@@ -246,19 +253,19 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
   };
 
   const handleCategoryChange = (categorySlug: string) => {
-    const category = categories.find(c => c.slug === categorySlug);
+    const category = categories.find((c) => c.slug === categorySlug);
     if (category) {
       setFormData({
         ...formData,
         category: category.name,
-        categorySlug: category.slug
+        categorySlug: category.slug,
       });
     } else {
       // Reset category fields if no category is selected
       setFormData({
         ...formData,
         category: '',
-        categorySlug: ''
+        categorySlug: '',
       });
     }
   };
@@ -300,7 +307,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       console.log('  - Token:', accessToken ? '✅ Presente' : '❌ Ausente');
       console.log('  - Headers:', {
         'Content-Type': 'application/json',
-        'Authorization': accessToken ? `Bearer ${accessToken.substring(0, 20)}...` : 'NONE'
+        Authorization: accessToken ? `Bearer ${accessToken.substring(0, 20)}...` : 'NONE',
       });
 
       console.log('📤 Enviando requisição...');
@@ -311,8 +318,8 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
         const healthRes = await fetch(`${API_URL}/health`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${publicAnonKey}`
-          }
+            Authorization: `Bearer ${publicAnonKey}`,
+          },
         });
         console.log('✅ Health check OK:', healthRes.status);
       } catch (healthError) {
@@ -326,9 +333,9 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const responseText = await res.text();
@@ -365,7 +372,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
-    
+
     // Converter especificações antigas (objeto) para o novo formato (array)
     let specifications = product.specifications || [];
     if (!Array.isArray(specifications)) {
@@ -374,10 +381,10 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       specifications = Object.entries(specsObj).map(([key, value]) => ({
         id: `spec-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         key,
-        value: value as string
+        value: value as string,
       }));
     }
-    
+
     setFormData({
       name: product.name,
       category: product.category,
@@ -387,7 +394,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       image: product.image,
       images: product.images || [],
       verified: product.verified || false,
-      specifications
+      specifications,
     });
     setShowForm(true);
   };
@@ -399,8 +406,8 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       const res = await fetch(`${API_URL}/admin/products/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (res.ok) {
@@ -426,14 +433,15 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       image: '',
       images: [],
       verified: false,
-      specifications: []
+      specifications: [],
     });
     setEditingProduct(null);
     setShowForm(false);
   };
 
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = !searchQuery ||
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      !searchQuery ||
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.sku?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -471,8 +479,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
             <p className="text-gray-400 text-sm">
               {categoryFilter || searchQuery
                 ? `${sortedFilteredProducts.length} de ${products.length} produtos`
-                : `${products.length} produtos cadastrados`
-              }
+                : `${products.length} produtos cadastrados`}
             </p>
           </div>
         </div>
@@ -499,7 +506,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
               className="pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-52 appearance-none cursor-pointer [&>option]:bg-gray-800 [&>option]:text-white"
             >
               <option value="">Todas as categorias</option>
-              {categories.map(cat => (
+              {categories.map((cat) => (
                 <option key={cat.slug} value={cat.slug}>
                   {cat.name}
                 </option>
@@ -562,7 +569,12 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                 {/* Category */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Categoria * {categories.length === 0 && <span className="text-yellow-400 text-xs">(Nenhuma categoria cadastrada)</span>}
+                    Categoria *{' '}
+                    {categories.length === 0 && (
+                      <span className="text-yellow-400 text-xs">
+                        (Nenhuma categoria cadastrada)
+                      </span>
+                    )}
                   </label>
                   <select
                     value={formData.categorySlug}
@@ -572,9 +584,11 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                     disabled={categories.length === 0}
                   >
                     <option value="" className="bg-gray-800 text-white">
-                      {categories.length === 0 ? 'Cadastre categorias primeiro' : 'Selecione uma categoria'}
+                      {categories.length === 0
+                        ? 'Cadastre categorias primeiro'
+                        : 'Selecione uma categoria'}
                     </option>
-                    {categories.map(cat => (
+                    {categories.map((cat) => (
                       <option key={cat.slug} value={cat.slug} className="bg-gray-800 text-white">
                         {cat.name}
                       </option>
@@ -612,11 +626,15 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                         : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
                     }`}
                   >
-                    <ShieldCheck className={`w-5 h-5 ${formData.verified ? 'text-emerald-400' : 'text-gray-500'}`} />
+                    <ShieldCheck
+                      className={`w-5 h-5 ${formData.verified ? 'text-emerald-400' : 'text-gray-500'}`}
+                    />
                     <span className="font-medium text-sm">VERIFICADO</span>
-                    <div className={`ml-auto w-10 h-5 rounded-full transition-all relative ${
-                      formData.verified ? 'bg-emerald-500' : 'bg-gray-600'
-                    }`}>
+                    <div
+                      className={`ml-auto w-10 h-5 rounded-full transition-all relative ${
+                        formData.verified ? 'bg-emerald-500' : 'bg-gray-600'
+                      }`}
+                    >
                       <div
                         className="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all"
                         style={{ left: formData.verified ? '22px' : '2px' }}
@@ -628,9 +646,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Descrição
-                </label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Descrição</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -697,7 +713,9 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-2">
-                    <label className={`flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition-colors w-fit ${formData.images.length >= 10 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                    <label
+                      className={`flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg cursor-pointer hover:bg-white/10 transition-colors w-fit ${formData.images.length >= 10 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
                       <ImageIcon className="w-5 h-5 text-gray-400" />
                       <span className="text-gray-300">
                         {uploading ? 'Enviando...' : 'Adicionar Imagens/GIFs/Vídeos'}
@@ -712,10 +730,11 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                       />
                     </label>
                     <p className="text-xs text-gray-500">
-                      Você pode selecionar múltiplos arquivos de uma vez. Limite: 10 arquivos (max 5MB para imagens, 10MB para GIFs, 50MB para vídeos MP4)
+                      Você pode selecionar múltiplos arquivos de uma vez. Limite: 10 arquivos (max
+                      5MB para imagens, 10MB para GIFs, 50MB para vídeos MP4)
                     </p>
                   </div>
-                  
+
                   {formData.images.length > 0 && (
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                       {formData.images.map((img, index) => (
@@ -752,13 +771,11 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                       ))}
                     </div>
                   )}
-                  
+
                   {formData.images.length === 0 && (
                     <div className="border border-dashed border-white/10 rounded-lg p-8 text-center">
                       <ImageIcon className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                      <p className="text-sm text-gray-400">
-                        Nenhum arquivo adicional
-                      </p>
+                      <p className="text-sm text-gray-400">Nenhum arquivo adicional</p>
                       <p className="text-xs text-gray-500 mt-1">
                         Clique no botão acima para adicionar até 10 imagens/GIFs/vídeos
                       </p>
@@ -781,8 +798,8 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                         ...formData,
                         specifications: [
                           ...formData.specifications,
-                          { id: newId, key: '', value: '' }
-                        ]
+                          { id: newId, key: '', value: '' },
+                        ],
                       });
                     }}
                     className="flex items-center gap-1 px-3 py-1 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30 transition-colors text-sm"
@@ -804,7 +821,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                             type="text"
                             value={spec.key}
                             onChange={(e) => {
-                              const newSpecs = formData.specifications.map(s => 
+                              const newSpecs = formData.specifications.map((s) =>
                                 s.id === spec.id ? { ...s, key: e.target.value } : s
                               );
                               setFormData({ ...formData, specifications: newSpecs });
@@ -816,7 +833,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                             type="text"
                             value={spec.value}
                             onChange={(e) => {
-                              const newSpecs = formData.specifications.map(s => 
+                              const newSpecs = formData.specifications.map((s) =>
                                 s.id === spec.id ? { ...s, value: e.target.value } : s
                               );
                               setFormData({ ...formData, specifications: newSpecs });
@@ -828,7 +845,9 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                         <button
                           type="button"
                           onClick={() => {
-                            const newSpecs = formData.specifications.filter(s => s.id !== spec.id);
+                            const newSpecs = formData.specifications.filter(
+                              (s) => s.id !== spec.id
+                            );
                             setFormData({ ...formData, specifications: newSpecs });
                           }}
                           className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors"
@@ -908,9 +927,7 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                     )}
                   </div>
                   <p className="text-sm text-gray-400">{product.category}</p>
-                  {product.sku && (
-                    <p className="text-xs text-gray-500 mt-1">SKU: {product.sku}</p>
-                  )}
+                  {product.sku && <p className="text-xs text-gray-500 mt-1">SKU: {product.sku}</p>}
                   {product.images && product.images.length > 0 && (
                     <p className="text-xs text-blue-400 mt-1">
                       +{product.images.length} {product.images.length === 1 ? 'imagem' : 'imagens'}

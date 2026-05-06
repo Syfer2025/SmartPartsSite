@@ -3,14 +3,14 @@ import { useState, useEffect, memo } from 'react';
 
 /**
  * WeeklySchedule - Refactored to use CSS animations instead of motion.
- * 
+ *
  * Previously used 8+ motion.* elements with infinite animations:
  * - Shimmer effect (continuous x translation)
  * - Clock rotation (continuous 360deg)
  * - HOJE badge pulse (continuous scale)
  * - Green dot pulse (continuous opacity)
  * - Card stagger entrance (7 individual animations)
- * 
+ *
  * Now uses CSS @keyframes + Tailwind for all animations,
  * eliminating ~15KB of motion runtime for this component.
  */
@@ -43,17 +43,17 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
       second: '2-digit',
       hour12: false,
     };
-    
+
     const formatter = new Intl.DateTimeFormat('pt-BR', options);
     const parts = formatter.formatToParts(currentTime);
-    
-    const day = parts.find(p => p.type === 'day')?.value;
-    const month = parts.find(p => p.type === 'month')?.value;
-    const year = parts.find(p => p.type === 'year')?.value;
-    const hour = parts.find(p => p.type === 'hour')?.value;
-    const minute = parts.find(p => p.type === 'minute')?.value;
-    const second = parts.find(p => p.type === 'second')?.value;
-    
+
+    const day = parts.find((p) => p.type === 'day')?.value;
+    const month = parts.find((p) => p.type === 'month')?.value;
+    const year = parts.find((p) => p.type === 'year')?.value;
+    const hour = parts.find((p) => p.type === 'hour')?.value;
+    const minute = parts.find((p) => p.type === 'minute')?.value;
+    const second = parts.find((p) => p.type === 'second')?.value;
+
     return {
       date: `${day}/${month}/${year}`,
       time: `${hour}:${minute}:${second}`,
@@ -80,7 +80,8 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
         <div
           className="absolute inset-0 animate-[shimmerSweep_3s_linear_infinite]"
           style={{
-            background: 'linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent)',
+            background:
+              'linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent)',
           }}
         />
         <div className="relative z-10 flex items-center justify-center gap-3">
@@ -108,28 +109,32 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
                   isToday
                     ? 'bg-gradient-to-br from-red-600 to-red-700 shadow-lg shadow-red-600/50'
                     : isOpen
-                    ? 'bg-gradient-to-br from-green-600/20 to-green-700/20 border border-green-600/30'
-                    : 'bg-gradient-to-br from-gray-700/20 to-gray-800/20 border border-gray-600/30'
+                      ? 'bg-gradient-to-br from-green-600/20 to-green-700/20 border border-green-600/30'
+                      : 'bg-gradient-to-br from-gray-700/20 to-gray-800/20 border border-gray-600/30'
                 }`}
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 {isToday && (
-                  <div
-                    className="absolute -top-1.5 -right-1.5 bg-yellow-400 text-black text-xs font-black px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] animate-pulse"
-                  >
+                  <div className="absolute -top-1.5 -right-1.5 bg-yellow-400 text-black text-xs font-black px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] animate-pulse">
                     HOJE
                   </div>
                 )}
 
                 <div className="mb-1">
-                  <Calendar className={`w-3 h-3 md:w-4 md:h-4 mx-auto ${isToday ? 'text-white' : isOpen ? 'text-green-400' : 'text-gray-500'}`} />
+                  <Calendar
+                    className={`w-3 h-3 md:w-4 md:h-4 mx-auto ${isToday ? 'text-white' : isOpen ? 'text-green-400' : 'text-gray-500'}`}
+                  />
                 </div>
 
-                <div className={`font-black text-[10px] md:text-xs mb-1 ${isToday ? 'text-white' : isOpen ? 'text-white' : 'text-gray-400'}`}>
+                <div
+                  className={`font-black text-[10px] md:text-xs mb-1 ${isToday ? 'text-white' : isOpen ? 'text-white' : 'text-gray-400'}`}
+                >
                   {item.day}
                 </div>
 
-                <div className={`text-[9px] md:text-[10px] font-semibold leading-tight ${isToday ? 'text-red-100' : isOpen ? 'text-green-300' : 'text-red-400'}`}>
+                <div
+                  className={`text-[9px] md:text-[10px] font-semibold leading-tight ${isToday ? 'text-red-100' : isOpen ? 'text-green-300' : 'text-red-400'}`}
+                >
                   {item.hours === 'Fechado' ? 'Fechado' : item.hours}
                 </div>
 
@@ -167,17 +172,19 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
               <Calendar className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
               <span className="font-bold text-white text-sm md:text-base">{date}</span>
             </div>
-            
+
             {/* Separator */}
             <div className="w-px h-6 bg-gray-600"></div>
-            
+
             {/* Time */}
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 md:w-5 md:h-5 text-red-500" />
               <span className="font-bold text-white tabular-nums text-sm md:text-base">{time}</span>
             </div>
           </div>
-          <p className="text-[10px] md:text-xs text-gray-500 mt-2 text-center">Horário de Brasília (GMT-3)</p>
+          <p className="text-[10px] md:text-xs text-gray-500 mt-2 text-center">
+            Horário de Brasília (GMT-3)
+          </p>
         </div>
       </div>
     </div>

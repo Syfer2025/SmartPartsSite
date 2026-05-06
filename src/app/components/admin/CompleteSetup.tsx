@@ -15,30 +15,30 @@ export default function CompleteSetup() {
     setLoading(true);
     try {
       console.log('[CompleteSetup] 🚀 Iniciando setup completo...');
-      
+
       const res = await fetch(`${API_URL}/admin/complete-setup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${publicAnonKey}`,
-          'apikey': publicAnonKey
+          Authorization: `Bearer ${publicAnonKey}`,
+          apikey: publicAnonKey,
         },
         body: JSON.stringify({
           email: 'alexmeira@protonmail.com',
           password: 'Gouranga22',
-          name: 'Alex Meira'
-        })
+          name: 'Alex Meira',
+        }),
       });
 
       const data = await res.json();
       console.log('[CompleteSetup] Resultado completo:', data);
       console.log('[CompleteSetup] Status HTTP:', res.status);
-      
+
       setResult({
         ...data,
         httpStatus: res.status,
         httpStatusText: res.statusText,
-        fullResponse: JSON.stringify(data, null, 2)
+        fullResponse: JSON.stringify(data, null, 2),
       });
 
       if (data.success) {
@@ -52,7 +52,9 @@ export default function CompleteSetup() {
       }
     } catch (error) {
       console.error('[CompleteSetup] ❌ Erro ao conectar:', error);
-      toast.error('Erro ao conectar com servidor: ' + (error instanceof Error ? error.message : String(error)));
+      toast.error(
+        'Erro ao conectar com servidor: ' + (error instanceof Error ? error.message : String(error))
+      );
       setResult({ error: 'Erro de conexão', details: String(error) });
     } finally {
       setLoading(false);
@@ -69,10 +71,8 @@ export default function CompleteSetup() {
         {success ? (
           <>
             <Check className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            
-            <h1 className="text-2xl font-bold text-white text-center mb-2">
-              Setup Completo! ✅
-            </h1>
+
+            <h1 className="text-2xl font-bold text-white text-center mb-2">Setup Completo! ✅</h1>
             <p className="text-gray-400 text-center mb-6">
               Sua conta admin foi criada com sucesso!
             </p>
@@ -101,7 +101,7 @@ export default function CompleteSetup() {
         ) : (
           <>
             <Rocket className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-            
+
             <h1 className="text-2xl font-bold text-white text-center mb-2">
               Setup Inicial do Sistema
             </h1>
@@ -125,8 +125,12 @@ export default function CompleteSetup() {
                   <span className="font-semibold">ERRO COMPLETO</span>
                 </div>
                 <div className="text-xs text-gray-300 space-y-2">
-                  <p><strong>Status HTTP:</strong> {result.httpStatus} {result.httpStatusText}</p>
-                  <p><strong>Mensagem:</strong> {result.error || 'Sem mensagem'}</p>
+                  <p>
+                    <strong>Status HTTP:</strong> {result.httpStatus} {result.httpStatusText}
+                  </p>
+                  <p>
+                    <strong>Mensagem:</strong> {result.error || 'Sem mensagem'}
+                  </p>
                   {result.details && (
                     <div>
                       <strong>Detalhes:</strong>

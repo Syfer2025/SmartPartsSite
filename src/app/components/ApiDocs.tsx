@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { 
-  Code, 
-  Book, 
-  Lock, 
-  Database, 
-  Zap, 
-  CheckCircle, 
+import {
+  Code,
+  Book,
+  Lock,
+  Database,
+  Zap,
+  CheckCircle,
   AlertCircle,
   ChevronDown,
   ChevronRight,
   Copy,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react';
 
 interface EndpointProps {
@@ -19,12 +19,20 @@ interface EndpointProps {
   path: string;
   description: string;
   auth?: boolean;
-  params?: { name: string; type: string; required: boolean; description: string; }[];
+  params?: { name: string; type: string; required: boolean; description: string }[];
   requestBody?: string;
   responseExample?: string;
 }
 
-const Endpoint = ({ method, path, description, auth, params, requestBody, responseExample }: EndpointProps) => {
+const Endpoint = ({
+  method,
+  path,
+  description,
+  auth,
+  params,
+  requestBody,
+  responseExample,
+}: EndpointProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -32,7 +40,7 @@ const Endpoint = ({ method, path, description, auth, params, requestBody, respon
     GET: 'bg-blue-500',
     POST: 'bg-green-500',
     PUT: 'bg-yellow-500',
-    DELETE: 'bg-red-500'
+    DELETE: 'bg-red-500',
   };
 
   const copyToClipboard = (text: string, id: string) => {
@@ -48,7 +56,9 @@ const Endpoint = ({ method, path, description, auth, params, requestBody, respon
         className="w-full px-6 py-4 bg-white hover:bg-gray-50 flex items-center justify-between transition-colors"
       >
         <div className="flex items-center gap-4">
-          <span className={`${methodColors[method]} text-white px-3 py-1 rounded text-sm font-semibold min-w-[70px] text-center`}>
+          <span
+            className={`${methodColors[method]} text-white px-3 py-1 rounded text-sm font-semibold min-w-[70px] text-center`}
+          >
             {method}
           </span>
           <code className="text-sm font-mono text-gray-700">{path}</code>
@@ -66,7 +76,9 @@ const Endpoint = ({ method, path, description, auth, params, requestBody, respon
               <Lock className="w-5 h-5 text-yellow-600 mt-0.5" />
               <div>
                 <p className="font-semibold text-yellow-800">Autenticação Necessária</p>
-                <p className="text-sm text-yellow-700">Requer token Bearer no header Authorization</p>
+                <p className="text-sm text-yellow-700">
+                  Requer token Bearer no header Authorization
+                </p>
               </div>
             </div>
           )}
@@ -155,7 +167,9 @@ const Endpoint = ({ method, path, description, auth, params, requestBody, respon
 };
 
 export default function ApiDocs() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'categories' | 'auth' | 'erp'>('overview');
+  const [activeTab, setActiveTab] = useState<
+    'overview' | 'products' | 'categories' | 'auth' | 'erp'
+  >('overview');
 
   const baseURL = `https://{projectId}.supabase.co/functions/v1/make-server-d06f92b7`;
 
@@ -193,7 +207,7 @@ export default function ApiDocs() {
               { id: 'products', label: 'Produtos', icon: Database },
               { id: 'categories', label: 'Categorias', icon: Database },
               { id: 'auth', label: 'Autenticação', icon: Lock },
-              { id: 'erp', label: 'Integração ERP', icon: Zap }
+              { id: 'erp', label: 'Integração ERP', icon: Zap },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -219,8 +233,9 @@ export default function ApiDocs() {
             <section className="bg-white rounded-lg shadow-sm p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Introdução</h2>
               <p className="text-gray-700 mb-4">
-                Esta API REST permite integrar sistemas externos (como ERPs) com o catálogo de produtos da Smart Parts Import.
-                A API fornece endpoints para consultar produtos, categorias, e gerenciar dados através de autenticação administrativa.
+                Esta API REST permite integrar sistemas externos (como ERPs) com o catálogo de
+                produtos da Smart Parts Import. A API fornece endpoints para consultar produtos,
+                categorias, e gerenciar dados através de autenticação administrativa.
               </p>
               <div className="grid md:grid-cols-3 gap-4 mt-6">
                 <div className="p-4 bg-blue-50 rounded-lg">
@@ -247,17 +262,18 @@ export default function ApiDocs() {
                 {baseURL}
               </div>
               <p className="text-sm text-gray-600">
-                Substitua <code className="bg-gray-100 px-2 py-1 rounded">{'projectId'}</code> pelo ID do seu projeto Supabase.
+                Substitua <code className="bg-gray-100 px-2 py-1 rounded">{'projectId'}</code> pelo
+                ID do seu projeto Supabase.
               </p>
             </section>
 
             <section className="bg-white rounded-lg shadow-sm p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Formato de Resposta</h2>
               <p className="text-gray-700 mb-4">Todas as respostas são em formato JSON.</p>
-              
+
               <h3 className="font-semibold text-gray-900 mb-2">Resposta de Sucesso</h3>
               <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm mb-6">
-{`{
+                {`{
   "success": true,
   "data": { ... }
 }`}
@@ -265,7 +281,7 @@ export default function ApiDocs() {
 
               <h3 className="font-semibold text-gray-900 mb-2">Resposta de Erro</h3>
               <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`{
+                {`{
   "success": false,
   "error": "Mensagem de erro descritiva"
 }`}
@@ -282,10 +298,12 @@ export default function ApiDocs() {
                   { code: 401, desc: 'Não autenticado (token ausente ou inválido)' },
                   { code: 403, desc: 'Sem permissão (não é administrador)' },
                   { code: 404, desc: 'Recurso não encontrado' },
-                  { code: 500, desc: 'Erro interno do servidor' }
+                  { code: 500, desc: 'Erro interno do servidor' },
                 ].map((status) => (
                   <div key={status.code} className="flex items-center gap-3 p-3 bg-gray-50 rounded">
-                    <code className="font-mono font-semibold text-blue-600 min-w-[50px]">{status.code}</code>
+                    <code className="font-mono font-semibold text-blue-600 min-w-[50px]">
+                      {status.code}
+                    </code>
                     <span className="text-gray-700">{status.desc}</span>
                   </div>
                 ))}
@@ -295,8 +313,8 @@ export default function ApiDocs() {
             <section className="bg-white rounded-lg shadow-sm p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Rate Limiting</h2>
               <p className="text-gray-700">
-                Atualmente não há limites de taxa implementados, mas recomendamos não exceder 100 requisições por minuto
-                para garantir a melhor performance.
+                Atualmente não há limites de taxa implementados, mas recomendamos não exceder 100
+                requisições por minuto para garantir a melhor performance.
               </p>
             </section>
           </div>
@@ -346,7 +364,12 @@ export default function ApiDocs() {
                 path="/products/{id}"
                 description="Retorna os detalhes de um produto específico pelo ID."
                 params={[
-                  { name: 'id', type: 'string', required: true, description: 'ID único do produto' }
+                  {
+                    name: 'id',
+                    type: 'string',
+                    required: true,
+                    description: 'ID único do produto',
+                  },
                 ]}
                 responseExample={`{
   "product": {
@@ -376,7 +399,12 @@ export default function ApiDocs() {
                 path="/products/category/{slug}"
                 description="Retorna todos os produtos de uma categoria específica."
                 params={[
-                  { name: 'slug', type: 'string', required: true, description: 'Slug da categoria (ex: refrigeracao)' }
+                  {
+                    name: 'slug',
+                    type: 'string',
+                    required: true,
+                    description: 'Slug da categoria (ex: refrigeracao)',
+                  },
                 ]}
                 responseExample={`{
   "products": [
@@ -397,12 +425,37 @@ export default function ApiDocs() {
                 auth={true}
                 params={[
                   { name: 'name', type: 'string', required: true, description: 'Nome do produto' },
-                  { name: 'category', type: 'string', required: true, description: 'Nome da categoria' },
-                  { name: 'categorySlug', type: 'string', required: true, description: 'Slug da categoria' },
+                  {
+                    name: 'category',
+                    type: 'string',
+                    required: true,
+                    description: 'Nome da categoria',
+                  },
+                  {
+                    name: 'categorySlug',
+                    type: 'string',
+                    required: true,
+                    description: 'Slug da categoria',
+                  },
                   { name: 'sku', type: 'string', required: true, description: 'Código SKU único' },
-                  { name: 'description', type: 'string', required: true, description: 'Descrição completa' },
-                  { name: 'images', type: 'string[]', required: false, description: 'Array de URLs de imagens' },
-                  { name: 'specs', type: 'object[]', required: false, description: 'Array de especificações técnicas' }
+                  {
+                    name: 'description',
+                    type: 'string',
+                    required: true,
+                    description: 'Descrição completa',
+                  },
+                  {
+                    name: 'images',
+                    type: 'string[]',
+                    required: false,
+                    description: 'Array de URLs de imagens',
+                  },
+                  {
+                    name: 'specs',
+                    type: 'object[]',
+                    required: false,
+                    description: 'Array de especificações técnicas',
+                  },
                 ]}
                 requestBody={`POST /admin/products
 Authorization: Bearer {seu_token_aqui}
@@ -456,7 +509,12 @@ Content-Type: application/json
                 description="Atualiza um produto existente. Requer autenticação administrativa."
                 auth={true}
                 params={[
-                  { name: 'id', type: 'string', required: true, description: 'ID do produto a atualizar' }
+                  {
+                    name: 'id',
+                    type: 'string',
+                    required: true,
+                    description: 'ID do produto a atualizar',
+                  },
                 ]}
                 requestBody={`PUT /admin/products/1702857600000-xyz789
 Authorization: Bearer {seu_token_aqui}
@@ -493,7 +551,12 @@ Content-Type: application/json
                 description="Remove um produto do catálogo. Requer autenticação administrativa."
                 auth={true}
                 params={[
-                  { name: 'id', type: 'string', required: true, description: 'ID do produto a remover' }
+                  {
+                    name: 'id',
+                    type: 'string',
+                    required: true,
+                    description: 'ID do produto a remover',
+                  },
                 ]}
                 requestBody={`DELETE /admin/products/1702857600000-xyz789
 Authorization: Bearer {seu_token_aqui}`}
@@ -519,13 +582,25 @@ Authorization: Bearer {seu_token_aqui}`}
                       { field: 'id', type: 'string', desc: 'Identificador único do produto' },
                       { field: 'name', type: 'string', desc: 'Nome do produto' },
                       { field: 'category', type: 'string', desc: 'Nome da categoria' },
-                      { field: 'categorySlug', type: 'string', desc: 'Slug da categoria (URL-friendly)' },
+                      {
+                        field: 'categorySlug',
+                        type: 'string',
+                        desc: 'Slug da categoria (URL-friendly)',
+                      },
                       { field: 'sku', type: 'string', desc: 'Código SKU único do produto' },
-                      { field: 'description', type: 'string', desc: 'Descrição completa do produto' },
+                      {
+                        field: 'description',
+                        type: 'string',
+                        desc: 'Descrição completa do produto',
+                      },
                       { field: 'images', type: 'string[]', desc: 'Array de URLs das imagens' },
                       { field: 'specs', type: 'Spec[]', desc: 'Array de especificações técnicas' },
                       { field: 'createdAt', type: 'string', desc: 'Data de criação (ISO 8601)' },
-                      { field: 'updatedAt', type: 'string', desc: 'Data da última atualização (ISO 8601)' }
+                      {
+                        field: 'updatedAt',
+                        type: 'string',
+                        desc: 'Data da última atualização (ISO 8601)',
+                      },
                     ].map((row, idx) => (
                       <tr key={idx} className="border-t border-gray-200">
                         <td className="px-4 py-3 font-mono text-blue-600">{row.field}</td>
@@ -536,10 +611,13 @@ Authorization: Bearer {seu_token_aqui}`}
                   </tbody>
                 </table>
               </div>
-              
+
               <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
                 <p className="text-sm text-blue-800">
-                  <strong>Spec Object:</strong> <code className="bg-white px-2 py-1 rounded">{'{ label: string, value: string }'}</code>
+                  <strong>Spec Object:</strong>{' '}
+                  <code className="bg-white px-2 py-1 rounded">
+                    {'{ label: string, value: string }'}
+                  </code>
                 </p>
               </div>
             </section>
@@ -585,10 +663,30 @@ Authorization: Bearer {seu_token_aqui}`}
                 description="Cria uma nova categoria. Requer autenticação administrativa."
                 auth={true}
                 params={[
-                  { name: 'name', type: 'string', required: true, description: 'Nome da categoria' },
-                  { name: 'slug', type: 'string', required: false, description: 'Slug (gerado automaticamente do nome se não fornecido)' },
-                  { name: 'description', type: 'string', required: true, description: 'Descrição da categoria' },
-                  { name: 'image', type: 'string', required: false, description: 'URL da imagem da categoria' }
+                  {
+                    name: 'name',
+                    type: 'string',
+                    required: true,
+                    description: 'Nome da categoria',
+                  },
+                  {
+                    name: 'slug',
+                    type: 'string',
+                    required: false,
+                    description: 'Slug (gerado automaticamente do nome se não fornecido)',
+                  },
+                  {
+                    name: 'description',
+                    type: 'string',
+                    required: true,
+                    description: 'Descrição da categoria',
+                  },
+                  {
+                    name: 'image',
+                    type: 'string',
+                    required: false,
+                    description: 'URL da imagem da categoria',
+                  },
                 ]}
                 requestBody={`POST /admin/categories
 Authorization: Bearer {seu_token_aqui}
@@ -619,7 +717,12 @@ Content-Type: application/json
                 description="Atualiza uma categoria existente. Requer autenticação administrativa."
                 auth={true}
                 params={[
-                  { name: 'slug', type: 'string', required: true, description: 'Slug da categoria a atualizar' }
+                  {
+                    name: 'slug',
+                    type: 'string',
+                    required: true,
+                    description: 'Slug da categoria a atualizar',
+                  },
                 ]}
                 requestBody={`PUT /admin/categories/eixos-e-suspensao
 Authorization: Bearer {seu_token_aqui}
@@ -646,7 +749,12 @@ Content-Type: application/json
                 description="Remove uma categoria. Não é possível remover categorias que possuem produtos associados."
                 auth={true}
                 params={[
-                  { name: 'slug', type: 'string', required: true, description: 'Slug da categoria a remover' }
+                  {
+                    name: 'slug',
+                    type: 'string',
+                    required: true,
+                    description: 'Slug da categoria a remover',
+                  },
                 ]}
                 requestBody={`DELETE /admin/categories/eixos-e-suspensao
 Authorization: Bearer {seu_token_aqui}`}
@@ -663,7 +771,9 @@ Authorization: Bearer {seu_token_aqui}`}
             </section>
 
             <section className="bg-white rounded-lg shadow-sm p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Estrutura do Objeto Category</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Estrutura do Objeto Category
+              </h2>
               <div className="bg-white rounded border border-gray-200 overflow-hidden">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-100">
@@ -681,7 +791,11 @@ Authorization: Bearer {seu_token_aqui}`}
                       { field: 'description', type: 'string', desc: 'Descrição da categoria' },
                       { field: 'image', type: 'string', desc: 'URL da imagem da categoria' },
                       { field: 'createdAt', type: 'string', desc: 'Data de criação (ISO 8601)' },
-                      { field: 'updatedAt', type: 'string', desc: 'Data da última atualização (ISO 8601)' }
+                      {
+                        field: 'updatedAt',
+                        type: 'string',
+                        desc: 'Data da última atualização (ISO 8601)',
+                      },
                     ].map((row, idx) => (
                       <tr key={idx} className="border-t border-gray-200">
                         <td className="px-4 py-3 font-mono text-blue-600">{row.field}</td>
@@ -701,8 +815,8 @@ Authorization: Bearer {seu_token_aqui}`}
             <section className="bg-white rounded-lg shadow-sm p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Autenticação</h2>
               <p className="text-gray-700 mb-6">
-                Endpoints administrativos requerem autenticação via Bearer Token. O token é obtido através do login
-                no sistema Supabase Auth.
+                Endpoints administrativos requerem autenticação via Bearer Token. O token é obtido
+                através do login no sistema Supabase Auth.
               </p>
 
               <div className="p-4 bg-yellow-50 border border-yellow-200 rounded mb-6">
@@ -711,14 +825,15 @@ Authorization: Bearer {seu_token_aqui}`}
                   <div>
                     <p className="font-semibold text-yellow-800">Importante</p>
                     <p className="text-sm text-yellow-700">
-                      Nunca compartilhe seus tokens de acesso. Eles dão acesso administrativo completo ao sistema.
+                      Nunca compartilhe seus tokens de acesso. Eles dão acesso administrativo
+                      completo ao sistema.
                     </p>
                   </div>
                 </div>
               </div>
 
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Como Obter um Token</h3>
-              
+
               <div className="space-y-4 mb-8">
                 <div className="p-4 bg-gray-50 rounded border-l-4 border-blue-500">
                   <p className="font-semibold text-gray-900 mb-2">1. Fazer Login no Sistema</p>
@@ -726,7 +841,7 @@ Authorization: Bearer {seu_token_aqui}`}
                     Use suas credenciais de administrador para fazer login através do Supabase Auth:
                   </p>
                   <pre className="bg-gray-900 text-gray-100 p-3 rounded text-xs overflow-x-auto">
-{`// JavaScript/TypeScript Example
+                    {`// JavaScript/TypeScript Example
 import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient(
@@ -747,12 +862,14 @@ if (data?.session) {
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded border-l-4 border-green-500">
-                  <p className="font-semibold text-gray-900 mb-2">2. Usar o Token nas Requisições</p>
+                  <p className="font-semibold text-gray-900 mb-2">
+                    2. Usar o Token nas Requisições
+                  </p>
                   <p className="text-sm text-gray-600 mb-3">
                     Adicione o token no header Authorization de cada requisição administrativa:
                   </p>
                   <pre className="bg-gray-900 text-gray-100 p-3 rounded text-xs overflow-x-auto">
-{`// JavaScript/TypeScript Example
+                    {`// JavaScript/TypeScript Example
 const response = await fetch(
   'https://{projectId}.supabase.co/functions/v1/make-server-d06f92b7/admin/products',
   {
@@ -775,12 +892,14 @@ curl -X GET \\
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded border-l-4 border-purple-500">
-                  <p className="font-semibold text-gray-900 mb-2">3. Renovar Token Quando Expirar</p>
+                  <p className="font-semibold text-gray-900 mb-2">
+                    3. Renovar Token Quando Expirar
+                  </p>
                   <p className="text-sm text-gray-600 mb-3">
                     Tokens têm validade limitada. Implemente lógica de renovação:
                   </p>
                   <pre className="bg-gray-900 text-gray-100 p-3 rounded text-xs overflow-x-auto">
-{`// Verificar e renovar sessão
+                    {`// Verificar e renovar sessão
 const { data: { session } } = await supabase.auth.getSession()
 
 if (session) {
@@ -794,9 +913,11 @@ if (session) {
                 </div>
               </div>
 
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Exemplo Completo de Integração</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Exemplo Completo de Integração
+              </h3>
               <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`// Classe de integração com a API Smart Parts
+                {`// Classe de integração com a API Smart Parts
 class SmartPartsAPI {
   constructor(projectId, anonKey) {
     this.baseURL = \`https://\${projectId}.supabase.co/functions/v1/make-server-d06f92b7\`
@@ -907,23 +1028,27 @@ console.log('Produto criado:', newProduct)`}
             <section className="bg-white rounded-lg shadow-sm p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Guia de Integração ERP</h2>
               <p className="text-gray-700 mb-6">
-                Este guia demonstra como integrar seu sistema ERP com a API Smart Parts Import para sincronização
-                automática de produtos, categorias e estoque.
+                Este guia demonstra como integrar seu sistema ERP com a API Smart Parts Import para
+                sincronização automática de produtos, categorias e estoque.
               </p>
 
               <div className="grid md:grid-cols-2 gap-6 mb-8">
                 <div className="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200">
                   <Zap className="w-10 h-10 text-blue-600 mb-3" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Sincronização Automática</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Sincronização Automática
+                  </h3>
                   <p className="text-sm text-gray-700">
-                    Configure webhooks ou tarefas agendadas para manter seu catálogo sempre atualizado
+                    Configure webhooks ou tarefas agendadas para manter seu catálogo sempre
+                    atualizado
                   </p>
                 </div>
                 <div className="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
                   <Database className="w-10 h-10 text-green-600 mb-3" />
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">Dados Centralizados</h3>
                   <p className="text-sm text-gray-700">
-                    Mantenha uma única fonte de verdade para seus produtos entre ERP e catálogo online
+                    Mantenha uma única fonte de verdade para seus produtos entre ERP e catálogo
+                    online
                   </p>
                 </div>
               </div>
@@ -934,12 +1059,14 @@ console.log('Produto criado:', newProduct)`}
 
               <div className="space-y-6">
                 <div className="border-l-4 border-blue-500 pl-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">1. Sincronização Completa de Catálogo</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    1. Sincronização Completa de Catálogo
+                  </h3>
                   <p className="text-gray-700 mb-3">
                     Sincronize todos os produtos do seu ERP com o catálogo online periodicamente.
                   </p>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`async function syncCatalog() {
+                    {`async function syncCatalog() {
   // 1. Buscar produtos do ERP
   const erpProducts = await erpSystem.getProducts()
   
@@ -986,12 +1113,15 @@ setInterval(syncCatalog, 6 * 60 * 60 * 1000)`}
                 </div>
 
                 <div className="border-l-4 border-green-500 pl-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">2. Atualização em Tempo Real via Webhooks</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    2. Atualização em Tempo Real via Webhooks
+                  </h3>
                   <p className="text-gray-700 mb-3">
-                    Configure webhooks no seu ERP para atualizar produtos imediatamente quando houver alterações.
+                    Configure webhooks no seu ERP para atualizar produtos imediatamente quando
+                    houver alterações.
                   </p>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`// Servidor de webhook para receber eventos do ERP
+                    {`// Servidor de webhook para receber eventos do ERP
 app.post('/webhook/erp/product-updated', async (req, res) => {
   const { action, product } = req.body
   
@@ -1044,12 +1174,14 @@ app.post('/webhook/erp/product-updated', async (req, res) => {
                 </div>
 
                 <div className="border-l-4 border-purple-500 pl-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">3. Importação em Lote com Validação</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    3. Importação em Lote com Validação
+                  </h3>
                   <p className="text-gray-700 mb-3">
                     Importe grandes volumes de produtos com validação e tratamento de erros.
                   </p>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`async function bulkImport(csvFilePath) {
+                    {`async function bulkImport(csvFilePath) {
   const csv = require('csv-parser')
   const fs = require('fs')
   
@@ -1133,12 +1265,14 @@ bulkImport('./produtos-erp.csv')`}
                 </div>
 
                 <div className="border-l-4 border-orange-500 pl-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">4. Sincronização Bidirecional</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    4. Sincronização Bidirecional
+                  </h3>
                   <p className="text-gray-700 mb-3">
                     Mantenha sincronização em ambas as direções entre ERP e catálogo online.
                   </p>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`class BidirectionalSync {
+                    {`class BidirectionalSync {
   constructor(api, erpSystem) {
     this.api = api
     this.erp = erpSystem
@@ -1281,7 +1415,9 @@ setInterval(() => sync.sync(), 60 * 60 * 1000)`}
             </section>
 
             <section className="bg-white rounded-lg shadow-sm p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Exemplos de Integração por Plataforma</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Exemplos de Integração por Plataforma
+              </h2>
 
               <div className="space-y-6">
                 <div className="border border-gray-200 rounded-lg p-6">
@@ -1290,7 +1426,7 @@ setInterval(() => sync.sync(), 60 * 60 * 1000)`}
                     SAP Business One
                   </h3>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`// Exemplo usando SAP Business One Service Layer
+                    {`// Exemplo usando SAP Business One Service Layer
 const axios = require('axios')
 
 class SAPConnector {
@@ -1348,7 +1484,7 @@ class SAPConnector {
                     TOTVS Protheus
                   </h3>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`// Exemplo usando TOTVS Protheus REST API
+                    {`// Exemplo usando TOTVS Protheus REST API
 const soap = require('soap')
 
 class TotvsConnector {
@@ -1392,7 +1528,7 @@ class TotvsConnector {
                     Bling ERP
                   </h3>
                   <pre className="bg-gray-900 text-gray-100 p-4 rounded overflow-x-auto text-sm">
-{`// Exemplo usando Bling API v3
+                    {`// Exemplo usando Bling API v3
 class BlingConnector {
   constructor(clientId, clientSecret, accessToken) {
     this.baseURL = 'https://api.bling.com.br/Api/v3'
@@ -1437,14 +1573,15 @@ class BlingConnector {
 
             <section className="bg-white rounded-lg shadow-sm p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">Boas Práticas</h2>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
                   <CheckCircle className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="font-semibold text-green-900">Implemente retry logic</p>
                     <p className="text-sm text-green-800">
-                      Adicione tentativas automáticas com backoff exponencial para lidar com falhas temporárias de rede.
+                      Adicione tentativas automáticas com backoff exponencial para lidar com falhas
+                      temporárias de rede.
                     </p>
                   </div>
                 </div>
@@ -1454,7 +1591,8 @@ class BlingConnector {
                   <div>
                     <p className="font-semibold text-green-900">Use processamento em lote</p>
                     <p className="text-sm text-green-800">
-                      Processe produtos em lotes de 10-50 itens para melhor performance e gerenciamento de memória.
+                      Processe produtos em lotes de 10-50 itens para melhor performance e
+                      gerenciamento de memória.
                     </p>
                   </div>
                 </div>
@@ -1464,7 +1602,8 @@ class BlingConnector {
                   <div>
                     <p className="font-semibold text-green-900">Mantenha logs detalhados</p>
                     <p className="text-sm text-green-800">
-                      Registre todas as operações de sincronização com timestamps, SKUs e status para facilitar debugging.
+                      Registre todas as operações de sincronização com timestamps, SKUs e status
+                      para facilitar debugging.
                     </p>
                   </div>
                 </div>
@@ -1474,7 +1613,8 @@ class BlingConnector {
                   <div>
                     <p className="font-semibold text-green-900">Valide dados antes de enviar</p>
                     <p className="text-sm text-green-800">
-                      Sempre valide campos obrigatórios e formatos antes de fazer requisições para evitar erros.
+                      Sempre valide campos obrigatórios e formatos antes de fazer requisições para
+                      evitar erros.
                     </p>
                   </div>
                 </div>
@@ -1484,7 +1624,8 @@ class BlingConnector {
                   <div>
                     <p className="font-semibold text-green-900">Configure alertas de erro</p>
                     <p className="text-sm text-green-800">
-                      Implemente notificações por email ou Slack quando houver falhas na sincronização.
+                      Implemente notificações por email ou Slack quando houver falhas na
+                      sincronização.
                     </p>
                   </div>
                 </div>
@@ -1492,9 +1633,12 @@ class BlingConnector {
                 <div className="flex items-start gap-3 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                   <AlertCircle className="w-6 h-6 text-yellow-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="font-semibold text-yellow-900">Evite sincronização muito frequente</p>
+                    <p className="font-semibold text-yellow-900">
+                      Evite sincronização muito frequente
+                    </p>
                     <p className="text-sm text-yellow-800">
-                      Sincronizações a cada 1-6 horas são suficientes para a maioria dos casos. Evite polling constante.
+                      Sincronizações a cada 1-6 horas são suficientes para a maioria dos casos.
+                      Evite polling constante.
                     </p>
                   </div>
                 </div>

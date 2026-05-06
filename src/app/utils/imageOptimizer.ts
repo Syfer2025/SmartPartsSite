@@ -2,15 +2,19 @@
  * Optimizes Supabase Storage image URLs by adding transformation parameters.
  * Since Supabase Storage (Free Tier) does NOT support on-the-fly transformations,
  * we use `wsrv.nl` (a free, privacy-focused, open-source image CDN) to resize and cache images.
- * 
+ *
  * @param url - Original image URL from Supabase Storage
  * @param width - Desired width (default: 300)
  * @param quality - Image quality 1-100 (default: 75)
  * @returns Optimized image URL
  */
-export function optimizeSupabaseImage(url: string, width: number = 300, quality: number = 75): string {
+export function optimizeSupabaseImage(
+  url: string,
+  width: number = 300,
+  quality: number = 75
+): string {
   if (!url) return '';
-  
+
   // Se já for uma URL otimizada ou data URL, retorna original
   if (url.startsWith('data:') || url.includes('wsrv.nl')) return url;
 
@@ -21,7 +25,7 @@ export function optimizeSupabaseImage(url: string, width: number = 300, quality:
     // Codifica a URL original para passar como parâmetro
     // Remove parâmetros de query existentes para evitar conflitos limpos
     const cleanUrl = url.split('?')[0];
-    
+
     // Constrói a URL do serviço de otimização
     // url: URL da imagem original
     // w: largura

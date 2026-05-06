@@ -16,14 +16,16 @@ export function SEO({
   description = 'Importadora especializada em peças premium para caminhões e carretas. Geladeiras portáteis, ar condicionado, sistema de freios, eixos, rodas e mais. Fornecedor B2B exclusivo.',
   keywords = 'peças para caminhões, peças para carretas, geladeiras portáteis, ar condicionado para caminhão, catracas de freio, patim de freio, cuicas, eixos, rodas de alumínio, rodas de ferro, rolamentos, cinta com catraca, pé de carreta, mola de cuica, importadora de peças, fornecedor B2B',
   ogImage = '',
-  url = ''
+  url = '',
 }: SEOProps) {
   useEffect(() => {
     // Update document title
     document.title = title;
 
     // PERFORMANCE: Preload logo LCP image
-    let preloadLogo = document.querySelector('link[rel="preload"][as="image"][data-logo]') as HTMLLinkElement;
+    let preloadLogo = document.querySelector(
+      'link[rel="preload"][as="image"][data-logo]'
+    ) as HTMLLinkElement;
     if (!preloadLogo) {
       preloadLogo = document.createElement('link');
       preloadLogo.setAttribute('rel', 'preload');
@@ -42,9 +44,9 @@ export function SEO({
     // from the client, we use preconnect (early connection) + preload (early fetch) instead,
     // which achieves ~80% of the same benefit in a SPA context.
     const criticalOrigins = [
-      `https://${projectId}.supabase.co`,      // API + Edge Functions
+      `https://${projectId}.supabase.co`, // API + Edge Functions
       `https://${projectId}.supabase.co/storage/v1`, // Storage (images)
-      'https://wsrv.nl',                        // Image CDN (resize proxy)
+      'https://wsrv.nl', // Image CDN (resize proxy)
     ];
 
     criticalOrigins.forEach((origin) => {
@@ -74,7 +76,7 @@ export function SEO({
       { name: 'keywords', content: keywords },
       { name: 'author', content: 'SMART PARTS IMPORT' },
       { name: 'robots', content: 'index, follow' },
-      
+
       // Open Graph / Facebook
       { property: 'og:type', content: 'website' },
       { property: 'og:url', content: url },
@@ -83,14 +85,14 @@ export function SEO({
       { property: 'og:image', content: ogImage },
       { property: 'og:site_name', content: 'SMART PARTS IMPORT' },
       { property: 'og:locale', content: 'pt_BR' },
-      
+
       // Twitter
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:url', content: url },
       { name: 'twitter:title', content: title },
       { name: 'twitter:description', content: description },
       { name: 'twitter:image', content: ogImage },
-      
+
       // Additional SEO
       { name: 'theme-color', content: '#DC2626' },
       { name: 'msapplication-TileColor', content: '#DC2626' },
@@ -99,26 +101,27 @@ export function SEO({
     metaTags.forEach((tag) => {
       const attribute = tag.name ? 'name' : 'property';
       const value = tag.name || tag.property;
-      
+
       let element = document.querySelector(`meta[${attribute}="${value}"]`);
-      
+
       if (!element) {
         element = document.createElement('meta');
         element.setAttribute(attribute, value!);
         document.head.appendChild(element);
       }
-      
+
       element.setAttribute('content', tag.content);
     });
 
-    // Update canonical link
+    // Update canonical link — fallback para URL atual se não fornecida
+    const canonicalUrl = url || window.location.origin + window.location.pathname;
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
     if (!canonical) {
       canonical = document.createElement('link');
       canonical.setAttribute('rel', 'canonical');
       document.head.appendChild(canonical);
     }
-    canonical.href = url;
+    canonical.href = canonicalUrl;
 
     // Update favicon
     let faviconLink = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
@@ -137,7 +140,6 @@ export function SEO({
       document.head.appendChild(appleTouchIcon);
     }
     appleTouchIcon.href = favicon;
-
   }, [title, description, keywords, ogImage, url]);
 
   return null;
