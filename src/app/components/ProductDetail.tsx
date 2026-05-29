@@ -23,6 +23,7 @@ import { useAnalytics } from '../hooks/useAnalytics';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useData } from '../context/DataContext';
 import { createImageFallback } from '@/app/utils/imageOptimizer';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface ProductDetailProps {
   productId: string;
@@ -46,6 +47,7 @@ interface Product {
 }
 
 export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
+  const { t, localized } = useTranslation();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailsLoaded, setDetailsLoaded] = useState(false);
@@ -154,7 +156,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <h2 className="text-2xl font-black">Carregando...</h2>
+          <h2 className="text-2xl font-black">{t('common.loading')}</h2>
         </motion.div>
       </div>
     );
@@ -168,7 +170,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <h2 className="text-2xl font-black">Produto não encontrado</h2>
+          <h2 className="text-2xl font-black">{t('product.notFound')}</h2>
         </motion.div>
       </div>
     );
@@ -183,7 +185,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   };
 
   const handleWhatsApp = () => {
-    const message = `Olá! Gostaria de mais informações sobre:\n\n*${product.name}*\nSKU: ${product.sku}\n\nAguardo retorno!`;
+    const message = `${t('product.waGreeting')}\n\n*${localized(product, 'name')}*\nSKU: ${product.sku}\n\n${t('product.waClosing')}`;
     const phone = '+5544997260058'; // WhatsApp: 44 99726-0058
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
@@ -262,11 +264,11 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
     const url = images[currentImageIndex];
     if (!url || url.includes('.mp4')) {
-      toast.error('Esta mídia não pode ser baixada como foto.');
+      toast.error(t('product.mediaNotDownloadable'));
       return;
     }
 
-    const toastId = toast.loading('Baixando foto...');
+    const toastId = toast.loading(t('product.downloadingPhoto'));
 
     try {
       const blob = await fetchImageBlob(url);
@@ -278,9 +280,9 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
       const { saveAs } = await import('file-saver');
       saveAs(blob, fileName);
-      toast.success('Foto baixada!', { id: toastId, description: fileName });
+      toast.success(t('product.photoDownloaded'), { id: toastId, description: fileName });
     } catch {
-      toast.error('Falha ao baixar foto', { id: toastId, description: 'Tente novamente.' });
+      toast.error(t('product.photoDownloadFailed'), { id: toastId, description: t('product.tryAgain') });
     }
   };
 
@@ -290,24 +292,24 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
   const generateInfoTxt = (): string => {
     const lines: string[] = [
       '═══════════════════════════════════════════════════════',
-      '  SMART PARTS IMPORT - Informações do Produto',
+      `  SMART PARTS IMPORT - ${t('product.infoTitle')}`,
       '═══════════════════════════════════════════════════════',
       '',
-      `Produto: ${product.name}`,
+      `${t('product.infoProduct')}: ${localized(product, 'name')}`,
       `SKU: ${product.sku}`,
-      `Categoria: ${product.category}`,
+      `${t('product.infoCategory')}: ${localized(product, 'category')}`,
       '',
       '───────────────────────────────────────────────────────',
-      '  Descrição',
+      `  ${t('product.infoDescription')}`,
       '───────────────────────────────────────────────────────',
-      product.description || 'Sem descrição disponível.',
+      localized(product, 'description') || t('product.infoNoDescription'),
       '',
     ];
 
     // Características
     if (product.features && Array.isArray(product.features) && product.features.length > 0) {
       lines.push('───────────────────────────────────────────────────────');
-      lines.push('  Características');
+      lines.push(`  ${t('product.infoFeatures')}`);
       lines.push('───────────────────────────────────────────────────────');
       product.features.forEach((feat, i) => {
         lines.push(`  ${i + 1}. ${feat}`);
@@ -326,7 +328,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
       if (specs.length > 0) {
         lines.push('───────────────────────────────────────────────────────');
-        lines.push('  Especificações Técnicas');
+        lines.push(`  ${t('product.specsTitle')}`);
         lines.push('───────────────────────────────────────────────────────');
         const maxKeyLen = Math.max(...specs.map((s) => (s.key || '').length), 10);
         specs.forEach((spec) => {
@@ -340,7 +342,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     // Aplicações
     if (product.applications) {
       lines.push('───────────────────────────────────────────────────────');
-      lines.push('  Aplicações');
+      lines.push(`  ${t('product.infoApplications')}`);
       lines.push('──────────────────────────────────────────────────────');
       lines.push(product.applications);
       lines.push('');
@@ -349,7 +351,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     // Garantia
     if (product.warranty) {
       lines.push('───────────────────────────────────────────────────────');
-      lines.push('  Garantia');
+      lines.push(`  ${t('product.infoWarranty')}`);
       lines.push('───────────────────────────────────────────────────────');
       lines.push(product.warranty);
       lines.push('');
@@ -358,7 +360,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     // Fotos
     const photoUrls = images.filter((u) => !u.includes('.mp4'));
     lines.push('───────────────────────────────────────────────────────');
-    lines.push(`  Fotos (${photoUrls.length} arquivo${photoUrls.length > 1 ? 's' : ''})`);
+    lines.push(`  ${t('product.infoPhotos')} (${photoUrls.length})`);
     lines.push('───────────────────────────────────────────────────────');
     photoUrls.forEach((url, i) => {
       lines.push(`  foto-${String(i + 1).padStart(2, '0')}: ${url.split('?')[0]}`);
@@ -367,7 +369,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
     lines.push('══════════════════════════════════════════════════════');
     lines.push(
-      `  Gerado em: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`
+      `  ${t('product.infoGeneratedAt')}: ${new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`
     );
     lines.push('  SMART PARTS IMPORT - smartpartsimport.com.br');
     lines.push('  WhatsApp: (44) 99726-0058');
@@ -386,7 +388,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     const photoUrls = images.filter((url) => !url.includes('.mp4'));
 
     if (photoUrls.length === 0) {
-      toast.error('Nenhuma foto disponível para download.');
+      toast.error(t('product.noPhotosDownload'));
       return;
     }
 
@@ -435,8 +437,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
           completed++;
           if (result.status === 'rejected') {
             const i = batchStart + batchIndex;
-            toast.error(`Falha ao baixar foto ${i + 1}`, {
-              description: 'A imagem será ignorada no ZIP.',
+            toast.error(t('product.photoFailedN', { n: i + 1 }), {
+              description: t('product.photoSkippedZip'),
             });
           }
         });
@@ -454,12 +456,12 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       saveAs(content, `${folderName}.zip`);
 
       const successCount = photoUrls.length;
-      toast.success('Download concluído!', {
-        description: `${successCount} foto${successCount > 1 ? 's' : ''} + info.txt baixados com sucesso.`,
+      toast.success(t('product.downloadComplete'), {
+        description: t('product.downloadZipDesc', { n: successCount }),
       });
     } catch (error) {
-      toast.error('Erro ao preparar download', {
-        description: 'Tente novamente em alguns instantes.',
+      toast.error(t('product.downloadPrepError'), {
+        description: t('product.tryAgainSoon'),
       });
     } finally {
       setIsDownloading(false);
@@ -477,7 +479,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     const photoUrls = images.filter((url) => !url.includes('.mp4'));
 
     if (photoUrls.length === 0) {
-      toast.error('Nenhuma foto disponível para download.');
+      toast.error(t('product.noPhotosDownload'));
       return;
     }
 
@@ -515,12 +517,12 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
         }
       }
 
-      toast.success('Download concluído!', {
-        description: `${photoUrls.length} foto${photoUrls.length > 1 ? 's' : ''} salva${photoUrls.length > 1 ? 's' : ''} individualmente.`,
+      toast.success(t('product.downloadComplete'), {
+        description: t('product.downloadIndividualDesc', { n: photoUrls.length }),
       });
     } catch {
-      toast.error('Erro durante o download', {
-        description: 'Algumas fotos podem não ter sido baixadas.',
+      toast.error(t('product.downloadError'), {
+        description: t('product.somePhotosFailed'),
       });
     } finally {
       setIsDownloading(false);
@@ -540,18 +542,18 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     const totalFotos = photoUrls.length;
 
     return [
-      `*${product.name}*`,
+      `*${localized(product, 'name')}*`,
       `SKU: ${product.sku}`,
-      `Categoria: ${product.category}`,
+      `${t('product.infoCategory')}: ${localized(product, 'category')}`,
       '',
-      product.description || '',
+      localized(product, 'description') || '',
       '',
-      `📸 *${totalFotos} foto${totalFotos > 1 ? 's' : ''} disponíve${totalFotos > 1 ? 'is' : 'l'}*`,
+      `📸 *${t('product.sharePhotosAvailable', { n: totalFotos })}*`,
       '',
-      `👉 *Veja o produto completo:*`,
+      `👉 *${t('product.shareSeeFull')}*`,
       productPageUrl,
       '',
-      `_Na página do produto você pode ver todas as fotos, especificações técnicas e fazer download._`,
+      `_${t('product.sharePageNote')}_`,
       '',
       `_Smart Parts Import_`,
     ].join('\n');
@@ -569,14 +571,14 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     const photoUrls = images.filter((url) => !url.includes('.mp4'));
 
     if (photoUrls.length === 0) {
-      toast.error('Nenhuma foto disponível para compartilhar.');
+      toast.error(t('product.noPhotosShare'));
       setIsSharing(false);
       return;
     }
 
     // Tentar Web Share API (funciona em mobile — abre seletor de app/contato)
     if (navigator.share && navigator.canShare) {
-      const toastId = toast.loading('Preparando fotos para compartilhar...');
+      const toastId = toast.loading(t('product.preparingShare'));
 
       try {
         const BATCH_SIZE = 4;
@@ -613,14 +615,14 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
         }
 
         const shareData: ShareData = {
-          title: `${product.name} - Smart Parts Import`,
-          text: `${product.name}\nSKU: ${product.sku}\n${product.description || ''}`,
+          title: `${localized(product, 'name')} - Smart Parts Import`,
+          text: `${localized(product, 'name')}\nSKU: ${product.sku}\n${localized(product, 'description') || ''}`,
           files,
         };
 
         if (navigator.canShare(shareData)) {
           await navigator.share(shareData);
-          toast.success('Fotos compartilhadas!', { id: toastId });
+          toast.success(t('product.photosShared'), { id: toastId });
         } else {
           throw new Error('canShare retornou false');
         }
@@ -650,8 +652,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
 
-    toast.success('WhatsApp aberto!', {
-      description: 'Escolha o contato para enviar as fotos.',
+    toast.success(t('product.whatsappOpened'), {
+      description: t('product.chooseContact'),
     });
   };
 
@@ -662,7 +664,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     const photoUrls = images.filter((url) => !url.includes('.mp4'));
 
     if (photoUrls.length === 0) {
-      toast.error('Nenhuma foto disponível para copiar.');
+      toast.error(t('product.noPhotosCopy'));
       return;
     }
 
@@ -670,8 +672,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
 
     try {
       await navigator.clipboard.writeText(message);
-      toast.success('Link copiado!', {
-        description: 'Texto com link do produto copiado para a área de transferência.',
+      toast.success(t('product.linkCopied'), {
+        description: t('product.linkCopiedDesc'),
       });
     } catch {
       const textarea = document.createElement('textarea');
@@ -682,8 +684,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       textarea.select();
       document.execCommand('copy');
       document.body.removeChild(textarea);
-      toast.success('Link copiado!', {
-        description: 'Texto com link do produto copiado.',
+      toast.success(t('product.linkCopied'), {
+        description: t('product.linkCopiedShort'),
       });
     }
   };
@@ -694,13 +696,13 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
       <div className="bg-white border-b border-gray-200 py-4 shadow-sm">
         <div className="container mx-auto px-4">
           <nav className="flex items-center gap-2 text-sm font-medium">
-            <Link to="/" className="text-gray-500 hover:text-red-600 transition">Início</Link>
+            <Link to="/" className="text-gray-500 hover:text-red-600 transition">{t('category.home')}</Link>
             <span className="text-gray-300">/</span>
             <Link to={`/categoria/${product.categorySlug}`} className="text-gray-500 hover:text-red-600 transition">
-              {product.category}
+              {localized(product, 'category')}
             </Link>
             <span className="text-gray-300">/</span>
-            <span className="text-gray-900 font-bold truncate max-w-[200px] md:max-w-md">{product.name}</span>
+            <span className="text-gray-900 font-bold truncate max-w-[200px] md:max-w-md">{localized(product, 'name')}</span>
           </nav>
         </div>
       </div>
@@ -785,7 +787,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 <button
                   onClick={handleDownloadSingleImage}
                   className="absolute top-4 left-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-lg z-10 transition"
-                  title="Baixar esta foto"
+                  title={t('product.downloadThisPhoto')}
                 >
                   <Download className="w-4 h-4" />
                 </button>
@@ -819,7 +821,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                         ) : (
                           <img
                             src={image}
-                            alt={`${product.name} - ${index + 1}`}
+                            alt={`${localized(product, 'name')} - ${index + 1}`}
                             className="w-full h-full object-contain"
                             onError={createImageFallback(image)}
                           />
@@ -853,7 +855,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 {product.verified && (
                   <div
                     className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center"
-                    title="Verificado"
+                    title={t('product.verified')}
                   >
                     <Check className="w-3 h-3 text-white" />
                   </div>
@@ -867,7 +869,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 transition={{ delay: 0.5 }}
                 className="text-2xl font-black mb-3 text-gray-900 leading-tight"
               >
-                {product.name}
+                {localized(product, 'name')}
               </motion.h1>
 
               {/* Description */}
@@ -877,7 +879,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 transition={{ delay: 0.6 }}
                 className="text-gray-600 mb-6 leading-relaxed text-sm border-l-4 border-red-600 pl-3 italic"
               >
-                {product.description}
+                {localized(product, 'description')}
               </motion.p>
 
               {/* Features */}
@@ -888,9 +890,9 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 className="grid grid-cols-3 gap-3 mb-6"
               >
                 {[
-                  { icon: Shield, text: 'Garantia', color: 'from-red-600 to-red-700' },
-                  { icon: Truck, text: 'Entrega', color: 'from-red-600 to-red-700' },
-                  { icon: Check, text: 'Qualidade', color: 'from-red-600 to-red-700' },
+                  { icon: Shield, text: t('product.featureWarranty'), color: 'from-red-600 to-red-700' },
+                  { icon: Truck, text: t('product.featureDelivery'), color: 'from-red-600 to-red-700' },
+                  { icon: Check, text: t('product.featureQuality'), color: 'from-red-600 to-red-700' },
                 ].map((item, index) => (
                   <motion.div
                     key={index}
@@ -920,7 +922,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:scale-[0.98] text-white py-3.5 rounded-xl transition-all duration-300 font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-green-600/30 hover:shadow-green-600/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
               >
                 <MessageCircle className="w-5 h-5" />
-                Falar com Vendedor
+                {t('product.talkToSeller')}
               </motion.button>
 
               {/* Action Bar (Share/Copy) */}
@@ -936,14 +938,14 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                   className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 active:scale-[0.98] text-gray-700 py-2.5 rounded-lg text-xs font-bold transition-all disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
                 >
                   {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
-                  Compartilhar
+                  {t('product.share')}
                 </button>
                 <button
                   onClick={handleCopyShareLink}
                   className="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 active:scale-[0.98] text-gray-700 py-2.5 rounded-lg text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
                 >
                   <Copy className="w-4 h-4" />
-                  Copiar Link
+                  {t('product.copyLink')}
                 </button>
               </motion.div>
 
@@ -955,8 +957,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 className="mt-4 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg"
               >
                 <p className="text-xs text-gray-700 text-center">
-                  <span className="font-bold">💼 Vendas B2B:</span> Produto exclusivo para
-                  revendedores
+                  <span className="font-bold">💼 {t('product.b2bLabel')}:</span> {t('product.b2bText')}
                 </p>
               </motion.div>
 
@@ -989,7 +990,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                     }`}
                   >
                     <Files className="w-3.5 h-3.5" />
-                    Individual
+                    {t('product.individual')}
                   </button>
                 </div>
 
@@ -1012,7 +1013,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                     {isDownloading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Baixando... {Math.round(downloadProgress)}%</span>
+                        <span>{t('product.downloading')} {Math.round(downloadProgress)}%</span>
                       </>
                     ) : (
                       <>
@@ -1023,8 +1024,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                         )}
                         <span>
                           {downloadMode === 'zip'
-                            ? `Baixar ZIP (${images.filter((u) => !u.includes('.mp4')).length} fotos)`
-                            : `Baixar ${images.filter((u) => !u.includes('.mp4')).length} fotos`}
+                            ? t('product.downloadZip', { n: images.filter((u) => !u.includes('.mp4')).length })
+                            : t('product.downloadPhotos', { n: images.filter((u) => !u.includes('.mp4')).length })}
                         </span>
                       </>
                     )}
@@ -1032,8 +1033,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                 </motion.button>
                 <p className="text-[10px] text-gray-400 text-center mt-1.5">
                   {downloadMode === 'zip'
-                    ? 'ZIP com info.txt organizado por SKU em alta qualidade'
-                    : 'Cada foto salva individualmente com nome do SKU'}
+                    ? t('product.downloadZipHint')
+                    : t('product.downloadIndividualHint')}
                 </p>
               </motion.div>
             </div>
@@ -1052,7 +1053,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
               <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
                 <Check className="w-6 h-6 text-red-600" />
               </div>
-              Especificações Técnicas
+              {t('product.specsTitle')}
             </h2>
             {product.specifications &&
               (Array.isArray(product.specifications)
@@ -1067,14 +1068,14 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
                           value: value as string,
                         }));
                     const text =
-                      `${product.name}\n\n` + specs.map((s) => `${s.key}: ${s.value}`).join('\n');
+                      `${localized(product, 'name')}\n\n` + specs.map((s) => `${s.key}: ${s.value}`).join('\n');
                     navigator.clipboard.writeText(text);
-                    toast.success('Ficha técnica copiada!');
+                    toast.success(t('product.specsCopied'));
                   }}
                   className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition"
                 >
                   <Copy className="w-4 h-4" />
-                  Copiar
+                  {t('product.copy')}
                 </button>
               )}
           </div>
@@ -1114,7 +1115,7 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
               </div>
             ) : (
               <p className="text-gray-500 text-center py-4">
-                Entre em contato para mais informações técnicas
+                {t('product.specsContact')}
               </p>
             )}
           </div>

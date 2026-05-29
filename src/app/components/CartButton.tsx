@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { toast } from 'sonner';
 import { OrderForm } from './OrderForm';
 import { projectId, publicAnonKey } from '../../../utils/supabase/info';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface OrderFormData {
   cnpj: string;
@@ -13,6 +14,7 @@ interface OrderFormData {
 }
 
 export function CartButton() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [showOrderForm, setShowOrderForm] = useState(false);
   const { items, removeFromCart, updateQuantity, clearCart, getTotalItems } = useCart();
@@ -31,8 +33,8 @@ export function CartButton() {
 
   const handleClearCart = () => {
     clearCart();
-    toast.success('Carrinho limpo', {
-      description: 'Todos os itens foram removidos do carrinho.',
+    toast.success(t('cart.clearedTitle'), {
+      description: t('cart.clearedDesc'),
     });
   };
 
@@ -83,23 +85,23 @@ export function CartButton() {
       const orderLink = `${window.location.origin}/pedido/${orderId}`;
 
       // Enviar link via WhatsApp
-      let message = `*NOVO PEDIDO - SMART PARTS IMPORT*\n\n`;
-      message += `*DADOS DO SOLICITANTE*\n`;
-      message += `CNPJ: ${formData.cnpj}\n`;
-      message += `Nome: ${formData.nomeCompleto}\n`;
-      message += `Telefone: ${formData.telefone}\n`;
-      message += `Email: ${formData.email}\n\n`;
-      message += `*Acesse o pedido completo:*\n`;
+      let message = `*${t('cart.msgTitle')}*\n\n`;
+      message += `*${t('cart.msgRequester')}*\n`;
+      message += `${t('cart.msgCnpj')}: ${formData.cnpj}\n`;
+      message += `${t('cart.msgName')}: ${formData.nomeCompleto}\n`;
+      message += `${t('cart.msgPhone')}: ${formData.telefone}\n`;
+      message += `${t('cart.msgEmail')}: ${formData.email}\n\n`;
+      message += `*${t('cart.msgAccessOrder')}*\n`;
       message += `${orderLink}\n\n`;
-      message += `Neste link você pode visualizar todos os detalhes e baixar o PDF do pedido.\n\n`;
-      message += `Aguardo retorno com o orçamento. Obrigado!`;
+      message += `${t('cart.msgLinkNote')}\n\n`;
+      message += `${t('cart.msgClosing')}`;
 
       const phone = '+5544997260058';
       const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank');
 
-      toast.success('Pedido enviado com sucesso!', {
-        description: 'Link do pedido foi enviado via WhatsApp.',
+      toast.success(t('cart.sentTitle'), {
+        description: t('cart.sentDesc'),
         duration: 4000,
       });
 
@@ -108,8 +110,8 @@ export function CartButton() {
       setIsOpen(false);
       setShowOrderForm(false);
     } catch (error: any) {
-      toast.error('Erro ao enviar pedido', {
-        description: error.message || 'Tente novamente mais tarde.',
+      toast.error(t('cart.errorTitle'), {
+        description: error.message || t('cart.errorDesc'),
       });
     }
   };
@@ -120,13 +122,13 @@ export function CartButton() {
       <button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-6 right-6 bg-black hover:bg-gray-900 text-white p-4 rounded-full shadow-2xl border-2 border-red-600 transition-all z-[9999] cart-btn-hover"
-        aria-label="Abrir carrinho de pedidos"
+        aria-label={t('cart.openAria')}
       >
         <ShoppingCart className="w-7 h-7" />
         {getTotalItems() > 0 && (
           <div
             className="absolute -top-2 -right-2 bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shadow-lg cart-badge-pop"
-            aria-label={`${getTotalItems()} itens no carrinho`}
+            aria-label={t('cart.itemsAria', { n: getTotalItems() })}
           >
             {getTotalItems()}
           </div>
@@ -152,8 +154,10 @@ export function CartButton() {
               <ShoppingCart className="w-6 h-6" />
             </div>
             <div>
-              <h2 className="font-black text-xl">Seu Pedido</h2>
-              <p className="text-sm text-gray-300">{getTotalItems()} itens</p>
+              <h2 className="font-black text-xl">{t('cart.title')}</h2>
+              <p className="text-sm text-gray-300">
+                {getTotalItems()} {getTotalItems() !== 1 ? t('cart.items') : t('cart.item')}
+              </p>
             </div>
           </div>
           <button
@@ -170,8 +174,8 @@ export function CartButton() {
           {items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-gray-400">
               <ShoppingCart className="w-24 h-24 mb-4 opacity-20" />
-              <p className="text-lg font-semibold">Carrinho vazio</p>
-              <p className="text-sm">Adicione produtos para fazer seu pedido</p>
+              <p className="text-lg font-semibold">{t('cart.empty')}</p>
+              <p className="text-sm">{t('cart.emptyDesc')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -235,7 +239,7 @@ export function CartButton() {
           <div className="border-t border-gray-200 p-6 bg-gray-50">
             <div className="mb-4 p-4 bg-white rounded-lg border-2 border-gray-200">
               <div className="flex justify-between mb-2">
-                <span className="text-gray-600">Total de itens:</span>
+                <span className="text-gray-600">{t('cart.totalItems')}</span>
                 <span className="font-black text-lg">{getTotalItems()}</span>
               </div>
             </div>
@@ -248,7 +252,7 @@ export function CartButton() {
               tabIndex={isOpen ? 0 : -1}
             >
               <Send className="w-5 h-5" />
-              Enviar Pedido via WhatsApp
+              {t('cart.sendOrder')}
             </button>
 
             <button
@@ -257,7 +261,7 @@ export function CartButton() {
               tabIndex={isOpen ? 0 : -1}
             >
               <Trash2 className="w-4 h-4" />
-              Limpar Carrinho
+              {t('cart.clear')}
             </button>
           </div>
         )}

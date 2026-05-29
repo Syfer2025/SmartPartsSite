@@ -1,5 +1,6 @@
 import { User, Building2, Phone, Mail, X } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface OrderFormData {
   cnpj: string;
@@ -14,6 +15,7 @@ interface OrderFormProps {
 }
 
 export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<OrderFormData>({
     cnpj: '',
     nomeCompleto: '',
@@ -93,25 +95,25 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
     const newErrors: Partial<OrderFormData> = {};
 
     if (!formData.cnpj) {
-      newErrors.cnpj = 'CNPJ é obrigatório';
+      newErrors.cnpj = t('orderForm.cnpjRequired');
     } else if (!validateCNPJ(formData.cnpj)) {
-      newErrors.cnpj = 'CNPJ inválido';
+      newErrors.cnpj = t('orderForm.cnpjInvalid');
     }
 
     if (!formData.nomeCompleto || formData.nomeCompleto.trim().length < 3) {
-      newErrors.nomeCompleto = 'Nome completo deve ter pelo menos 3 caracteres';
+      newErrors.nomeCompleto = t('orderForm.nameInvalid');
     }
 
     if (!formData.telefone) {
-      newErrors.telefone = 'Telefone é obrigatório';
+      newErrors.telefone = t('orderForm.phoneRequired');
     } else if (!validatePhone(formData.telefone)) {
-      newErrors.telefone = 'Telefone inválido';
+      newErrors.telefone = t('orderForm.phoneInvalid');
     }
 
     if (!formData.email) {
-      newErrors.email = 'Email é obrigatório';
+      newErrors.email = t('orderForm.emailRequired');
     } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Email inválido';
+      newErrors.email = t('orderForm.emailInvalid');
     }
 
     setErrors(newErrors);
@@ -143,8 +145,8 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
             <X className="w-5 h-5" />
           </button>
 
-          <h2 className="font-black text-2xl mb-2">Dados do Solicitante</h2>
-          <p className="text-sm text-gray-300">Preencha seus dados para finalizar o pedido</p>
+          <h2 className="font-black text-2xl mb-2">{t('orderForm.title')}</h2>
+          <p className="text-sm text-gray-300">{t('orderForm.subtitle')}</p>
         </div>
 
         {/* Form */}
@@ -156,7 +158,7 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               <Building2 className="w-4 h-4 inline mr-2" />
-              CNPJ *
+              {t('orderForm.cnpjLabel')} *
             </label>
             <input
               type="text"
@@ -177,13 +179,13 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               <User className="w-4 h-4 inline mr-2" />
-              Nome Completo *
+              {t('orderForm.nameLabel')} *
             </label>
             <input
               type="text"
               value={formData.nomeCompleto}
               onChange={(e) => setFormData({ ...formData, nomeCompleto: e.target.value })}
-              placeholder="Seu nome completo"
+              placeholder={t('orderForm.namePlaceholder')}
               className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition ${
                 errors.nomeCompleto
                   ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
@@ -199,7 +201,7 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               <Phone className="w-4 h-4 inline mr-2" />
-              Telefone *
+              {t('orderForm.phoneLabel')} *
             </label>
             <input
               type="text"
@@ -220,7 +222,7 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               <Mail className="w-4 h-4 inline mr-2" />
-              Email *
+              {t('orderForm.emailLabel')} *
             </label>
             <input
               type="email"
@@ -243,13 +245,13 @@ export function OrderForm({ onSubmit, onCancel }: OrderFormProps) {
               onClick={onCancel}
               className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition order-form-btn"
             >
-              Cancelar
+              {t('orderForm.cancel')}
             </button>
             <button
               type="submit"
               className="flex-1 px-6 py-3 bg-gradient-to-r from-black to-gray-900 text-white rounded-xl font-black hover:shadow-xl transition order-form-btn order-form-submit"
             >
-              Continuar
+              {t('orderForm.continue')}
             </button>
           </div>
         </form>

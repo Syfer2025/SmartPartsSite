@@ -2,6 +2,8 @@ import { ArrowRight, Package, Users, Handshake, ShoppingBag } from 'lucide-react
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { optimizeSupabaseImage, createImageFallback } from '@/app/utils/imageOptimizer';
+import { getCategoryIcon, isImageIcon } from '../utils/categoryIcons';
+import { useTranslation } from '../i18n/LanguageContext';
 import { useMemo } from 'react';
 
 interface ProductsProps {
@@ -10,6 +12,7 @@ interface ProductsProps {
 
 export function Products({ onNavigate }: ProductsProps) {
   const { categories, products, loading, error } = useData();
+  const { t, localized } = useTranslation();
 
   // Embaralhar produtos aleatoriamente a cada render
   const randomProducts = useMemo(() => {
@@ -24,12 +27,12 @@ export function Products({ onNavigate }: ProductsProps) {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full mb-4">
             <Package className="w-4 h-4" />
-            <span className="font-semibold text-sm">Catálogo Completo</span>
+            <span className="font-semibold text-sm">{t('products.catalogBadge')}</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-black mb-3 text-gray-900">
-            Nossas Categorias de Produtos
+            {t('products.categoriesTitle')}
           </h2>
-          <p className="text-lg text-gray-600">Linha completa de peças importadas premium</p>
+          <p className="text-lg text-gray-600">{t('products.categoriesSubtitle')}</p>
           <div className="h-1 w-24 bg-red-600 mx-auto mt-4 rounded-full" />
         </div>
 
@@ -45,21 +48,23 @@ export function Products({ onNavigate }: ProductsProps) {
           ) : error ? (
             <div className="col-span-full text-center py-12">
               <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-600 mb-2">Erro ao carregar categorias.</p>
+              <p className="text-gray-600 mb-2">{t('products.categoriesError')}</p>
               <button
                 onClick={() => window.location.reload()}
                 className="text-red-600 hover:text-red-700 font-semibold text-sm"
               >
-                Tentar novamente
+                {t('common.retry')}
               </button>
             </div>
           ) : categories.length === 0 ? (
             <div className="col-span-full text-center py-12">
               <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-600">Nenhuma categoria cadastrada.</p>
+              <p className="text-gray-600">{t('products.noCategories')}</p>
             </div>
           ) : (
-            categories.map((category, index) => (
+            categories.map((category, index) => {
+              const Icon = getCategoryIcon(category.slug);
+              return (
               <Link
                 to={`/categoria/${category.slug}`}
                 key={category.slug || `cat-${index}`}
@@ -70,23 +75,24 @@ export function Products({ onNavigate }: ProductsProps) {
               >
                 <div className="w-24 h-24 flex items-center justify-center mb-3 bg-white rounded-xl shadow border border-gray-200 group-hover:border-red-500 group-hover:shadow-lg transition-all duration-300">
                   <div className="text-4xl">
-                    {category.icon.startsWith('data:image') || category.icon.startsWith('http') ? (
+                    {isImageIcon(category.icon) ? (
                       <img
                         src={category.icon}
-                        alt={category.name}
+                        alt={localized(category, 'name')}
                         className="w-16 h-16 object-contain"
                         loading="lazy"
                       />
                     ) : (
-                      category.icon
+                      <Icon className="w-12 h-12 text-gray-700 group-hover:text-red-600 transition-colors" />
                     )}
                   </div>
                 </div>
                 <h3 className="text-xs font-bold text-center text-gray-800 group-hover:text-red-600 transition-colors max-w-[90px]">
-                  {category.name}
+                  {localized(category, 'name')}
                 </h3>
               </Link>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -95,12 +101,12 @@ export function Products({ onNavigate }: ProductsProps) {
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-full mb-4">
               <ShoppingBag className="w-4 h-4" />
-              <span className="font-semibold text-sm">Produtos em Destaque</span>
+              <span className="font-semibold text-sm">{t('products.featuredBadge')}</span>
             </div>
             <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-2">
-              Confira Nossos Produtos Premium
+              {t('products.featuredTitle')}
             </h3>
-            <p className="text-gray-600">Qualidade garantida e suporte completo</p>
+            <p className="text-gray-600">{t('products.featuredSubtitle')}</p>
           </div>
 
           {loading ? (
@@ -110,12 +116,12 @@ export function Products({ onNavigate }: ProductsProps) {
           ) : error ? (
             <div className="text-center py-8 bg-white rounded-xl border border-gray-200">
               <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-600">Erro ao carregar produtos.</p>
+              <p className="text-gray-600">{t('products.productsError')}</p>
             </div>
           ) : products.length === 0 ? (
             <div className="text-center py-8 bg-white rounded-xl border border-gray-200">
               <Package className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-600">Nenhum produto cadastrado.</p>
+              <p className="text-gray-600">{t('products.noProducts')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -140,7 +146,7 @@ export function Products({ onNavigate }: ProductsProps) {
                     />
                   </div>
                   <h4 className="font-bold text-sm text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 mb-2">
-                    {product.name}
+                    {localized(product, 'name')}
                   </h4>
 
                   {/* SKU */}
@@ -153,15 +159,15 @@ export function Products({ onNavigate }: ProductsProps) {
                   )}
 
                   <p className="text-xs text-gray-600 line-clamp-2 mb-2">
-                    {product.description || 'Produto de alta qualidade importado.'}
+                    {localized(product, 'description') || t('products.defaultDescription')}
                   </p>
-                  <p className="text-xs text-gray-500 mb-3">{product.category}</p>
+                  <p className="text-xs text-gray-500 mb-3">{localized(product, 'category')}</p>
 
                   {/* Spacer to push button to bottom */}
                   <div className="flex-1"></div>
 
                   <button tabIndex={-1} className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 active:scale-[0.98] text-white py-2 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-200 shadow-md shadow-red-600/20 hover:shadow-lg hover:shadow-red-600/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">
-                    Ver Detalhes
+                    {t('common.viewDetails')}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </Link>
@@ -177,11 +183,21 @@ export function Products({ onNavigate }: ProductsProps) {
               {
                 icon: Package,
                 number: '12+',
-                label: 'Categorias',
-                desc: '100% produtos importados',
+                label: t('products.statCategories'),
+                desc: t('products.statCategoriesDesc'),
               },
-              { icon: Users, number: 'B2B', label: 'Exclusivo', desc: 'Vendas para revendedores' },
-              { icon: Handshake, number: 'Premium', label: 'Suporte', desc: 'Assessoria técnica' },
+              {
+                icon: Users,
+                number: 'B2B',
+                label: t('products.statExclusive'),
+                desc: t('products.statExclusiveDesc'),
+              },
+              {
+                icon: Handshake,
+                number: 'Premium',
+                label: t('products.statSupport'),
+                desc: t('products.statSupportDesc'),
+              },
             ].map((stat, index) => (
               <div key={index}>
                 <div className="w-12 h-12 mx-auto bg-red-600 rounded-lg flex items-center justify-center mb-2">
@@ -195,11 +211,9 @@ export function Products({ onNavigate }: ProductsProps) {
           </div>
           <div className="mt-6 pt-6 border-t border-white/10 text-center">
             <p className="text-white font-semibold">
-              🎯 <span className="text-yellow-400">Fornecedores Oficiais</span> para Revendedores
+              🎯 <span className="text-yellow-400">{t('products.suppliersTitle')}</span>
             </p>
-            <p className="text-gray-400 text-sm mt-1">
-              Produtos de alta qualidade com suporte completo
-            </p>
+            <p className="text-gray-400 text-sm mt-1">{t('products.suppliersSubtitle')}</p>
           </div>
         </div>
       </div>

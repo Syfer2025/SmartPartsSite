@@ -32,18 +32,22 @@ const SearchResults = lazy(() => import('./components/SearchResults'));
 import { SEO } from './components/SEO';
 import { Toaster } from 'sonner';
 import { DataProvider, useData } from './context/DataContext';
+import { LanguageProvider, useTranslation } from './i18n/LanguageContext';
 import { useAnalytics } from './hooks/useAnalytics';
 import { useBannerPreload } from './hooks/useBannerPreload';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black">
-    <div className="text-center">
-      <div className="w-16 h-16 border-4 border-red-600/30 border-t-red-600 rounded-full animate-spin mx-auto mb-4"></div>
-      <p className="text-white text-sm">Carregando...</p>
+const PageLoader = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-red-600/30 border-t-red-600 rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-white text-sm">{t('common.loading')}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const SectionSkeleton = () => (
   <div className="py-16 bg-gray-50 animate-pulse">
@@ -122,6 +126,7 @@ function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
   const analytics = useAnalytics();
+  const { t } = useTranslation();
 
   const headerRef = useCallback((node: HTMLDivElement | null) => {
     if (node) {
@@ -322,7 +327,7 @@ function AppContent() {
                 path="*"
                 element={
                   <div className="p-8 text-center">
-                    <h1 className="text-2xl font-bold">Página não encontrada</h1>
+                    <h1 className="text-2xl font-bold">{t('common.pageNotFound')}</h1>
                   </div>
                 }
               />
@@ -348,8 +353,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <DataProvider>
-      <AppContent />
-    </DataProvider>
+    <LanguageProvider>
+      <DataProvider>
+        <AppContent />
+      </DataProvider>
+    </LanguageProvider>
   );
 }

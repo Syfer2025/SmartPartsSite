@@ -21,10 +21,14 @@ import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
 interface Product {
   id: string;
   name: string;
+  name_en?: string;
+  name_es?: string;
   category: string;
   categorySlug: string;
   sku: string;
   description: string;
+  description_en?: string;
+  description_es?: string;
   image: string;
   images?: string[]; // Multiple images support
   verified?: boolean; // Flag de verificação (somente admin)
@@ -61,10 +65,14 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
 
   const [formData, setFormData] = useState({
     name: '',
+    name_en: '',
+    name_es: '',
     category: '',
     categorySlug: '',
     sku: '',
     description: '',
+    description_en: '',
+    description_es: '',
     image: '',
     images: [] as string[],
     verified: false,
@@ -387,10 +395,14 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
 
     setFormData({
       name: product.name,
+      name_en: product.name_en || '',
+      name_es: product.name_es || '',
       category: product.category,
       categorySlug: product.categorySlug,
       sku: product.sku || '',
       description: product.description || '',
+      description_en: product.description_en || '',
+      description_es: product.description_es || '',
       image: product.image,
       images: product.images || [],
       verified: product.verified || false,
@@ -426,10 +438,14 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
   const resetForm = () => {
     setFormData({
       name: '',
+      name_en: '',
+      name_es: '',
       category: '',
       categorySlug: '',
       sku: '',
       description: '',
+      description_en: '',
+      description_es: '',
       image: '',
       images: [],
       verified: false,
@@ -564,6 +580,28 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                     placeholder="Ex: Geladeira Portátil 12V"
                     required
                   />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Nome (Inglês)</label>
+                      <input
+                        type="text"
+                        value={formData.name_en}
+                        onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
+                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Ex: 12V Portable Fridge"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Nome (Espanhol)</label>
+                      <input
+                        type="text"
+                        value={formData.name_es}
+                        onChange={(e) => setFormData({ ...formData, name_es: e.target.value })}
+                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Ej: Nevera Portátil 12V"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Category */}
@@ -654,6 +692,28 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
                   className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Descrição detalhada do produto..."
                 />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Descrição (Inglês)</label>
+                    <textarea
+                      value={formData.description_en}
+                      onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+                      rows={3}
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Ex: Detailed product description..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Descrição (Espanhol)</label>
+                    <textarea
+                      value={formData.description_es}
+                      onChange={(e) => setFormData({ ...formData, description_es: e.target.value })}
+                      rows={3}
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Ej: Descripción detallada del producto..."
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Main Image */}

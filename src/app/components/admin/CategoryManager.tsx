@@ -7,9 +7,13 @@ import { projectId } from '../../../../utils/supabase/info';
 interface Category {
   id: string;
   name: string;
+  name_en?: string;
+  name_es?: string;
   slug: string;
   icon: string;
   description: string;
+  description_en?: string;
+  description_es?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -29,8 +33,12 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
 
   const [formData, setFormData] = useState({
     name: '',
+    name_en: '',
+    name_es: '',
     icon: '',
     description: '',
+    description_en: '',
+    description_es: '',
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -106,8 +114,12 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
     setEditingCategory(category);
     setFormData({
       name: category.name,
+      name_en: category.name_en || '',
+      name_es: category.name_es || '',
       icon: category.icon,
       description: category.description,
+      description_en: category.description_en || '',
+      description_es: category.description_es || '',
     });
     setShowForm(true);
   };
@@ -141,8 +153,12 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
   const resetForm = () => {
     setFormData({
       name: '',
+      name_en: '',
+      name_es: '',
       icon: '',
       description: '',
+      description_en: '',
+      description_es: '',
     });
     setEditingCategory(null);
     setShowForm(false);
@@ -257,6 +273,32 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
                     placeholder="Ex: Geladeiras Portáteis"
                     required
                   />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">
+                        Nome (Inglês)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.name_en}
+                        onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
+                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="Ex: Portable Fridges"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">
+                        Nome (Espanhol)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.name_es}
+                        onChange={(e) => setFormData({ ...formData, name_es: e.target.value })}
+                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="Ej: Neveras Portátiles"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Icon */}
@@ -309,6 +351,28 @@ export default function CategoryManager({ accessToken, onUpdate }: CategoryManag
                   className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="Descrição breve da categoria..."
                 />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Descrição (Inglês)</label>
+                    <textarea
+                      value={formData.description_en}
+                      onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
+                      rows={3}
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Ex: Short category description..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-400 mb-1">Descrição (Espanhol)</label>
+                    <textarea
+                      value={formData.description_es}
+                      onChange={(e) => setFormData({ ...formData, description_es: e.target.value })}
+                      rows={3}
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Ej: Descripción breve de la categoría..."
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Actions */}

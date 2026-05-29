@@ -3,6 +3,7 @@ import { ArrowLeft, Package, ShoppingBag, Sparkles, TrendingUp } from 'lucide-re
 import { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { useTranslation } from '../i18n/LanguageContext';
 import { optimizeSupabaseImage, createImageFallback } from '@/app/utils/imageOptimizer';
 
 interface CategoryPageProps {
@@ -32,6 +33,7 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
   const [category, setCategory] = useState<Category | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const analytics = useAnalytics();
+  const { t, localized } = useTranslation();
 
   useEffect(() => {
     // Find the category
@@ -69,7 +71,7 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center fade-in">
-          <h2 className="text-2xl font-black">Carregando...</h2>
+          <h2 className="text-2xl font-black">{t('common.loading')}</h2>
         </div>
       </div>
     );
@@ -79,7 +81,7 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center fade-in">
-          <h2 className="text-2xl font-black">Categoria não encontrada</h2>
+          <h2 className="text-2xl font-black">{t('category.notFound')}</h2>
         </div>
       </div>
     );
@@ -94,21 +96,22 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
         
         <div className="container mx-auto px-4 relative z-10">
           <nav className="flex items-center gap-2 text-sm font-medium mb-4">
-            <Link to="/" className="text-gray-500 hover:text-red-600 transition">Início</Link>
+            <Link to="/" className="text-gray-500 hover:text-red-600 transition">{t('category.home')}</Link>
             <span className="text-gray-300">/</span>
-            <span className="text-gray-900 font-bold">{category.name}</span>
+            <span className="text-gray-900 font-bold">{localized(category, 'name')}</span>
           </nav>
 
           <div className="flex items-center justify-between flex-wrap gap-4">
             <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
-              {category.name}
+              {localized(category, 'name')}
             </h1>
 
             <div className="flex items-center gap-4 text-sm text-gray-500 bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-4 h-4 text-red-600" />
                 <span>
-                  <strong className="text-gray-900">{products.length}</strong> produto{products.length !== 1 ? 's' : ''}
+                  <strong className="text-gray-900">{products.length}</strong>{' '}
+                  {products.length !== 1 ? t('common.products') : t('common.product')}
                 </span>
               </div>
             </div>
@@ -148,7 +151,7 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
 
                 {/* Product info */}
                 <h4 className="font-bold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 mb-2">
-                  {product.name}
+                  {localized(product, 'name')}
                 </h4>
 
                 {/* SKU */}
@@ -161,9 +164,9 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
                 )}
 
                 <p className="text-sm text-gray-600 line-clamp-3 mb-2">
-                  {product.description || 'Produto de alta qualidade importado.'}
+                  {localized(product, 'description') || t('products.defaultDescription')}
                 </p>
-                <p className="text-xs text-gray-500 mb-2">{product.category}</p>
+                <p className="text-xs text-gray-500 mb-2">{localized(product, 'category')}</p>
 
                 {/* Spacer to push button to bottom */}
                 <div className="flex-1"></div>
@@ -173,7 +176,7 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
                   tabIndex={-1}
                   className="w-full mt-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 active:scale-[0.98] text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-200 shadow-md shadow-red-600/20 hover:shadow-lg hover:shadow-red-600/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
                 >
-                  Ver Detalhes
+                  {t('common.viewDetails')}
                   <TrendingUp className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </div>
@@ -185,8 +188,8 @@ export function CategoryPage({ categorySlug, onNavigate }: CategoryPageProps) {
         {products.length === 0 && (
           <div className="text-center py-16 fade-in">
             <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-2xl font-black mb-2">Nenhum produto encontrado</h3>
-            <p className="text-gray-600">Em breve teremos novidades nesta categoria!</p>
+            <h3 className="text-2xl font-black mb-2">{t('category.emptyTitle')}</h3>
+            <p className="text-gray-600">{t('category.emptySubtitle')}</p>
           </div>
         )}
       </div>

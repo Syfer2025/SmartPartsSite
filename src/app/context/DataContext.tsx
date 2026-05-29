@@ -4,18 +4,26 @@ import { projectId, publicAnonKey } from '../../../utils/supabase/info';
 interface Category {
   id: string;
   name: string;
+  name_en?: string;
+  name_es?: string;
   slug: string;
   icon: string;
   description: string;
+  description_en?: string;
+  description_es?: string;
 }
 
 interface Product {
   id: string;
   name: string;
+  name_en?: string;
+  name_es?: string;
   category: string;
   categorySlug: string;
   image: string;
   description: string;
+  description_en?: string;
+  description_es?: string;
   sku?: string;
 }
 
@@ -147,18 +155,26 @@ export function DataProvider({ children }: { children: ReactNode }) {
         const categoriesToCache = fetchedCategories.map((cat: Category) => ({
           id: cat.id,
           name: cat.name,
+          name_en: cat.name_en,
+          name_es: cat.name_es,
           slug: cat.slug,
           icon: cat.icon.startsWith('data:image') && cat.icon.length > 1000 ? '📦' : cat.icon,
           description: cat.description,
+          description_en: cat.description_en,
+          description_es: cat.description_es,
         }));
 
         const productsToCache = fetchedProducts.map((prod: Product) => ({
           id: prod.id,
           name: prod.name,
+          name_en: prod.name_en,
+          name_es: prod.name_es,
           category: prod.category,
           categorySlug: prod.categorySlug,
           image: prod.image.startsWith('data:image') ? '' : prod.image,
           description: prod.description,
+          description_en: prod.description_en,
+          description_es: prod.description_es,
           sku: prod.sku,
         }));
 

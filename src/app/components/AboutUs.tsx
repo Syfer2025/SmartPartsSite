@@ -1,83 +1,58 @@
-import { Target, Eye, Award, Sparkles, MapPin, HelpCircle, ChevronDown } from 'lucide-react';
+import { Target, Eye, Award, Sparkles, HelpCircle, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useInView } from '../hooks/useInView';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export function AboutUs() {
   const isMobile = useIsMobile();
+  const { t } = useTranslation();
 
   // IntersectionObserver refs (desktop only)
   const { ref: headerRef, inView: headerInView } = useInView<HTMLDivElement>();
   const { ref: descRef, inView: descInView } = useInView<HTMLDivElement>();
   const { ref: cardsRef, inView: cardsInView } = useInView<HTMLDivElement>();
   const { ref: faqRef, inView: faqInView } = useInView<HTMLDivElement>();
-  const { ref: ctaRef, inView: ctaInView } = useInView<HTMLDivElement>();
 
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const faqs = [
-    {
-      question: 'Vocês vendem para pessoa física?',
-      answer:
-        'Não, trabalhamos exclusivamente com vendas B2B (Business to Business) para revendedores e empresas do setor automotivo. Nossa estrutura é focada em atender lojistas e distribuidores de peças.',
-    },
-    {
-      question: 'Qual o pedido mínimo?',
-      answer:
-        'O pedido mínimo varia de acordo com a categoria de produto e sua localização. Entre em contato com nossa equipe comercial para conhecer as condições específicas para sua região.',
-    },
-    {
-      question: 'Têm pronta entrega?',
-      answer:
-        'Sim! Mantemos um estoque completo de produtos importados para pronta entrega. Alguns itens sob encomenda podem ter prazo diferenciado, que será informado no momento da cotação.',
-    },
-    {
-      question: 'Fazem entrega em todo Brasil?',
-      answer:
-        'Sim, atendemos todo o território nacional. Possuímos filiais em Maringá-PR e Várzea Grande-MT para melhor atender as diferentes regiões do país.',
-    },
-    {
-      question: 'Como faço para me tornar um revendedor?',
-      answer:
-        'Entre em contato através do nosso WhatsApp ou formulário de contato. Nossa equipe comercial irá analisar sua solicitação e fornecer todas as informações sobre nosso programa de parceria.',
-    },
-    {
-      question: 'Os produtos têm garantia?',
-      answer:
-        'Sim, todos os nossos produtos são 100% importados e possuem garantia do fabricante. Os prazos variam de acordo com cada categoria de produto.',
-    },
+    { question: t('about.faq1q'), answer: t('about.faq1a') },
+    { question: t('about.faq2q'), answer: t('about.faq2a') },
+    { question: t('about.faq3q'), answer: t('about.faq3a') },
+    { question: t('about.faq4q'), answer: t('about.faq4a') },
+    { question: t('about.faq5q'), answer: t('about.faq5a') },
+    { question: t('about.faq6q'), answer: t('about.faq6a') },
   ];
 
   const missionCards = [
     {
       icon: Eye,
-      title: 'Visão',
-      description:
-        'Ser referência nacional em importação de peças para veículos pesados, reconhecida pela qualidade excepcional e compromisso com parceiros revendedores.',
+      title: t('about.visionTitle'),
+      description: t('about.visionDesc'),
       color: 'bg-gradient-to-br from-gray-700 to-gray-900',
       dotColor: 'bg-gray-700',
       values: null,
     },
     {
       icon: Target,
-      title: 'Missão',
-      description:
-        'Fornecer peças importadas de alta qualidade exclusivamente para revendedores B2B, garantindo suporte completo e máxima eficiência operacional.',
+      title: t('about.missionTitle'),
+      description: t('about.missionDesc'),
       color: 'bg-gradient-to-br from-red-600 to-red-700',
       dotColor: 'bg-red-600',
       values: null,
     },
     {
       icon: Award,
-      title: 'Valores',
+      title: t('about.valuesTitle'),
       description: null,
       color: 'bg-gradient-to-br from-gray-700 to-gray-900',
       dotColor: 'bg-gray-700',
       values: [
-        'Parceria com revendedores',
-        'Comprometimento com prazos',
-        'Inovação constante',
-        'Ética e transparência',
+        t('about.value1'),
+        t('about.value2'),
+        t('about.value3'),
+        t('about.value4'),
       ],
     },
   ];
@@ -101,15 +76,15 @@ export function AboutUs() {
         >
           <div className="inline-flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-full mb-4">
             <Sparkles className="w-4 h-4" />
-            <span className="font-semibold text-sm">Conheça Nossa História</span>
+            <span className="font-semibold text-sm">{t('about.badge')}</span>
           </div>
-          
+
           <h2 className="text-3xl md:text-4xl font-black mb-6 text-gray-900">
-            Sobre a Smart Parts Import
+            {t('about.title')}
           </h2>
-          
+
           <p className="text-lg text-gray-700 leading-relaxed">
-            A <strong className="font-black text-gray-900">Smart Parts Import</strong> é uma empresa especializada na importação e distribuição de peças premium para caminhões e carretas. Com anos de experiência no mercado, nos dedicamos a oferecer produtos de alta qualidade que garantem segurança, durabilidade e performance superior para seus clientes.
+            {t('about.intro')}
           </p>
           
           <div className="h-1 w-24 bg-red-600 mx-auto mt-8 rounded-full" />
@@ -169,7 +144,7 @@ export function AboutUs() {
           {/* FAQ Section */}
           <div
             ref={faqRef}
-            className={`max-w-4xl mx-auto mb-16 ${!isMobile ? `footer-reveal ${faqInView ? 'in-view' : ''}` : ''}`}
+            className={`max-w-5xl mx-auto mb-16 ${!isMobile ? `footer-reveal ${faqInView ? 'in-view' : ''}` : ''}`}
           >
             <div className="text-center mb-10">
               <div
@@ -178,13 +153,13 @@ export function AboutUs() {
                 }`}
               >
                 <HelpCircle className="w-4 h-4" />
-                <span className="font-semibold">Tire suas Dúvidas</span>
+                <span className="font-semibold">{t('about.faqBadge')}</span>
               </div>
-              <h2 className="text-4xl font-black text-black mb-4">Perguntas Frequentes</h2>
+              <h2 className="text-4xl font-black text-black mb-4">{t('about.faqTitle')}</h2>
               <div className="w-24 h-1.5 bg-red-600 mx-auto rounded-full"></div>
             </div>
 
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
               {faqs.map((faq, index) => (
                 <div
                   key={index}
@@ -219,25 +194,6 @@ export function AboutUs() {
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Bottom CTA */}
-          <div
-            ref={ctaRef}
-            className={`text-center ${!isMobile ? `footer-reveal ${ctaInView ? 'in-view' : ''}` : ''}`}
-          >
-            <button
-              onClick={() =>
-                window.open(
-                  'https://api.whatsapp.com/send/?phone=%2B5544997260058&text=Ol%C3%A1%21+Vim+do+site+e+gostaria+de+mais+informa%C3%A7%C3%B5es+sobre+os+produtos.+%28Maring%C3%A1%29&type=phone_number&app_absent=0',
-                  '_blank'
-                )
-              }
-              className={`bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-10 py-5 rounded-xl font-black text-lg shadow-xl flex items-center gap-3 mx-auto transition-colors ${!isMobile ? 'about-cta-hover' : ''}`}
-            >
-              <MapPin className="w-6 h-6" />
-              Torne-se Nosso Parceiro Revendedor
-            </button>
           </div>
         </div>
     </section>

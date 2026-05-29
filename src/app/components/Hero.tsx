@@ -2,15 +2,17 @@ import { ChevronLeft, ChevronRight, Star, Package, Users, TrendingUp } from 'luc
 import { useState, useEffect, useCallback, memo } from 'react';
 import { optimizeSupabaseImage, getSupabaseImageSrcSet } from '@/app/utils/imageOptimizer';
 import { useData } from '../context/DataContext';
+import { useTranslation } from '../i18n/LanguageContext';
 
 // Feature cards data - static, defined outside component to avoid re-creation
 const featureCards = [
-  { icon: Package, title: '12+ Categorias', desc: 'Amplo portfólio 100% importado' },
-  { icon: Users, title: 'Vendas B2B', desc: 'Fornecedor exclusivo para revendedores' },
-  { icon: TrendingUp, title: 'Suporte Completo', desc: 'Assessoria técnica e comercial' },
+  { icon: Package, titleKey: 'hero.categoriesTitle', descKey: 'hero.categoriesDesc' },
+  { icon: Users, titleKey: 'hero.b2bTitle', descKey: 'hero.b2bDesc' },
+  { icon: TrendingUp, titleKey: 'hero.supportTitle', descKey: 'hero.supportDesc' },
 ] as const;
 
 const FeatureCards = memo(function FeatureCards() {
+  const { t } = useTranslation();
   return (
     <div className="bg-gray-900">
       <div className="container mx-auto px-4 py-12">
@@ -25,8 +27,8 @@ const FeatureCards = memo(function FeatureCards() {
                   <item.icon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg mb-1 text-white">{item.title}</h3>
-                  <p className="text-gray-400 text-sm">{item.desc}</p>
+                  <h3 className="font-bold text-lg mb-1 text-white">{t(item.titleKey)}</h3>
+                  <p className="text-gray-400 text-sm">{t(item.descKey)}</p>
                 </div>
               </div>
             </div>
@@ -40,6 +42,7 @@ const FeatureCards = memo(function FeatureCards() {
 export const Hero = memo(function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { banners, bannersLoading } = useData();
+  const { t } = useTranslation();
 
   const nextSlide = useCallback(
     () => setCurrentSlide((prev) => (prev + 1) % banners.length),
@@ -81,7 +84,7 @@ export const Hero = memo(function Hero() {
     return (
       <section className="relative bg-black -mt-[104px] pt-[104px]">
         <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-gray-900 flex items-center justify-center">
-          <div className="text-gray-500 font-medium">Banners em manutenção...</div>
+          <div className="text-gray-500 font-medium">{t('hero.bannersMaintenance')}</div>
         </div>
         <FeatureCards />
       </section>
@@ -136,7 +139,7 @@ export const Hero = memo(function Hero() {
                   <div className="inline-block bg-red-600 text-white px-4 py-2 rounded-full mb-4">
                     <span className="flex items-center gap-2 text-sm">
                       <Star className="w-4 h-4" fill="currentColor" />
-                      Destaque
+                      {t('hero.featured')}
                     </span>
                   </div>
                   <h2 className="text-3xl md:text-5xl font-black mb-4 text-white drop-shadow-lg">
@@ -147,7 +150,7 @@ export const Hero = memo(function Hero() {
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 active:scale-[0.98] text-white px-6 py-3 rounded-lg font-bold shadow-lg shadow-red-600/30 hover:shadow-red-600/50 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">
-                      Solicitar Orçamento
+                      {t('common.requestQuote')}
                     </button>
                   </div>
                 </div>
@@ -162,14 +165,14 @@ export const Hero = memo(function Hero() {
             <button
               onClick={prevSlide}
               className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-red-600/80 hover:bg-red-600 text-white p-3 rounded-full transition-colors"
-              aria-label="Anterior"
+              aria-label={t('hero.prev')}
             >
               <ChevronLeft className="w-6 h-6" />
             </button>
             <button
               onClick={nextSlide}
               className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-red-600/80 hover:bg-red-600 text-white p-3 rounded-full transition-colors"
-              aria-label="Próximo"
+              aria-label={t('hero.next')}
             >
               <ChevronRight className="w-6 h-6" />
             </button>
@@ -186,7 +189,7 @@ export const Hero = memo(function Hero() {
                 className={`h-2 rounded-full transition-all ${
                   index === currentSlide ? 'bg-red-600 w-8' : 'bg-white/50 w-2'
                 }`}
-                aria-label={`Ir para banner ${index + 1}`}
+                aria-label={t('hero.goToBanner', { n: index + 1 })}
               />
             ))}
           </div>

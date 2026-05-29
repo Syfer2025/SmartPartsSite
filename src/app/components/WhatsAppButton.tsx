@@ -2,10 +2,12 @@ import { MessageCircle, MapPin, Phone, X } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export function WhatsAppButton() {
   const [isOpen, setIsOpen] = useState(false);
   const analytics = useAnalytics();
+  const { t } = useTranslation();
 
   const branches = [
     {
@@ -24,7 +26,7 @@ export function WhatsAppButton() {
 
   const handleWhatsAppClick = (phone: string, city: string) => {
     analytics.trackWhatsAppClick(`Botão Flutuante - ${city}`);
-    const message = `Olá! Vim do site e gostaria de mais informações sobre os produtos. (${city})`;
+    const message = t('whatsapp.message', { city });
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
     setIsOpen(false);
@@ -45,9 +47,9 @@ export function WhatsAppButton() {
             <div className="bg-gradient-to-r from-green-600 to-green-700 text-white p-5">
               <h3 className="font-black text-lg flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
-                Escolha a Filial
+                {t('whatsapp.chooseBranch')}
               </h3>
-              <p className="text-sm text-green-100 mt-1">Nossa equipe está pronta para atender!</p>
+              <p className="text-sm text-green-100 mt-1">{t('whatsapp.teamReady')}</p>
             </div>
 
             <div className="p-3 space-y-3">
@@ -68,7 +70,7 @@ export function WhatsAppButton() {
                     </div>
                     <div className="text-xs text-white/90 flex items-center gap-1 mt-0.5 font-medium">
                       <Phone className="w-3.5 h-3.5" />
-                      Clique para conversar
+                      {t('whatsapp.clickToChat')}
                     </div>
                   </div>
                 </motion.button>
@@ -88,7 +90,7 @@ export function WhatsAppButton() {
             ? 'bg-gray-800 shadow-[0_8px_30px_rgb(0,0,0,0.3)] focus-visible:ring-gray-800' 
             : 'bg-gradient-to-br from-green-500 to-green-600 shadow-[0_8px_30px_rgb(34,197,94,0.4)] focus-visible:ring-green-500'
         }`}
-        aria-label={isOpen ? "Fechar menu do WhatsApp" : "Fale conosco no WhatsApp"}
+        aria-label={isOpen ? t('whatsapp.closeMenu') : t('whatsapp.talkToUs')}
       >
         <AnimatePresence mode="wait">
           {isOpen ? (

@@ -1,8 +1,9 @@
-import { Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react';
+import { MapPin, Facebook, Instagram } from 'lucide-react';
 import { WeeklySchedule } from './WeeklySchedule';
 import logo from 'figma:asset/93a318fedff287cf8ae9966775cd849f3e3199e4.png';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useInView } from '../hooks/useInView';
+import { useTranslation } from '../i18n/LanguageContext';
 
 interface FooterProps {
   onNavigate?: (page: string) => void;
@@ -10,6 +11,7 @@ interface FooterProps {
 
 export function Footer({ onNavigate }: FooterProps) {
   const isMobile = useIsMobile();
+  const { t } = useTranslation();
 
   // IntersectionObserver refs (desktop only — mobile skips animations)
   const { ref: companyRef, inView: companyInView } = useInView<HTMLDivElement>();
@@ -50,7 +52,7 @@ export function Footer({ onNavigate }: FooterProps) {
   ];
 
   const handleWhatsAppClick = (phone: string) => {
-    const message = 'Olá! Vim do site e gostaria de mais informações sobre os produtos.';
+    const message = t('header.whatsappMessage');
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
@@ -71,7 +73,7 @@ export function Footer({ onNavigate }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-black text-white py-16 relative overflow-hidden">
+    <footer className="bg-gradient-to-b from-gray-950 via-black to-black text-white pt-16 pb-10 relative overflow-hidden rounded-t-[40px] md:rounded-t-[60px]">
       {/* Animated Background Blobs — CSS @keyframes (Desktop only) */}
       {!isMobile && (
         <>
@@ -80,48 +82,57 @@ export function Footer({ onNavigate }: FooterProps) {
         </>
       )}
 
-      <div className="container mx-auto px-4 relative z-10">
-        {/* Company Info */}
+      <div className="container mx-auto px-6 relative z-10">
+        {/* Logo */}
         <div
           ref={companyRef}
-          className={`text-center mb-12 ${!isMobile ? `footer-reveal ${companyInView ? 'in-view' : ''}` : ''}`}
+          className={`flex justify-center mb-12 ${!isMobile ? `footer-reveal ${companyInView ? 'in-view' : ''}` : ''}`}
         >
-          <div className="flex items-center justify-center mb-6">
-            <img
-              src={logo}
-              alt="Smart Parts Import"
-              className={`h-16 md:h-20 w-auto object-contain ${!isMobile ? 'footer-logo-hover' : ''}`}
-              width="684"
-              height="162"
-            />
-          </div>
-          <p
-            className={`text-gray-400 max-w-2xl mx-auto ${!isMobile ? `footer-reveal footer-reveal-delay-1 ${companyInView ? 'in-view' : ''}` : ''}`}
-          >
-            Especialistas em peças importadas premium para caminhões e carretas. Qualidade
-            internacional com atendimento regional.
-          </p>
+          <img
+            src={logo}
+            alt="Smart Parts Import"
+            className={`h-14 md:h-16 w-auto object-contain ${!isMobile ? 'footer-logo-hover' : ''}`}
+            width="684"
+            height="162"
+          />
+        </div>
 
-          {/* Social Media */}
-          <div
-            className={`flex gap-3 mt-6 justify-center ${!isMobile ? `footer-reveal footer-reveal-delay-2 ${companyInView ? 'in-view' : ''}` : ''}`}
-          >
-            {socialLinks.map((item, index) => (
-              <a
-                key={index}
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Siga-nos no ${item.name}`}
-                className={`w-12 h-12 bg-gray-800 ${item.color} rounded-full flex items-center justify-center shadow-lg ${!isMobile ? 'footer-social-link' : 'transition'}`}
+        {/* Contatos em destaque */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 mb-12">
+          {locations.map((location, index) => (
+            <div key={index} className="text-center md:text-left">
+              <p className="text-red-500 text-sm font-bold tracking-wide mb-2">
+                {t('footer.service', { name: location.name })}
+              </p>
+              <button
+                onClick={() => handleWhatsAppClick(location.whatsapp)}
+                className="text-2xl md:text-3xl font-extrabold text-white hover:text-red-400 transition-colors"
               >
-                <item.Icon className="w-5 h-5" />
-              </a>
-            ))}
+                {location.phone}
+              </button>
+              <p className="text-gray-400 text-sm mt-3">{t('footer.weekdays')}</p>
+              <p className="text-gray-400 text-sm">{t('footer.hours')}</p>
+            </div>
+          ))}
+
+          {/* E-mail */}
+          <div className="text-center md:text-left">
+            <p className="text-red-500 text-sm font-bold tracking-wide mb-2">{t('footer.emailContact')}</p>
+            <a
+              href={`mailto:${locations[0].email}`}
+              className="text-xl md:text-2xl font-extrabold text-white hover:text-red-400 transition-colors break-all"
+            >
+              {locations[0].email}
+            </a>
+            <p className="text-gray-400 text-sm mt-3">{t('footer.b2bExclusive')}</p>
+            <p className="text-gray-400 text-sm">{t('footer.forResellers')}</p>
           </div>
         </div>
 
-        {/* Weekly Schedule */}
+        {/* Divisor */}
+        <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-12" />
+
+        {/* Horário semanal */}
         <div
           ref={scheduleRef}
           className={`mb-12 ${!isMobile ? `footer-reveal ${scheduleInView ? 'in-view' : ''}` : ''}`}
@@ -129,76 +140,34 @@ export function Footer({ onNavigate }: FooterProps) {
           <WeeklySchedule />
         </div>
 
-        {/* Branches Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+        {/* Filiais + mapas */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {locations.map((location, locationIndex) => (
             <div
               key={locationIndex}
               ref={branchRefs[locationIndex]}
-              className={`bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 shadow-2xl border border-gray-700 ${
+              className={`bg-gray-900/60 rounded-3xl p-6 md:p-8 border border-gray-800 ${
                 !isMobile
                   ? `footer-reveal footer-branch-${locationIndex} ${branchInView[locationIndex] ? 'in-view' : ''}`
                   : ''
               }`}
             >
-              {/* Branch Header */}
-              <div className="text-center mb-6">
-                <div
-                  className={`inline-block bg-red-600 px-6 py-2 rounded-full mb-3 ${
-                    !isMobile
-                      ? `footer-badge footer-branch-${locationIndex} ${branchInView[locationIndex] ? 'in-view' : ''}`
-                      : ''
-                  }`}
-                >
-                  <span className="font-black text-lg">{location.name}</span>
+              <div className="inline-flex items-center bg-red-600 px-5 py-2 rounded-full mb-4">
+                <span className="font-extrabold text-base">{location.name}</span>
+              </div>
+
+              <div className="flex items-start gap-3 mb-5">
+                <MapPin className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <div className="text-gray-300 text-sm leading-relaxed">
+                  <p>{location.address}</p>
+                  <p>
+                    {location.district} — {location.city}/{location.state}
+                  </p>
+                  <p className="text-gray-500">{t('footer.cep')} {location.cep}</p>
                 </div>
-                <div
-                  className={`h-1 bg-gradient-to-r from-red-600 to-red-400 mx-auto rounded-full ${
-                    !isMobile
-                      ? `footer-divider ${branchInView[locationIndex] ? 'in-view' : ''}`
-                      : 'w-16'
-                  }`}
-                />
               </div>
 
-              {/* Contact Info */}
-              <div className="space-y-4 mb-6">
-                {[
-                  {
-                    Icon: Phone,
-                    text: location.phone,
-                    action: () => handleWhatsAppClick(location.whatsapp),
-                  },
-                  {
-                    Icon: Mail,
-                    text: location.email,
-                    action: () => (window.location.href = `mailto:${location.email}`),
-                  },
-                  { Icon: MapPin, text: location.address, action: null },
-                ].map((item, index) => (
-                  <div
-                    key={index}
-                    onClick={item.action || undefined}
-                    className={`flex items-center gap-4 p-4 bg-gray-800/50 rounded-xl ${
-                      item.action ? 'cursor-pointer hover:bg-gray-700/50' : ''
-                    } transition-all group ${
-                      !isMobile
-                        ? `footer-contact-item footer-stagger-${index} ${branchInView[locationIndex] ? 'in-view' : ''}`
-                        : ''
-                    }`}
-                  >
-                    <div className="bg-red-600 p-3 rounded-lg group-hover:scale-110 transition-transform">
-                      <item.Icon className="w-5 h-5" />
-                    </div>
-                    <span className="text-gray-300 group-hover:text-white transition text-[11px] break-words">
-                      {item.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Map */}
-              <div className="rounded-2xl overflow-hidden shadow-2xl border-2 border-gray-700 h-64">
+              <div className="rounded-2xl overflow-hidden border border-gray-800 h-60">
                 <iframe
                   src={location.mapUrl}
                   width="100%"
@@ -214,12 +183,56 @@ export function Footer({ onNavigate }: FooterProps) {
           ))}
         </div>
 
+        {/* Divisor */}
+        <div className="h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-10" />
+
+        {/* Barra inferior: redes + empresa */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start mb-10">
+          {/* Redes sociais */}
+          <div>
+            <span className="inline-flex items-center bg-red-600 px-4 py-1.5 rounded-full text-sm font-bold mb-4">
+              {t('footer.socialMedia')}
+            </span>
+            <div className="flex items-center gap-3">
+              {socialLinks.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Siga-nos no ${item.name}`}
+                  className={`w-11 h-11 bg-gray-800 ${item.color} rounded-full flex items-center justify-center shadow-lg ${!isMobile ? 'footer-social-link' : 'transition'}`}
+                >
+                  <item.Icon className="w-5 h-5" />
+                </a>
+              ))}
+              <a
+                href="https://www.instagram.com/smart.partsimport/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-300 font-semibold hover:text-white transition-colors ml-1"
+              >
+                @smart.partsimport
+              </a>
+            </div>
+          </div>
+
+          {/* Empresa */}
+          <div className="md:text-right">
+            <p className="font-extrabold text-white text-lg">Smart Parts Import</p>
+            <p className="text-gray-400 text-sm mt-2 max-w-md md:ml-auto">
+              {t('footer.companyDesc')}
+            </p>
+            <p className="text-gray-500 text-sm mt-2">{t('footer.b2bSales')}</p>
+          </div>
+        </div>
+
         {/* Copyright */}
         <div
           ref={copyrightRef}
-          className={`text-center pt-8 border-t border-gray-800 ${!isMobile ? `footer-reveal ${copyrightInView ? 'in-view' : ''}` : ''}`}
+          className={`flex flex-col md:flex-row items-center justify-between gap-3 pt-8 border-t border-gray-800 ${!isMobile ? `footer-reveal ${copyrightInView ? 'in-view' : ''}` : ''}`}
         >
-          <p className="text-gray-500 text-sm relative inline-block">
+          <p className="text-gray-500 text-sm relative">
             {/* Botão Admin INVISÍVEL sobre o © */}
             <button
               onClick={() => onNavigate?.('admin')}
@@ -227,22 +240,17 @@ export function Footer({ onNavigate }: FooterProps) {
               aria-label="Admin"
             />
             © {new Date().getFullYear()}{' '}
-            <span className="text-red-500 font-semibold">Smart Parts Import</span>. Todos os
-            direitos reservados.
+            <span className="text-red-500 font-semibold">Smart Parts Import</span>.{' '}
+            {t('footer.rights')}
           </p>
-          <p className="text-gray-600 text-xs mt-2">Vendas exclusivas B2B para revendedores</p>
-
-          {/* Desenvolvido por nicebrand */}
-          <div className="flex items-center justify-center mt-3">
-            <a
-              href="https://wa.me/5544998492172"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-700 hover:text-red-600 text-xs transition-colors opacity-50 hover:opacity-100"
-            >
-              Desenvolvido com ❤️ por nicebrand
-            </a>
-          </div>
+          <a
+            href="https://wa.me/5544998492172"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-700 hover:text-red-600 text-xs transition-colors opacity-50 hover:opacity-100"
+          >
+            {t('footer.developedBy')}
+          </a>
         </div>
       </div>
     </footer>

@@ -1,5 +1,6 @@
 import { Clock, Calendar } from 'lucide-react';
 import { useState, useEffect, memo } from 'react';
+import { useTranslation } from '../i18n/LanguageContext';
 
 /**
  * WeeklySchedule - Refactored to use CSS animations instead of motion.
@@ -16,6 +17,7 @@ import { useState, useEffect, memo } from 'react';
  */
 export const WeeklySchedule = memo(function WeeklySchedule() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -25,10 +27,18 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
     return () => clearInterval(timer);
   }, []);
 
-  // Get current day
-  const getCurrentDay = () => {
-    const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-    return days[currentTime.getDay()];
+  // Get current day key (stable, locale-independent for matching)
+  const getCurrentDayKey = () => {
+    const dayKeys = [
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+    ];
+    return dayKeys[currentTime.getDay()];
   };
 
   // Format date and time in Brasília timezone
@@ -60,17 +70,17 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
     };
   };
 
-  const currentDay = getCurrentDay();
+  const currentDayKey = getCurrentDayKey();
   const { date, time } = getBrasiliaDateTime();
 
   const schedule = [
-    { day: 'Segunda', hours: '08:00 - 18:00', isOpen: true },
-    { day: 'Terça', hours: '08:00 - 18:00', isOpen: true },
-    { day: 'Quarta', hours: '08:00 - 18:00', isOpen: true },
-    { day: 'Quinta', hours: '08:00 - 18:00', isOpen: true },
-    { day: 'Sexta', hours: '08:00 - 18:00', isOpen: true },
-    { day: 'Sábado', hours: 'Fechado', isOpen: false },
-    { day: 'Domingo', hours: 'Fechado', isOpen: false },
+    { key: 'monday', isOpen: true },
+    { key: 'tuesday', isOpen: true },
+    { key: 'wednesday', isOpen: true },
+    { key: 'thursday', isOpen: true },
+    { key: 'friday', isOpen: true },
+    { key: 'saturday', isOpen: false },
+    { key: 'sunday', isOpen: false },
   ];
 
   return (
@@ -90,7 +100,7 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
             <Clock className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-black text-white">Horário de Atendimento</h3>
+            <h3 className="text-lg font-black text-white">{t('schedule.title')}</h3>
           </div>
         </div>
       </div>
@@ -99,8 +109,10 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
       <div className="p-4 md:p-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-3">
           {schedule.map((item, index) => {
-            const isToday = item.day === currentDay;
+            const isToday = item.key === currentDayKey;
             const isOpen = item.isOpen;
+            const dayLabel = t(`schedule.${item.key}`);
+            const hoursLabel = isOpen ? '08:00 - 18:00' : t('schedule.closed');
 
             return (
               <div
@@ -116,7 +128,7 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
               >
                 {isToday && (
                   <div className="absolute -top-1.5 -right-1.5 bg-yellow-400 text-black text-xs font-black px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] animate-pulse">
-                    HOJE
+                    {t('schedule.today')}
                   </div>
                 )}
 
@@ -129,13 +141,13 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
                 <div
                   className={`font-black text-[10px] md:text-xs mb-1 ${isToday ? 'text-white' : isOpen ? 'text-white' : 'text-gray-400'}`}
                 >
-                  {item.day}
+                  {dayLabel}
                 </div>
 
                 <div
                   className={`text-[9px] md:text-[10px] font-semibold leading-tight ${isToday ? 'text-red-100' : isOpen ? 'text-green-300' : 'text-red-400'}`}
                 >
-                  {item.hours === 'Fechado' ? 'Fechado' : item.hours}
+                  {hoursLabel}
                 </div>
 
                 {isOpen && (
@@ -152,15 +164,15 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
         <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-gray-700">
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            <span className="text-xs text-gray-400">Aberto</span>
+            <span className="text-xs text-gray-400">{t('schedule.open')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 bg-red-600 rounded-full"></div>
-            <span className="text-xs text-gray-400">Hoje</span>
+            <span className="text-xs text-gray-400">{t('schedule.todayLegend')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
-            <span className="text-xs text-gray-400">Fechado</span>
+            <span className="text-xs text-gray-400">{t('schedule.closed')}</span>
           </div>
         </div>
 
@@ -183,7 +195,7 @@ export const WeeklySchedule = memo(function WeeklySchedule() {
             </div>
           </div>
           <p className="text-[10px] md:text-xs text-gray-500 mt-2 text-center">
-            Horário de Brasília (GMT-3)
+            {t('schedule.timezone')}
           </p>
         </div>
       </div>

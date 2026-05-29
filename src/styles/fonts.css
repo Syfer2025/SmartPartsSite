@@ -1,1 +1,86 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+/* Magistral — fonte local (public/fonts). Pesos: 300 Light, 400 Book, 500 Medium, 700 Bold, 800 ExtraBold */
+
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-Light.woff2') format('woff2'),
+       url('/fonts/Magistral-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-LightItalic.woff2') format('woff2'),
+       url('/fonts/Magistral-LightItalic.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-Book.woff2') format('woff2'),
+       url('/fonts/Magistral-Book.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-BookItalic.woff2') format('woff2'),
+       url('/fonts/Magistral-BookItalic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-Medium.woff2') format('woff2'),
+       url('/fonts/Magistral-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-MediumItalic.woff2') format('woff2'),
+       url('/fonts/Magistral-MediumItalic.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-Bold.woff2') format('woff2'),
+       url('/fonts/Magistral-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-BoldItalic.woff2') format('woff2'),
+       url('/fonts/Magistral-BoldItalic.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-ExtraBold.woff2') format('woff2'),
+       url('/fonts/Magistral-ExtraBold.woff') format('woff');
+  font-weight: 800 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Magistral';
+  src: url('/fonts/Magistral-ExtraBoldItalic.woff2') format('woff2'),
+       url('/fonts/Magistral-ExtraBoldItalic.woff') format('woff');
+  font-weight: 800 900;
+  font-style: italic;
+  font-display: swap;
+}
