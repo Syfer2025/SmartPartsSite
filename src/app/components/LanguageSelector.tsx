@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Globe, Check } from 'lucide-react';
 import { useTranslation, LANGUAGES, type Lang } from '../i18n/LanguageContext';
+import { FlagIcon } from './FlagIcon';
 
 interface LanguageSelectorProps {
   /** 'desktop' shows a compact dropdown; 'mobile' shows inline pill buttons */
@@ -46,7 +47,7 @@ export function LanguageSelector({
             }`}
             aria-pressed={l.code === lang}
           >
-            <span className="text-base leading-none">{l.flag}</span>
+            <FlagIcon code={l.code} className="w-5 h-auto" />
             <span>{l.code.toUpperCase()}</span>
           </button>
         ))}
@@ -67,7 +68,7 @@ export function LanguageSelector({
         aria-haspopup="listbox"
         aria-expanded={open}
       >
-        <span className="text-base leading-none">{current.flag}</span>
+        <FlagIcon code={current.code} className="w-5 h-auto" />
         <span>{current.code.toUpperCase()}</span>
         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
@@ -106,7 +107,7 @@ export function LanguageSelector({
                     role="option"
                     aria-selected={active}
                   >
-                    <span className="text-lg leading-none">{l.flag}</span>
+                    <FlagIcon code={l.code} className="w-6 h-auto" />
                     <span className="flex-1">{l.label}</span>
                     {active && <Check className="w-4 h-4 text-red-600 flex-shrink-0" />}
                   </button>
