@@ -21,7 +21,7 @@ export function Products({ onNavigate }: ProductsProps) {
   }, [products]);
 
   return (
-    <section id="produtos" className="py-16 bg-gray-50">
+    <section id="produtos" className="pt-12 md:pt-28 pb-16 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">

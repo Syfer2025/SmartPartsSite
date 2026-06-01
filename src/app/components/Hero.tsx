@@ -14,26 +14,26 @@ const featureCards = [
 const FeatureCards = memo(function FeatureCards() {
   const { t } = useTranslation();
   return (
-    <div className="bg-gray-900">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featureCards.map((item, index) => (
-            <div
-              key={index}
-              className="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors"
-            >
-              <div className="flex items-start gap-4">
-                <div className="bg-red-600 p-3 rounded-lg">
-                  <item.icon className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg mb-1 text-white">{t(item.titleKey)}</h3>
-                  <p className="text-gray-400 text-sm">{t(item.descKey)}</p>
-                </div>
+    // Mobile: faixa normal abaixo do vídeo.
+    // Desktop (md+): flutua centralizado na linha entre o vídeo e a seção de baixo.
+    <div className="container mx-auto px-4 relative z-30 py-10 md:py-0 md:absolute md:left-0 md:right-0 md:bottom-0 md:translate-y-1/2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {featureCards.map((item, index) => (
+          <div
+            key={index}
+            className="bg-gray-900/95 backdrop-blur-sm border border-white/10 p-6 rounded-2xl shadow-2xl shadow-black/40 hover:bg-gray-800 transition-colors"
+          >
+            <div className="flex items-start gap-4">
+              <div className="bg-red-600 p-3 rounded-lg shrink-0">
+                <item.icon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg mb-1 text-white">{t(item.titleKey)}</h3>
+                <p className="text-gray-300 text-sm">{t(item.descKey)}</p>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -63,7 +63,7 @@ export const Hero = memo(function Hero() {
   // Se estiver carregando ou não tiver banners, mostra skeleton mínimo
   if (bannersLoading && banners.length === 0) {
     return (
-      <section className="relative bg-black -mt-[104px] pt-[104px]">
+      <section className="relative z-20 bg-black -mt-[104px] pt-[104px]">
         <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-gray-900">
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-[length:200%_100%] animate-pulse" />
           <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
@@ -82,7 +82,7 @@ export const Hero = memo(function Hero() {
 
   if (banners.length === 0) {
     return (
-      <section className="relative bg-black -mt-[104px] pt-[104px]">
+      <section className="relative z-20 bg-black -mt-[104px] pt-[104px]">
         <div className="relative h-[500px] md:h-[600px] overflow-hidden bg-gray-900 flex items-center justify-center">
           <div className="text-gray-500 font-medium">{t('hero.bannersMaintenance')}</div>
         </div>
@@ -92,7 +92,7 @@ export const Hero = memo(function Hero() {
   }
 
   return (
-    <section className="relative bg-black -mt-[104px] pt-[104px]">
+    <section className="relative z-20 bg-black -mt-[104px] pt-[104px]">
       {/* Simple Carousel */}
       <div className="relative h-[500px] md:h-[600px] overflow-hidden">
         {banners.map((banner, index) => (

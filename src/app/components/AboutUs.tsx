@@ -58,7 +58,7 @@ export function AboutUs() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 py-24">
+    <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 py-16">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600 rounded-full blur-[120px] animate-pulse"></div>
@@ -144,7 +144,7 @@ export function AboutUs() {
           {/* FAQ Section */}
           <div
             ref={faqRef}
-            className={`max-w-5xl mx-auto mb-16 ${!isMobile ? `footer-reveal ${faqInView ? 'in-view' : ''}` : ''}`}
+            className={`max-w-5xl mx-auto ${!isMobile ? `footer-reveal ${faqInView ? 'in-view' : ''}` : ''}`}
           >
             <div className="text-center mb-10">
               <div
@@ -159,40 +159,61 @@ export function AboutUs() {
               <div className="w-24 h-1.5 bg-red-600 mx-auto rounded-full"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-              {faqs.map((faq, index) => (
-                <div
-                  key={index}
-                  className={`bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden ${
-                    !isMobile ? `faq-item ${faqInView ? 'in-view' : ''}` : ''
-                  }`}
-                  style={!isMobile ? { transitionDelay: `${index * 0.1}s` } : undefined}
-                >
-                  <button
-                    onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                    className="w-full p-6 flex items-center justify-between text-left hover:bg-gray-50 transition"
+            {/* Duas colunas independentes: abrir um item afeta só a própria coluna.
+                Split par/ímpar mantém a ordem visual no desktop; `contents` + order
+                no mobile preserva a sequência 1→6 quando vira coluna única. */}
+            <div className="flex flex-col md:flex-row md:items-start gap-4">
+              {[faqs.filter((_, i) => i % 2 === 0), faqs.filter((_, i) => i % 2 === 1)].map(
+                (column, colIndex) => (
+                  <div
+                    key={colIndex}
+                    className="contents md:flex md:flex-1 md:flex-col md:gap-4 w-full"
                   >
-                    <span className="font-black text-lg text-gray-900 pr-4">{faq.question}</span>
-                    <div
-                      className="flex-shrink-0"
-                      style={{
-                        transform: openFaqIndex === index ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.3s ease',
-                      }}
-                    >
-                      <ChevronDown className="w-6 h-6 text-red-600" />
-                    </div>
-                  </button>
-                  {/* CSS grid accordion — no AnimatePresence needed */}
-                  <div className={`faq-content ${openFaqIndex === index ? 'open' : ''}`}>
-                    <div>
-                      <div className="px-6 pb-6 text-gray-700 leading-relaxed border-t border-gray-100 pt-4">
-                        {faq.answer}
-                      </div>
-                    </div>
+                    {column.map((faq) => {
+                      const index = faqs.indexOf(faq);
+                      return (
+                        <div
+                          key={index}
+                          style={{
+                            order: index,
+                            ...(!isMobile ? { transitionDelay: `${index * 0.1}s` } : {}),
+                          }}
+                          className={`bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden ${
+                            !isMobile ? `faq-item ${faqInView ? 'in-view' : ''}` : ''
+                          }`}
+                        >
+                          <button
+                            onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                            className="w-full p-6 flex items-center justify-between text-left hover:bg-gray-50 transition"
+                          >
+                            <span className="font-black text-lg text-gray-900 pr-4">
+                              {faq.question}
+                            </span>
+                            <div
+                              className="flex-shrink-0"
+                              style={{
+                                transform:
+                                  openFaqIndex === index ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 0.3s ease',
+                              }}
+                            >
+                              <ChevronDown className="w-6 h-6 text-red-600" />
+                            </div>
+                          </button>
+                          {/* CSS grid accordion — no AnimatePresence needed */}
+                          <div className={`faq-content ${openFaqIndex === index ? 'open' : ''}`}>
+                            <div>
+                              <div className="px-6 pb-6 text-gray-700 leading-relaxed border-t border-gray-100 pt-4">
+                                {faq.answer}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
         </div>
