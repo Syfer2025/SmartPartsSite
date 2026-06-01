@@ -14,9 +14,12 @@ import {
   Filter,
   CheckCircle2,
   ShieldCheck,
+  Languages,
+  Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
+import { translateProduct, TranslationLimitError } from '../../utils/translate';
 
 interface Product {
   id: string;
@@ -60,6 +63,9 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
   const [uploading, setUploading] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
   const [showDebug, setShowDebug] = useState(false);
+  const [translatingForm, setTranslatingForm] = useState(false);
+  const [bulkTranslating, setBulkTranslating] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState({ done: 0, total: 0 });
 
   const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-d06f92b7`;
 
@@ -276,6 +282,105 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
         categorySlug: '',
       });
     }
+  };
+
+  // Gera traduções EN/ES do produto em edição a partir do PT (não salva sozinho;
+  // preenche o formulário pra revisão antes de salvar).
+  const handleTranslateForm = async () => {
+    if (!formData.name && !formData.description) {
+      toast.error('Preencha o nome ou a descrição em português primeiro.');
+      return;
+    }
+    setTranslatingForm(true);
+    try {
+      const t = await translateProduct({
+        name: formData.name,
+        description: formData.description,
+      });
+      setFormData((prev) => ({
+        ...prev,
+        name_en: t.name_en || prev.name_en,
+        name_es: t.name_es || prev.name_es,
+        description_en: t.description_en || prev.description_en,
+        description_es: t.description_es || prev.description_es,
+      }));
+      toast.success('Traduções geradas! Revise e salve o produto.');
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao gerar traduções.'
+      );
+    } finally {
+      setTranslatingForm(false);
+    }
+  };
+
+  // Percorre todos os produtos sem tradução completa e gera EN/ES, salvando cada um.
+  const handleTranslateAllMissing = async () => {
+    const missing = products.filter(
+      (p) =>
+        (p.name && (!p.name_en || !p.name_es)) ||
+        (p.description && (!p.description_en || !p.description_es))
+    );
+
+    if (missing.length === 0) {
+      toast.info('Todos os produtos já estão traduzidos.');
+      return;
+    }
+    if (
+      !confirm(
+        `Gerar traduções para ${missing.length} produto(s) faltante(s)? Pode levar alguns minutos.`
+      )
+    ) {
+      return;
+    }
+
+    setBulkTranslating(true);
+    setBulkProgress({ done: 0, total: missing.length });
+    let ok = 0;
+    let fail = 0;
+
+    for (let i = 0; i < missing.length; i++) {
+      const p = missing[i];
+      try {
+        const t = await translateProduct({
+          name: p.name || '',
+          description: p.description || '',
+        });
+        const updates = {
+          name_en: p.name_en || t.name_en,
+          name_es: p.name_es || t.name_es,
+          description_en: p.description_en || t.description_en,
+          description_es: p.description_es || t.description_es,
+        };
+        const res = await fetch(`${API_URL}/admin/products/${p.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(updates),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        ok++;
+      } catch (error) {
+        fail++;
+        if (error instanceof TranslationLimitError) {
+          toast.error(
+            `Limite diário de tradução atingido após ${ok} produto(s). Continue amanhã ou traduza o restante manualmente.`
+          );
+          setBulkProgress({ done: i + 1, total: missing.length });
+          break;
+        }
+      }
+      setBulkProgress({ done: i + 1, total: missing.length });
+      // Pausa curta pra não saturar a API gratuita.
+      await new Promise((r) => setTimeout(r, 400));
+    }
+
+    setBulkTranslating(false);
+    await loadData();
+    if (onUpdate) onUpdate();
+    toast.success(`Tradução concluída: ${ok} salvo(s)${fail ? `, ${fail} com erro` : ''}.`);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -531,6 +636,27 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
           </div>
 
           {!showForm && (
+            <button
+              onClick={handleTranslateAllMissing}
+              disabled={bulkTranslating}
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-white/5 border border-white/10 text-gray-200 rounded-lg hover:bg-white/10 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              title="Gera EN/ES para todos os produtos que ainda não têm tradução"
+            >
+              {bulkTranslating ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Traduzindo {bulkProgress.done}/{bulkProgress.total}
+                </>
+              ) : (
+                <>
+                  <Languages className="w-5 h-5" />
+                  Traduzir todos faltantes
+                </>
+              )}
+            </button>
+          )}
+
+          {!showForm && (
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -566,6 +692,32 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Auto-tradução: preenche os campos EN/ES a partir do PT */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-3">
+                <p className="text-sm text-gray-300">
+                  Preencha o nome e a descrição em português e gere as traduções
+                  automaticamente.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleTranslateForm}
+                  disabled={translatingForm}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {translatingForm ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Gerando traduções...
+                    </>
+                  ) : (
+                    <>
+                      <Languages className="w-4 h-4" />
+                      Gerar traduções (EN/ES)
+                    </>
+                  )}
+                </button>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Name */}
                 <div>
