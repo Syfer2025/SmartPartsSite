@@ -91,3 +91,32 @@ export async function translateProduct(fields: TranslatableFields): Promise<Tran
   const description_es = await translateText(fields.description, 'es');
   return { name_en, name_es, description_en, description_es };
 }
+
+export interface Spec {
+  id: string;
+  key: string;
+  value: string;
+}
+
+// Valores como "12V", "45L", "220V/110V" não devem ser traduzidos.
+// Só traduz se houver uma palavra com 3+ letras (ex: "Aço inox", "Sim").
+function hasTranslatableText(text: string): boolean {
+  return /\p{L}{3,}/u.test(text ?? '');
+}
+
+/**
+ * Traduz uma lista de especificações para o idioma alvo.
+ * Chaves sempre traduzidas; valores só quando têm texto (preserva números/unidades).
+ */
+export async function translateSpecs(specs: Spec[], target: TargetLang): Promise<Spec[]> {
+  const out: Spec[] = [];
+  for (const spec of specs) {
+    const key = spec.key ? await translateText(spec.key, target) : spec.key;
+    const value =
+      spec.value && hasTranslatableText(spec.value)
+        ? await translateText(spec.value, target)
+        : spec.value;
+    out.push({ ...spec, key, value });
+  }
+  return out;
+}

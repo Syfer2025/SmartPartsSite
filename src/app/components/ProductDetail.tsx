@@ -47,10 +47,24 @@ interface Product {
 }
 
 export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
-  const { t, localized } = useTranslation();
+  const { t, localized, lang } = useTranslation();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailsLoaded, setDetailsLoaded] = useState(false);
+
+  // Especificações no idioma ativo (fallback pro PT). Aceita array novo ou objeto legado.
+  const getDisplaySpecs = (): Array<{ id?: string; key: string; value: string }> => {
+    if (!product) return [];
+    const localizedSpecs =
+      lang !== 'pt' ? (product as any)[`specifications_${lang}`] : null;
+    if (Array.isArray(localizedSpecs) && localizedSpecs.length > 0) return localizedSpecs;
+    const base: any = product.specifications;
+    if (Array.isArray(base)) return base;
+    if (base && typeof base === 'object') {
+      return Object.entries(base).map(([key, value]) => ({ key, value: value as string }));
+    }
+    return [];
+  };
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [thumbnailStartIndex, setThumbnailStartIndex] = useState(0);
 
@@ -318,13 +332,8 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
     }
 
     // Especificações Técnicas
-    if (product.specifications) {
-      const specs = Array.isArray(product.specifications)
-        ? product.specifications
-        : Object.entries(product.specifications).map(([key, value]) => ({
-            key,
-            value: value as string,
-          }));
+    {
+      const specs = getDisplaySpecs();
 
       if (specs.length > 0) {
         lines.push('───────────────────────────────────────────────────────');
@@ -1055,61 +1064,39 @@ export function ProductDetail({ productId, onNavigate }: ProductDetailProps) {
               </div>
               {t('product.specsTitle')}
             </h2>
-            {product.specifications &&
-              (Array.isArray(product.specifications)
-                ? product.specifications.length > 0
-                : Object.keys(product.specifications).length > 0) && (
-                <button
-                  onClick={() => {
-                    const specs = Array.isArray(product.specifications)
-                      ? product.specifications
-                      : Object.entries(product.specifications).map(([key, value]) => ({
-                          key,
-                          value: value as string,
-                        }));
-                    const text =
-                      `${localized(product, 'name')}\n\n` + specs.map((s) => `${s.key}: ${s.value}`).join('\n');
-                    navigator.clipboard.writeText(text);
-                    toast.success(t('product.specsCopied'));
-                  }}
-                  className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition"
-                >
-                  <Copy className="w-4 h-4" />
-                  {t('product.copy')}
-                </button>
-              )}
+            {getDisplaySpecs().length > 0 && (
+              <button
+                onClick={() => {
+                  const specs = getDisplaySpecs();
+                  const text =
+                    `${localized(product, 'name')}\n\n` +
+                    specs.map((s) => `${s.key}: ${s.value}`).join('\n');
+                  navigator.clipboard.writeText(text);
+                  toast.success(t('product.specsCopied'));
+                }}
+                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                <Copy className="w-4 h-4" />
+                {t('product.copy')}
+              </button>
+            )}
           </div>
           <div className="space-y-4">
-            {product.specifications &&
-            (Array.isArray(product.specifications)
-              ? product.specifications.length > 0
-              : Object.keys(product.specifications).length > 0) ? (
+            {getDisplaySpecs().length > 0 ? (
               <div className="overflow-hidden rounded-2xl border border-gray-200 shadow-sm">
                 <table className="w-full text-base">
                   <tbody>
-                    {Array.isArray(product.specifications)
-                      ? product.specifications.map((spec, index) => (
-                          <tr
-                            key={spec.id || index}
-                            className={`group transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-red-50`}
-                          >
-                            <td className="px-6 py-4 font-bold text-gray-900 border-r border-gray-200 w-1/4 lg:w-1/5 bg-gray-100/80 group-hover:bg-red-100/50 transition-colors">
-                              {spec.key}
-                            </td>
-                            <td className="px-6 py-4 text-gray-800 leading-relaxed">{spec.value}</td>
-                          </tr>
-                        ))
-                      : Object.entries(product.specifications).map(([key, value], index) => (
-                          <tr 
-                            key={index} 
-                            className={`group transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-red-50`}
-                          >
-                            <td className="px-6 py-4 font-bold text-gray-900 border-r border-gray-200 w-1/4 lg:w-1/5 bg-gray-100/80 group-hover:bg-red-100/50 transition-colors">
-                              {key}
-                            </td>
-                            <td className="px-6 py-4 text-gray-800 leading-relaxed">{value as string}</td>
-                          </tr>
-                        ))}
+                    {getDisplaySpecs().map((spec, index) => (
+                      <tr
+                        key={spec.id || index}
+                        className={`group transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-red-50`}
+                      >
+                        <td className="px-6 py-4 font-bold text-gray-900 border-r border-gray-200 w-1/4 lg:w-1/5 bg-gray-100/80 group-hover:bg-red-100/50 transition-colors">
+                          {spec.key}
+                        </td>
+                        <td className="px-6 py-4 text-gray-800 leading-relaxed">{spec.value}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>

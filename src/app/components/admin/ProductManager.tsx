@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { projectId, publicAnonKey } from '../../../../utils/supabase/info';
-import { translateProduct, TranslationLimitError } from '../../utils/translate';
+import { translateProduct, translateSpecs, TranslationLimitError } from '../../utils/translate';
 
 interface Product {
   id: string;
@@ -36,6 +36,8 @@ interface Product {
   images?: string[]; // Multiple images support
   verified?: boolean; // Flag de verificação (somente admin)
   specifications: Array<{ id: string; key: string; value: string }>;
+  specifications_en?: Array<{ id: string; key: string; value: string }>;
+  specifications_es?: Array<{ id: string; key: string; value: string }>;
   createdAt: string;
   updatedAt: string;
 }
@@ -83,6 +85,8 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     images: [] as string[],
     verified: false,
     specifications: [] as Array<{ id: string; key: string; value: string }>,
+    specifications_en: [] as Array<{ id: string; key: string; value: string }>,
+    specifications_es: [] as Array<{ id: string; key: string; value: string }>,
   });
 
   useEffect(() => {
@@ -297,12 +301,17 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
         name: formData.name,
         description: formData.description,
       });
+      const specs = formData.specifications || [];
+      const specifications_en = specs.length ? await translateSpecs(specs, 'en') : [];
+      const specifications_es = specs.length ? await translateSpecs(specs, 'es') : [];
       setFormData((prev) => ({
         ...prev,
         name_en: t.name_en || prev.name_en,
         name_es: t.name_es || prev.name_es,
         description_en: t.description_en || prev.description_en,
         description_es: t.description_es || prev.description_es,
+        specifications_en,
+        specifications_es,
       }));
       toast.success('Traduções geradas! Revise e salve o produto.');
     } catch (error) {
@@ -319,7 +328,10 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     const missing = products.filter(
       (p) =>
         (p.name && (!p.name_en || !p.name_es)) ||
-        (p.description && (!p.description_en || !p.description_es))
+        (p.description && (!p.description_en || !p.description_es)) ||
+        (Array.isArray(p.specifications) &&
+          p.specifications.length > 0 &&
+          (!p.specifications_en?.length || !p.specifications_es?.length))
     );
 
     if (missing.length === 0) {
@@ -342,15 +354,32 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
     for (let i = 0; i < missing.length; i++) {
       const p = missing[i];
       try {
-        const t = await translateProduct({
-          name: p.name || '',
-          description: p.description || '',
-        });
+        // Só traduz o que falta, pra economizar a cota da API.
+        const needText =
+          (p.name && (!p.name_en || !p.name_es)) ||
+          (p.description && (!p.description_en || !p.description_es));
+        const t = needText
+          ? await translateProduct({ name: p.name || '', description: p.description || '' })
+          : { name_en: '', name_es: '', description_en: '', description_es: '' };
+
+        const specs = Array.isArray(p.specifications) ? p.specifications : [];
+        const specifications_en = p.specifications_en?.length
+          ? p.specifications_en
+          : specs.length
+            ? await translateSpecs(specs, 'en')
+            : [];
+        const specifications_es = p.specifications_es?.length
+          ? p.specifications_es
+          : specs.length
+            ? await translateSpecs(specs, 'es')
+            : [];
         const updates = {
           name_en: p.name_en || t.name_en,
           name_es: p.name_es || t.name_es,
           description_en: p.description_en || t.description_en,
           description_es: p.description_es || t.description_es,
+          specifications_en,
+          specifications_es,
         };
         const res = await fetch(`${API_URL}/admin/products/${p.id}`, {
           method: 'PUT',
@@ -512,6 +541,8 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       images: product.images || [],
       verified: product.verified || false,
       specifications,
+      specifications_en: product.specifications_en || [],
+      specifications_es: product.specifications_es || [],
     });
     setShowForm(true);
   };
@@ -555,6 +586,8 @@ export default function ProductManager({ accessToken, onUpdate }: ProductManager
       images: [],
       verified: false,
       specifications: [],
+      specifications_en: [],
+      specifications_es: [],
     });
     setEditingProduct(null);
     setShowForm(false);
